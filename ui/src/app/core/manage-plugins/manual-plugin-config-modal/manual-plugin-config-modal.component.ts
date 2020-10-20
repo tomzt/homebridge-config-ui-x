@@ -33,7 +33,7 @@ export class ManualPluginConfigModalComponent implements OnInit {
   public monacoEditor;
   public editorOptions = {
     language: 'json',
-    theme: this.$auth.theme === 'dark-mode' ? 'vs-dark' : 'vs-light',
+    theme: this.$auth.darkModeEnabled ? 'vs-dark' : 'vs-light',
     automaticLayout: true,
   };
 

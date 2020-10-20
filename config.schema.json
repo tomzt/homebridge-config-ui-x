@@ -41,16 +41,10 @@
         "required": true
       },
       "theme": {
-        "title": "UI Theme",
+        "title": "Color",
         "type": "string",
-        "default": "auto",
+        "default": "purple",
         "oneOf": [
-          {
-            "title": "Default",
-            "enum": [
-              "auto"
-            ]
-          },
           {
             "title": "Red",
             "enum": [
@@ -140,15 +134,39 @@
             "enum": [
               "brown"
             ]
-          },
-          {
-            "title": "Dark Mode",
-            "enum": [
-              "dark-mode"
-            ]
           }
         ],
         "required": true
+      },
+      "darkMode": {
+        "title": "Dark Mode",
+        "type": "string",
+        "default": "auto",
+        "required": true,
+        "oneOf": [
+          {
+            "title": "Auto",
+            "enum": [
+              "auto"
+            ]
+          },
+          {
+            "title": "Disabled",
+            "enum": [
+              "disabled"
+            ]
+          },
+          {
+            "title": "Enabled",
+            "enum": [
+              "enabled"
+            ]
+          }
+        ]
+      },
+      "useDarkModeAccent": {
+        "title": "Highlight navbar in dark mode",
+        "type": "boolean"
       },
       "restart": {
         "title": "Restart Command",
@@ -473,6 +491,7 @@
   "layout": [
     {
       "type": "flex",
+      "title": "General",
       "flex-flow": "row wrap",
       "items": [
         {
@@ -480,15 +499,36 @@
           "flex-flow": "column",
           "items": [
             "name",
-            "theme"
+            "tempUnits"
           ]
         },
         {
           "type": "flex",
           "flex-flow": "column",
           "items": [
-            "port",
-            "tempUnits"
+            "port"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "flex",
+      "flex-flow": "row wrap",
+      "title": "Theme",
+      "items": [
+        {
+          "type": "flex",
+          "flex-flow": "column",
+          "items": [
+            "theme",
+            "useDarkModeAccent"
+          ]
+        },
+        {
+          "type": "flex",
+          "flex-flow": "column",
+          "items": [
+            "darkMode"
           ]
         }
       ]
