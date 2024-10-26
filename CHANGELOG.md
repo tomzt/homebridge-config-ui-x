@@ -16,6 +16,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 
 - improvements to the deprecate versions workflow
 - retire use of `pnpm` and code references
+- bump the default node version from 20 to 22
 
 ### Homebridge Dependencies
 
