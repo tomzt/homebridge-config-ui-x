@@ -120,6 +120,10 @@
         openDelay="150"
         triggers="hover"
       ></i>
+      } @if (!schema.singular) {
+      <button type="button" class="btn btn-elegant me-2" data-dismiss="modal" (click)="addBlock()">
+        <i class="fa fa-fw fa-plus"></i>
+      </button>
       }
       <button
         type="button"

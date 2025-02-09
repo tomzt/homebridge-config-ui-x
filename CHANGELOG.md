@@ -2,6 +2,19 @@
 
 All notable changes to `homebridge-config-ui-x` will be documented in this file. This project tries to adhere to [Semantic Versioning](http://semver.org/).
 
+## BETA
+
+### UI Changes
+
+- updates to the `uk.json` language file (#2352) (@xrust83)
+- add missing add section button to plugin config screens
+
+### Homebridge Dependencies
+
+- `@homebridge/hap-client` @ `v2.0.5`
+- `@homebridge/node-pty-prebuilt-multiarch` @ `v0.11.14`
+- `@homebridge/plugin-ui-utils` @ `v2.0.1`
+
 ## v4.71.0 (2025-02-09)
 
 ### ⚠️ Upcoming Deprecations:
