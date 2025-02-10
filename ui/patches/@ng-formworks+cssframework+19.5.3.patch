@@ -1,5 +1,5 @@
 diff --git a/node_modules/@ng-formworks/cssframework/fesm2022/ng-formworks-cssframework.mjs b/node_modules/@ng-formworks/cssframework/fesm2022/ng-formworks-cssframework.mjs
-index 78f8850..9cf15db 100644
+index 78f8850..328867e 100644
 --- a/node_modules/@ng-formworks/cssframework/fesm2022/ng-formworks-cssframework.mjs
 +++ b/node_modules/@ng-formworks/cssframework/fesm2022/ng-formworks-cssframework.mjs
 @@ -276,6 +276,9 @@ class CssFrameworkComponent {

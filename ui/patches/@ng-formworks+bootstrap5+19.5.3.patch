@@ -1,5 +1,5 @@
 diff --git a/node_modules/@ng-formworks/bootstrap5/fesm2022/ng-formworks-bootstrap5.mjs b/node_modules/@ng-formworks/bootstrap5/fesm2022/ng-formworks-bootstrap5.mjs
-index 3a20708..4aad306 100644
+index 3a20708..4cd0255 100644
 --- a/node_modules/@ng-formworks/bootstrap5/fesm2022/ng-formworks-bootstrap5.mjs
 +++ b/node_modules/@ng-formworks/bootstrap5/fesm2022/ng-formworks-bootstrap5.mjs
 @@ -35,7 +35,7 @@ class Bootstrap5FrameworkComponent {
