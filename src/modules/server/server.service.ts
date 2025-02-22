@@ -219,7 +219,7 @@ export class ServerService {
     const pluginBlock = configFile.accessories
       .concat(configFile.platforms)
       .concat([{ _bridge: configFile.bridge }])
-      .find((block: any) => block._bridge?.username?.toUpperCase() === username.toUpperCase() && block._bridge?.port)
+      .find((block: any) => block._bridge?.username?.toUpperCase() === username.toUpperCase())
 
     try {
       device._category = Object.entries(Categories).find(([, value]) => value === device.category)[0].toLowerCase()

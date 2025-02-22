@@ -8,6 +8,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 
 - updates to the `uk.json` language file (#2352) (@xrust83)
 - add missing add section button to plugin config screens
+- improve active/stale bridge detection
 
 ### Other Changes
 
