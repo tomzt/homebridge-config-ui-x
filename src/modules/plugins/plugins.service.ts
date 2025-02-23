@@ -750,7 +750,7 @@ export class PluginsService {
         '/var/packages/homebridge/target/app/lib/node_modules',
       ].includes(dirname(process.env.UIX_BASE_PATH))
       && pluginAction.name === this.configService.name
-      && pluginAction.version !== 'latest'
+      && !['latest', 'alpha', 'beta'].includes(pluginAction.version)
     ) {
       try {
         try {
@@ -763,7 +763,7 @@ export class PluginsService {
           return withoutV
         }
       } catch (e) {
-        this.logger.error(`Failed to check for bundled update as ${e.message}.`)
+        this.logger.error(`Failed to check for bundled update: ${e.message}.`)
         return ''
       }
     } else {
