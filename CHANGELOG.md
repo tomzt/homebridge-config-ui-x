@@ -2,7 +2,7 @@
 
 All notable changes to `homebridge-config-ui-x` will be documented in this file. This project tries to adhere to [Semantic Versioning](http://semver.org/).
 
-## v4.71.1 (2025-02-22)
+## BETA
 
 ### ⚠️ Upcoming Deprecations:
 
@@ -13,6 +13,13 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
   - Drop support for instances using `pnpm` as the package manager - consider updating your Homebridge instance to use npm instead - [more info on updating](https://github.com/homebridge/homebridge-apt-pkg/blob/latest/README.md#using-apt)
 - Note that Homebridge UI `v5` will not be released before May 2025 (aligning with when Node.js `v18` reaches end-of-life)
 - Note that these are not requirements for UI `v4.71.1`
+
+### Other Changes
+
+- fix alpha/beta update checks for bundled ui (#2363) (@dnicolson)
+- fix ui config validation when default theme selected
+
+## v4.71.1 (2025-02-22)
 
 ### UI Changes
 

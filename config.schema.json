@@ -47,12 +47,12 @@
         "title": "UI Theme",
         "description": "The theme used for the UI.",
         "type": "string",
-        "default": "auto",
+        "default": "orange",
         "oneOf": [
           {
             "title": "Orange",
             "enum": [
-              "auto"
+              "orange"
             ]
           },
           {
