@@ -1,6 +1,6 @@
 import { NgClass } from '@angular/common'
 import { Component, inject, OnDestroy, OnInit } from '@angular/core'
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { NavigationEnd, Router } from '@angular/router'
 import { TranslatePipe, TranslateService } from '@ngx-translate/core'
 import { ToastrService } from 'ngx-toastr'
@@ -34,6 +34,7 @@ export class PluginsComponent implements OnInit, OnDestroy {
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
   private $ws = inject(WsService)
+  private isSearchMode = false
 
   public mainError = false
   public loading = true
@@ -41,7 +42,7 @@ export class PluginsComponent implements OnInit, OnDestroy {
   public childBridges = []
   public showExitButton = false
   public form = new FormGroup({
-    query: new FormControl('', [Validators.required]),
+    query: new FormControl(''),
   })
 
   private io: IoNamespace
@@ -209,6 +210,7 @@ export class PluginsComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         this.loading = false
+        this.isSearchMode = false
         console.error(error)
         this.$toastr.error(error.error.message || error.message, this.$translate.instant('toast.title_error'))
         this.loadInstalledPlugins()
@@ -222,8 +224,12 @@ export class PluginsComponent implements OnInit, OnDestroy {
 
   onSubmit({ value }) {
     if (!value.query.length) {
-      this.loadInstalledPlugins()
+      if (this.isSearchMode) {
+        this.isSearchMode = false
+        this.loadInstalledPlugins()
+      }
     } else {
+      this.isSearchMode = true
       this.search()
     }
   }
