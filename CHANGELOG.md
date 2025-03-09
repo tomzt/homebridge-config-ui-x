@@ -2,6 +2,25 @@
 
 All notable changes to `homebridge-config-ui-x` will be documented in this file. This project tries to adhere to [Semantic Versioning](http://semver.org/).
 
+## BETA (v4)
+
+### UI Changes
+
+- updates to the `th.json` language file (#2365) (@tomzt)
+- updates to the `es.json` language file (#2376) (@kyrokode)
+- updates to the `id.json` language file (#2377) (@dwaan)
+- updates to the `ru.json` language file (#2384) (@SeregaTarasov)
+
+### Other Changes
+
+- updated dependencies
+
+### Homebridge Dependencies
+
+- `@homebridge/hap-client` @ `v2.0.6`
+- `@homebridge/node-pty-prebuilt-multiarch` @ `v0.11.14`
+- `@homebridge/plugin-ui-utils` @ `v2.0.1`
+
 ## v4.71.2 (2025-02-23)
 
 ### ⚠️ Upcoming Deprecations:
