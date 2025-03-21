@@ -10,6 +10,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - updates to the `es.json` language file (#2376) (@kyrokode)
 - updates to the `id.json` language file (#2377) (@dwaan)
 - updates to the `ru.json` language file (#2384) (@SeregaTarasov)
+- fixed issue with UI config incorrectly reporting as invalid
 
 ### Other Changes
 

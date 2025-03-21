@@ -452,7 +452,6 @@
             "type": "string",
             "default": "",
             "description": "The method used to read the Homebridge log file.",
-            "required": true,
             "oneOf": [
               {
                 "title": "Default",
@@ -485,7 +484,6 @@
             "type": "string",
             "description": "Enter the full file path to your log file.",
             "placeholder": "/var/log/homebridge.log",
-            "required": true,
             "condition": {
               "functionBody": "return (model.log && model.log.method==='file')"
             }
@@ -495,7 +493,6 @@
             "type": "string",
             "description": "Enter the systemd service name. Defaults to 'homebridge'.",
             "placeholder": "homebridge",
-            "required": true,
             "condition": {
               "functionBody": "return (model.log && model.log.method==='systemd')"
             }
@@ -505,7 +502,6 @@
             "description": "This command should stream the logs to stdout.",
             "type": "string",
             "placeholder": "journalctl -f -n 100 -u homebridge",
-            "required": true,
             "condition": {
               "functionBody": "return (model.log && model.log.method==='custom')"
             }
