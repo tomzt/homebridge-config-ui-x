@@ -198,11 +198,22 @@ export class ManagePluginsService {
    * Open the json config modal
    */
   async jsonEditor(plugin: any) {
+    // Load the plugins schema
+    let schema: any
+    if (plugin.settingsSchema) {
+      try {
+        schema = await this.loadConfigSchema(plugin.name)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
     const ref = this.$modal.open(ManualConfigComponent, {
       size: 'lg',
       backdrop: 'static',
     })
 
+    ref.componentInstance.schema = schema
     ref.componentInstance.plugin = plugin
 
     return ref.result.catch(error => console.error(error))

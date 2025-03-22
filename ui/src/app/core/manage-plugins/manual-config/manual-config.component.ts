@@ -22,6 +22,7 @@ import { ApiService } from '@/app/core/api.service'
 import { RestartChildBridgesComponent } from '@/app/core/components/restart-child-bridges/restart-child-bridges.component'
 import { RestartHomebridgeComponent } from '@/app/core/components/restart-homebridge/restart-homebridge.component'
 import { ManagePluginsService } from '@/app/core/manage-plugins/manage-plugins.service'
+import { PluginSchema } from '@/app/core/manage-plugins/plugin-config/plugin-config.component'
 import { MobileDetectService } from '@/app/core/mobile-detect.service'
 import { SettingsService } from '@/app/core/settings.service'
 
@@ -54,6 +55,7 @@ export class ManualConfigComponent implements OnInit {
   private $translate = inject(TranslateService)
 
   @Input() plugin: any
+  @Input() schema: PluginSchema
 
   public pluginAlias: string
   public pluginType: 'platform' | 'accessory'

@@ -10,7 +10,7 @@
       [disabled]="saveInProgress"
     ></button>
   </div>
-  <div class="modal-body">
+  <div class="modal-body pb-0">
     @if (loading) {
     <div class="text-center primary-text">
       <i class="fa fa-fw fa-cog fa-spin" style="font-size: 75px"></i>
@@ -36,7 +36,7 @@
           <div class="d-flex align-items-center justify-content-between">
             <h5 class="m-0">{{ block.name || pluginAlias }}</h5>
             <div>
-              @if (show === 'configBlock.' + $index) {
+              @if (show === 'configBlock.' + $index) { @if (!schema?.singular || pluginConfig.length > 1) {
               <button
                 class="btn btn-danger m-0 ms-3"
                 (click)="removeBlock($index)"
@@ -47,7 +47,7 @@
               >
                 <i class="fa fa-fw fa-trash"></i>
               </button>
-              }
+              } }
               <button
                 class="btn btn-primary m-0 ms-2"
                 ngbAccordionToggle
@@ -92,10 +92,11 @@
     </div>
     <div class="text-center"></div>
     <div class="text-end">
-      @if (canConfigure) {
+      @if (canConfigure) { @if (!schema?.singular) {
       <button type="button" class="btn btn-elegant me-2" data-bs-dismiss="modal" (click)="addBlock()">
         <i class="fa fa-fw fa-plus"></i>
       </button>
+      }
       <button
         type="button"
         class="btn btn-primary"

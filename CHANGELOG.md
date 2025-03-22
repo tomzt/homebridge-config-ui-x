@@ -11,6 +11,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - updates to the `id.json` language file (#2377) (@dwaan)
 - updates to the `ru.json` language file (#2384) (@SeregaTarasov)
 - fixed issue with UI config incorrectly reporting as invalid
+- don't allow adding multiple config blocks for singular plugins
 
 ### Other Changes
 
