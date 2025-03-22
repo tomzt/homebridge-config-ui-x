@@ -1,0 +1,8 @@
+name: Node Build
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    uses: homebridge/.github/.github/workflows/eslint.yml@latest
