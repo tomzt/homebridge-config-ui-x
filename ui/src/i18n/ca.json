@@ -479,7 +479,7 @@
   "status.widget.info.plugin_path": "Ruta plugins",
   "status.widget.info.service_mode": "Mode de Servei",
   "status.widget.info.service_user": "Usuari",
-  "status.widget.info.servicemode_message": "Standalone mode is no longer recommended. Setting up Homebridge and Homebridge UI with hb-service has the same benefits of standalone mode but is much easier to setup and maintain.",
+  "status.widget.info.servicemode_message": "Standalone mode is no longer recommended. Setting up Homebridge and Homebridge UI with hb-service has the same benefits of standalone mode but it is much easier to setup and maintain.",
   "status.widget.info.servicemode_title": "Service Mode",
   "status.widget.info.storage_path": "Ruta d'emmagatzematge",
   "status.widget.info.synology_package": "Synology Package",

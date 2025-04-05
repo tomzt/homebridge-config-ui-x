@@ -540,9 +540,11 @@ export class PluginsService {
       installOptions.push('-g')
     }
 
-    // If installing, set --omit=dev to prevent installing devDependencies
     if (action === 'install') {
-      installOptions.push('--omit=dev')
+      if (!this.configService.usePnpm) {
+        // If installing, set --omit=dev to prevent installing devDependencies
+        installOptions.push('--omit=dev')
+      }
       npmPluginLabel = `${pluginAction.name}@${pluginAction.version}`
     }
 
@@ -638,7 +640,9 @@ export class PluginsService {
 
     // Prepare flags for npm command
     const installOptions: Array<string> = []
-    installOptions.push('--omit=dev')
+    if (!this.configService.usePnpm) {
+      installOptions.push('--omit=dev')
+    }
 
     // Check to see if custom plugin path is using a package.json file
     if (installPath === this.configService.customPluginPath && await pathExists(resolve(installPath, '../package.json'))) {

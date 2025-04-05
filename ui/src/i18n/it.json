@@ -479,7 +479,7 @@
   "status.widget.info.plugin_path": "Percorso plugin",
   "status.widget.info.service_mode": "Modalità servizio",
   "status.widget.info.service_user": "Utente",
-  "status.widget.info.servicemode_message": "Standalone mode is no longer recommended. Setting up Homebridge and Homebridge UI with hb-service has the same benefits of standalone mode but is much easier to setup and maintain.",
+  "status.widget.info.servicemode_message": "Standalone mode is no longer recommended. Setting up Homebridge and Homebridge UI with hb-service has the same benefits of standalone mode but it is much easier to setup and maintain.",
   "status.widget.info.servicemode_title": "Service Mode",
   "status.widget.info.storage_path": "Percorso salvataggio",
   "status.widget.info.synology_package": "Pacchetto Synology",

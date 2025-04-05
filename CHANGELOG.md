@@ -2,7 +2,7 @@
 
 All notable changes to `homebridge-config-ui-x` will be documented in this file. This project tries to adhere to [Semantic Versioning](http://semver.org/).
 
-## v4.72.0 (2025-03-22)
+## BETA
 
 ### ⚠️ Upcoming Deprecations:
 
@@ -12,7 +12,26 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
   - Drop support for Raspberry Pi devices running on the `armv6` architecture (like the Pi 1 and Pi Zero) - please update your hardware
   - Drop support for instances using `pnpm` as the package manager - consider updating your Homebridge instance to use npm instead - [more info on updating](https://github.com/homebridge/homebridge-apt-pkg/blob/latest/README.md#using-apt)
 - Note that Homebridge UI `v5` will not be released before May 2025 (aligning with when Node.js `v18` reaches end-of-life)
-- Note that these are not requirements for UI `v4.72.0`
+- Note that these are not requirements for UI `vBETA`
+
+### UI Changes
+
+- updates to the `en.json` language file (#2389) (@HenryGelderbloem)
+- updates to the `de.json` language file (#2403) (@Staubgeborener)
+- updates to the `de.json` language file (#2404) (@Staubgeborener)
+
+### Other Changes
+
+- fix do not include `--omit=dev` flag in `pnpm` commands
+- add lint job for checking all pull requests
+
+### Homebridge Dependencies
+
+- `@homebridge/hap-client` @ `v2.1.0`
+- `@homebridge/node-pty-prebuilt-multiarch` @ `v0.11.14`
+- `@homebridge/plugin-ui-utils` @ `v2.0.2`
+
+## v4.72.0 (2025-03-22)
 
 ### UI Changes
 
