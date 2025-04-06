@@ -193,7 +193,7 @@ export class BackupService {
     if (this.configService.ui.scheduledBackupPath) {
       // If using a custom backup path, check it exists
       if (!await pathExists(this.configService.instanceBackupPath)) {
-        throw new Error(`Custom instance backup path does not exists: ${this.configService.instanceBackupPath}`)
+        throw new Error(`Custom instance backup path does not exist: ${this.configService.instanceBackupPath}`)
       }
 
       try {
@@ -308,11 +308,21 @@ export class BackupService {
    * Downloads a scheduled backup .tar.gz
    */
   async getScheduledBackup(backupId: string): Promise<StreamableFile> {
-    const backupPath = resolve(this.configService.instanceBackupPath, `homebridge-backup-${backupId}.tar.gz`)
-
-    // Check the file exists
-    if (!await pathExists(backupPath)) {
+    // Validate backupId to ensure it matches the expected pattern
+    if (!/^[0-9A-Z]{12}\.\d{9,15}$/i.test(backupId)) {
       throw new NotFoundException()
+    }
+
+    let backupPath = resolve(this.configService.instanceBackupPath, `homebridge-backup-${backupId}.tar.gz`)
+    try {
+      backupPath = await realpath(backupPath)
+    } catch (e) {
+      throw new NotFoundException()
+    }
+
+    // Ensure the backupPath is within the instanceBackupPath
+    if (!backupPath.startsWith(this.configService.instanceBackupPath)) {
+      throw new BadRequestException('Invalid backup path')
     }
 
     return new StreamableFile(createReadStream(backupPath))
@@ -322,11 +332,21 @@ export class BackupService {
    * Removes a scheduled backup .tar.gz
    */
   async deleteScheduledBackup(backupId: string): Promise<void> {
-    const backupPath = resolve(this.configService.instanceBackupPath, `homebridge-backup-${backupId}.tar.gz`)
-
-    // Check the file exists
-    if (!await pathExists(backupPath)) {
+    // Validate backupId to ensure it matches the expected pattern
+    if (!/^[0-9A-Z]{12}\.\d{9,15}$/i.test(backupId)) {
       throw new NotFoundException()
+    }
+
+    let backupPath = resolve(this.configService.instanceBackupPath, `homebridge-backup-${backupId}.tar.gz`)
+    try {
+      backupPath = await realpath(backupPath)
+    } catch (e) {
+      throw new NotFoundException()
+    }
+
+    // Ensure the backupPath is within the instanceBackupPath
+    if (!backupPath.startsWith(this.configService.instanceBackupPath)) {
+      throw new BadRequestException('Invalid backup path')
     }
 
     try {
@@ -342,11 +362,21 @@ export class BackupService {
    * Restore a scheduled backup .tar.gz
    */
   async restoreScheduledBackup(backupId: string): Promise<void> {
-    const backupPath = resolve(this.configService.instanceBackupPath, `homebridge-backup-${backupId}.tar.gz`)
-
-    // Check the file exists
-    if (!await pathExists(backupPath)) {
+    // Validate backupId to ensure it matches the expected pattern
+    if (!/^[0-9A-Z]{12}\.\d{9,15}$/i.test(backupId)) {
       throw new NotFoundException()
+    }
+
+    let backupPath = resolve(this.configService.instanceBackupPath, `homebridge-backup-${backupId}.tar.gz`)
+    try {
+      backupPath = await realpath(backupPath)
+    } catch (e) {
+      throw new NotFoundException()
+    }
+
+    // Ensure the backupPath is within the instanceBackupPath
+    if (!backupPath.startsWith(this.configService.instanceBackupPath)) {
+      throw new BadRequestException('Invalid backup path')
     }
 
     // Clear restore directory
@@ -363,17 +393,17 @@ export class BackupService {
     this.restoreDirectory = restoreDir
   }
 
+  // Remove temp files (called when download finished)
+  async cleanup(backupDir: string) {
+    await remove(resolve(backupDir))
+    this.logger.log(`Backup complete, removing ${backupDir}.`)
+  }
+
   /**
    * Create and download backup archive of the current homebridge instance
    */
   async downloadBackup(reply: FastifyReply): Promise<StreamableFile> {
     const { backupDir, backupPath, backupFileName } = await this.createBackup()
-
-    // Remove temp files (called when download finished)
-    async function cleanup() {
-      await remove(resolve(backupDir))
-      this.logger.log(`Backup complete, removing ${backupDir}.`)
-    }
 
     // Set download headers
     reply.raw.setHeader('Content-type', 'application/octet-stream')
@@ -385,7 +415,10 @@ export class BackupService {
       reply.raw.setHeader('access-control-allow-origin', 'http://localhost:4200')
     }
 
-    return new StreamableFile(createReadStream(backupPath).on('close', cleanup.bind(this)))
+    // Remove temp files (called when download finished)
+    const cleanup = this.cleanup.bind(this, backupDir)
+
+    return new StreamableFile(createReadStream(backupPath).on('close', cleanup))
   }
 
   /**

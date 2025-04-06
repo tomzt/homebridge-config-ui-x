@@ -1,6 +1,6 @@
 import type { PathLike } from 'fs-extra'
 
-import { execSync } from 'node:child_process'
+import { execFileSync, execSync } from 'node:child_process'
 import { homedir, release, userInfo } from 'node:os'
 import { dirname, resolve } from 'node:path'
 import process from 'node:process'
@@ -69,7 +69,7 @@ export class DarwinInstaller extends BasePlatform {
     this.checkForRoot()
     try {
       this.hbService.logger(`Starting ${this.hbService.serviceName} Service...`)
-      execSync(`launchctl load -w ${this.plistPath}`)
+      execFileSync('launchctl', ['load', '-w', this.plistPath])
       this.hbService.logger(`${this.hbService.serviceName} Started`, 'succeed')
     } catch (e) {
       this.hbService.logger(`Failed to start ${this.hbService.serviceName}`, 'fail')
@@ -83,7 +83,7 @@ export class DarwinInstaller extends BasePlatform {
     this.checkForRoot()
     try {
       this.hbService.logger(`Stopping ${this.hbService.serviceName} Service...`)
-      execSync(`launchctl unload -w ${this.plistPath}`)
+      execFileSync('launchctl', ['unload', '-w', this.plistPath])
       this.hbService.logger(`${this.hbService.serviceName} Stopped`, 'succeed')
     } catch (e) {
       this.hbService.logger(`Failed to stop ${this.hbService.serviceName}`, 'fail')

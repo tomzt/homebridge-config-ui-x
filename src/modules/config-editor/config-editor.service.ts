@@ -197,20 +197,20 @@ export class ConfigEditorService {
    * Return the config for a specific plugin
    */
   public async getConfigForPlugin(pluginName: string) {
-    return Promise.all([
+    const [plugin, config] = await Promise.all([
       await this.pluginsService.getPluginAlias(pluginName),
       await this.getConfigFile(),
-    ]).then(([plugin, config]) => {
-      if (!plugin.pluginAlias) {
-        return new BadRequestException('Plugin alias could not be determined.')
-      }
+    ])
 
-      const arrayKey = plugin.pluginType === 'accessory' ? 'accessories' : 'platforms'
+    if (!plugin.pluginAlias) {
+      return new BadRequestException('Plugin alias could not be determined.')
+    }
 
-      return config[arrayKey].filter((block) => {
-        return block[plugin.pluginType] === plugin.pluginAlias
-          || block[plugin.pluginType] === `${pluginName}.${plugin.pluginAlias}`
-      })
+    const arrayKey = plugin.pluginType === 'accessory' ? 'accessories' : 'platforms'
+
+    return config[arrayKey].filter((block) => {
+      return block[plugin.pluginType] === plugin.pluginAlias
+        || block[plugin.pluginType] === `${pluginName}.${plugin.pluginAlias}`
     })
   }
 
@@ -218,80 +218,80 @@ export class ConfigEditorService {
    * Update the config for a specific plugin
    */
   public async updateConfigForPlugin(pluginName: string, pluginConfig: Record<string, any>[]) {
-    return Promise.all([
+    const [plugin, config] = await Promise.all([
       await this.pluginsService.getPluginAlias(pluginName),
       await this.getConfigFile(),
-    ]).then(async ([plugin, config]) => {
-      if (!plugin.pluginAlias) {
-        return new BadRequestException('Plugin alias could not be determined.')
+    ])
+
+    if (!plugin.pluginAlias) {
+      return new BadRequestException('Plugin alias could not be determined.')
+    }
+
+    const arrayKey = plugin.pluginType === 'accessory' ? 'accessories' : 'platforms'
+
+    // Ensure the update contains an array
+    if (!Array.isArray(pluginConfig)) {
+      throw new BadRequestException('Plugin Config must be an array.')
+    }
+
+    // Validate each block in the array
+    for (const block of pluginConfig) {
+      if (typeof block !== 'object' || Array.isArray(block)) {
+        throw new BadRequestException('Plugin config must be an array of objects.')
       }
+      block[plugin.pluginType] = plugin.pluginAlias
+    }
 
-      const arrayKey = plugin.pluginType === 'accessory' ? 'accessories' : 'platforms'
+    let positionIndices: number
 
-      // Ensure the update contains an array
-      if (!Array.isArray(pluginConfig)) {
-        throw new BadRequestException('Plugin Config must be an array.')
-      }
-
-      // Validate each block in the array
-      for (const block of pluginConfig) {
-        if (typeof block !== 'object' || Array.isArray(block)) {
-          throw new BadRequestException('Plugin config must be an array of objects.')
-        }
-        block[plugin.pluginType] = plugin.pluginAlias
-      }
-
-      let positionIndices: number
-
-      // Remove the existing config blocks
-      config[arrayKey] = config[arrayKey].filter((block, index) => {
-        if (block[plugin.pluginType] === plugin.pluginAlias || block[plugin.pluginType] === `${pluginName}.${plugin.pluginAlias}`) {
-          positionIndices = index
-          return false
-        } else {
-          return true
-        }
-      })
-
-      // Try and keep any _bridge object 'clean'
-      pluginConfig.forEach((block) => {
-        if (block._bridge) {
-          // The env object is only compatible with homebridge 1.8.0 and above
-          const isEnvObjAllowed = gte(this.configService.homebridgeVersion, '1.8.0')
-
-          Object.keys(block._bridge).forEach((key) => {
-            if (key === 'env' && isEnvObjAllowed) {
-              Object.keys(block._bridge.env).forEach((envKey) => {
-                if (block._bridge.env[envKey] === undefined || typeof block._bridge.env[envKey] !== 'string' || block._bridge.env[envKey].trim() === '') {
-                  delete block._bridge.env[envKey]
-                }
-              })
-
-              // If the result of env is an empty object, remove it
-              if (Object.keys(block._bridge.env).length === 0) {
-                delete block._bridge.env
-              }
-            } else {
-              if (block._bridge[key] === undefined || (typeof block._bridge[key] === 'string' && block._bridge[key].trim() === '')) {
-                delete block._bridge[key]
-              }
-            }
-          })
-        }
-      })
-
-      // Replace with the provided config, trying to put it back in the same location
-      if (positionIndices !== undefined) {
-        config[arrayKey].splice(positionIndices, 0, ...pluginConfig)
+    // Remove the existing config blocks
+    config[arrayKey] = config[arrayKey].filter((block, index) => {
+      if (block[plugin.pluginType] === plugin.pluginAlias || block[plugin.pluginType] === `${pluginName}.${plugin.pluginAlias}`) {
+        positionIndices = index
+        return false
       } else {
-        config[arrayKey].push(...pluginConfig)
+        return true
       }
-
-      // Save the config file
-      await this.updateConfigFile(config)
-
-      return pluginConfig
     })
+
+    // Try and keep any _bridge object 'clean'
+    pluginConfig.forEach((block) => {
+      if (block._bridge) {
+        // The env object is only compatible with homebridge 1.8.0 and above
+        const isEnvObjAllowed = gte(this.configService.homebridgeVersion, '1.8.0')
+
+        Object.keys(block._bridge).forEach((key) => {
+          if (key === 'env' && isEnvObjAllowed) {
+            Object.keys(block._bridge.env).forEach((envKey) => {
+              if (block._bridge.env[envKey] === undefined || typeof block._bridge.env[envKey] !== 'string' || block._bridge.env[envKey].trim() === '') {
+                delete block._bridge.env[envKey]
+              }
+            })
+
+            // If the result of env is an empty object, remove it
+            if (Object.keys(block._bridge.env).length === 0) {
+              delete block._bridge.env
+            }
+          } else {
+            if (block._bridge[key] === undefined || (typeof block._bridge[key] === 'string' && block._bridge[key].trim() === '')) {
+              delete block._bridge[key]
+            }
+          }
+        })
+      }
+    })
+
+    // Replace with the provided config, trying to put it back in the same location
+    if (positionIndices !== undefined) {
+      config[arrayKey].splice(positionIndices, 0, ...pluginConfig)
+    } else {
+      config[arrayKey].push(...pluginConfig)
+    }
+
+    // Save the config file
+    await this.updateConfigFile(config)
+
+    return pluginConfig
   }
 
   /**

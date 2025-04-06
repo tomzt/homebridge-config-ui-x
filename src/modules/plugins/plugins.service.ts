@@ -833,11 +833,18 @@ export class PluginsService {
 
     const schemaPath = resolve(plugin.installPath, pluginName, 'config.schema.json')
 
+    if (!schemaPath.startsWith(plugin.installPath)) {
+      throw new BadRequestException('Invalid plugin path')
+    }
+
     let configSchema = await readJson(schemaPath)
 
     // check to see if this plugin implements dynamic schemas
     if (configSchema.dynamicSchemaVersion) {
       const dynamicSchemaPath = resolve(this.configService.storagePath, `.${pluginName}-v${configSchema.dynamicSchemaVersion}.schema.json`)
+      if (!dynamicSchemaPath.startsWith(this.configService.storagePath)) {
+        throw new BadRequestException('Invalid dynamic schema path')
+      }
       this.logger.log(`[${pluginName}] dynamic schema path: ${dynamicSchemaPath}.`)
       if (existsSync(dynamicSchemaPath)) {
         try {

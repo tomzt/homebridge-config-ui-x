@@ -102,16 +102,15 @@ export class PluginsSettingsUiService {
    * Serve assets from the custom ui dev server (only for private packages in development)
    */
   async serveAssetsFromDevServer(reply, pluginUi: HomebridgePluginUiMetadata, assetPath: string) {
-    return firstValueFrom(this.httpService.get(`${pluginUi.devServer}/${assetPath}`, { responseType: 'text' }))
-      .then((response) => {
-        for (const [key, value] of Object.entries(response.headers)) {
-          reply.header(key, value)
-        }
-        reply.send(response.data)
-      })
-      .catch(() => {
-        return reply.code(404).send('Not Found')
-      })
+    try {
+      const response = await firstValueFrom(this.httpService.get(`${pluginUi.devServer}/${assetPath}`, { responseType: 'text' }))
+      for (const [key, value] of Object.entries(response.headers)) {
+        reply.header(key, value)
+      }
+      reply.send(response.data)
+    } catch {
+      reply.code(404).send('Not Found')
+    }
   }
 
   /**

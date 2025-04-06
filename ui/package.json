@@ -75,6 +75,9 @@
   },
   "overrides": {
     "@angular/animations": "19.2.5",
+    "@angular/build": {
+      "vite": "^6.2.5"
+    },
     "@angular/common": "19.2.5",
     "@angular/core": "19.2.5"
   }

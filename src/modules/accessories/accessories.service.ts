@@ -130,17 +130,16 @@ export class AccessoriesService {
       throw new BadRequestException('Homebridge must be running in insecure mode to access accessories.')
     }
 
-    return this.hapClient
-      .getAllServices()
-      .then(services => services)
-      .catch((e) => {
-        if (e.response?.status === 401) {
-          this.logger.warn('Homebridge must be running in insecure mode to view and control accessories from this plugin.')
-        } else {
-          this.logger.error(`Failed load accessories from Homebridge as ${e.message}.`)
-        }
-        return []
-      })
+    try {
+      return await this.hapClient.getAllServices()
+    } catch (e) {
+      if (e.response?.status === 401) {
+        this.logger.warn('Homebridge must be running in insecure mode to view and control accessories from this plugin.')
+      } else {
+        this.logger.error(`Failed to load accessories from Homebridge as ${e.message}.`)
+      }
+      return []
+    }
   }
 
   /**

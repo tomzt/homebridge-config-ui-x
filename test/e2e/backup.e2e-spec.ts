@@ -226,7 +226,7 @@ describe('BackupController (e2e)', () => {
     configService.ui.scheduledBackupPath = customInstanceBackupPath
     configService.instanceBackupPath = customInstanceBackupPath
 
-    await expect(backupService.ensureScheduledBackupPath()).rejects.toThrow('Custom instance backup path does not exists')
+    await expect(backupService.ensureScheduledBackupPath()).rejects.toThrow('Custom instance backup path does not exist')
   })
 
   it('creates the non-custom scheduled backup path if it does not exist', async () => {
