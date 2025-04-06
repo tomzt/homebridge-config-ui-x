@@ -19,6 +19,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - updates to the `en.json` language file (#2389) (@HenryGelderbloem)
 - updates to the `de.json` language file (#2403) (@Staubgeborener)
 - updates to the `de.json` language file (#2404) (@Staubgeborener)
+- improve icons in bridges widget
 
 ### Other Changes
 

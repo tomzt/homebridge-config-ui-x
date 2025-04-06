@@ -10,23 +10,21 @@
         <i
           class="fas fa-fw"
           [ngClass]="{
-            'fa-bridge-circle-check green-text': homebridgeStatus.status === 'up',
-            'fa-bridge-circle-exclamation text-warning': homebridgeStatus.status === 'pending',
-            'fa-bridge-circle-xmark red-text': homebridgeStatus.status === 'down'
+            'fa-bridge-circle-check green-text': homebridgeStatus.status === 'up' && !isRestarting,
+            'fa-bridge-circle-exclamation text-warning': homebridgeStatus.status === 'pending' || isRestarting,
+            'fa-bridge-circle-xmark red-text': homebridgeStatus.status === 'down' && !isRestarting
           }"
           container="body"
           placement="right"
           openDelay="150"
           triggers="hover"
-          [ngbTooltip]="(homebridgeStatus.status === 'up' ? 'status.services.label_running' : (homebridgeStatus.status ===
-          'pending' ? 'status.services.label_running' : 'status.services.label_not_running')) | translate"
-          [attr.aria-label]="(homebridgeStatus.status === 'up' ? 'status.services.label_running' : (homebridgeStatus.status ===
-          'pending' ? 'status.services.label_running' : 'status.services.label_not_running')) | translate"
+          [ngbTooltip]="(homebridgeStatus.status === 'down' && !isRestarting ? 'status.services.label_not_running' : 'status.services.label_running') | translate"
+          [attr.aria-label]="(homebridgeStatus.status === 'down' && !isRestarting ? 'status.services.label_not_running' : 'status.services.label_running') | translate"
         ></i>
       </div>
       <div class="align-self-center flex-child px-3">{{ homebridgeStatus.name || 'Homebridge' }}</div>
       <div class="grey-text ms-auto d-flex align-items-center">
-        @if (homebridgeStatus.status === 'up') {
+        @if (homebridgeStatus.status !== 'pending' && !isRestarting) {
         <i
           class="icon-button fas fa-fw fa-power-off"
           href="javascript:void(0)"
@@ -37,8 +35,8 @@
           triggers="hover"
           placement="left"
         ></i>
-        } @if (homebridgeStatus.status !== 'up') {
-        <i class="fas icon-button fa-fw fa-spinner fa-pulse"></i>
+        } @if (homebridgeStatus.status === 'pending' || isRestarting) {
+        <i class="fas fa-fw fa-spinner fa-pulse"></i>
         }
         <i
           class="fas fa-fw ms-2 fa-link"
@@ -60,23 +58,21 @@
         <i
           class="fas fa-fw"
           [ngClass]="{
-            'fa-bridge-circle-check green-text': bridge.status === 'ok',
-            'fa-bridge-circle-exclamation text-warning': bridge.status === 'pending',
-            'fa-bridge-circle-xmark red-text': bridge.status === 'down'
+            'fa-bridge-circle-check green-text': bridge.status === 'ok' && !bridge.restarting && !isRestarting,
+            'fa-bridge-circle-exclamation text-warning': bridge.status === 'pending' || bridge.restarting || isRestarting,
+            'fa-bridge-circle-xmark red-text': bridge.status === 'down' && !bridge.restarting && !isRestarting
           }"
           container="body"
           placement="right"
           openDelay="150"
           triggers="hover"
-          [ngbTooltip]="(bridge.status === 'ok' ? 'status.services.label_running' : (bridge.status ===
-          'pending' ? 'status.services.label_running' : 'status.services.label_not_running')) | translate"
-          [attr.aria-label]="(bridge.status === 'ok' ? 'status.services.label_running' : (bridge.status ===
-          'pending' ? 'status.services.label_running' : 'status.services.label_not_running')) | translate"
+          [ngbTooltip]="(bridge.status === 'down' && !bridge.restarting && !isRestarting ? 'status.services.label_not_running' : 'status.services.label_running') | translate"
+          [attr.aria-label]="(bridge.status === 'down' && !bridge.restarting && !isRestarting ? 'status.services.label_not_running' : 'status.services.label_running') | translate"
         ></i>
       </div>
       <div class="align-self-center flex-child px-3">{{ bridge.name }}</div>
       <div class="grey-text ms-auto d-flex align-items-center">
-        @if (bridge.status === 'ok') {
+        @if (bridge.status !== 'pending' && !bridge.restarting) {
         <i
           class="icon-button fas fa-fw fa-power-off"
           href="javascript:void(0)"
@@ -87,8 +83,8 @@
           triggers="hover"
           placement="left"
         ></i>
-        } @if (bridge.status !== 'ok') {
-        <i class="fas icon-button fa-fw fa-spinner fa-pulse"></i>
+        } @if (bridge.status === 'pending' || bridge.restarting) {
+        <i class="fas fa-fw fa-spinner fa-pulse"></i>
         }
         <i
           class="fas fa-fw ms-2 fa-link"

@@ -28,6 +28,7 @@ export class BridgesWidgetComponent implements OnInit, OnDestroy {
 
   public homebridgeStatus = {} as any
   public childBridges = []
+  public isRestarting = false
 
   private ioMain: IoNamespace
   private ioChild: IoNamespace
@@ -38,6 +39,9 @@ export class BridgesWidgetComponent implements OnInit, OnDestroy {
     this.ioMain = this.$ws.getExistingNamespace('status')
     this.ioMain.socket.on('homebridge-status', (data) => {
       this.homebridgeStatus = data
+      if (data.status === 'up') {
+        this.isRestarting = false
+      }
     })
     this.ioMain.connected.subscribe(async () => {
       await this.getHomebridgeStatus()
@@ -58,6 +62,9 @@ export class BridgesWidgetComponent implements OnInit, OnDestroy {
       const existingBridge = this.childBridges.find(x => x.username === data.username)
       if (existingBridge) {
         Object.assign(existingBridge, data)
+        if (data.status === 'ok') {
+          existingBridge.restarting = false
+        }
       } else {
         this.childBridges.push(data)
         this.childBridges.sort((a, b) => a.name.localeCompare(b.name))
@@ -78,20 +85,29 @@ export class BridgesWidgetComponent implements OnInit, OnDestroy {
 
   async restartChildBridge(bridge: any) {
     try {
+      bridge.restarting = true
       await firstValueFrom(this.ioChild.request('restart-child-bridge', bridge.username))
     } catch (error) {
       console.error(error)
       this.$toastr.error(this.$translate.instant('status.widget.bridge.restart_error'), this.$translate.instant('toast.title_error'))
+    } finally {
+      setTimeout(() => {
+        bridge.restarting = false
+      }, 15000)
     }
   }
 
   restartHomebridge() {
+    this.isRestarting = true
     this.$api.put('/server/restart', {}).subscribe({
       error: (error: any) => {
         console.error(error)
         this.$toastr.error(this.$translate.instant('restart.toast_server_restart_error'), this.$translate.instant('toast.title_error'))
       },
     })
+    setTimeout(() => {
+      this.isRestarting = false
+    }, 15000)
   }
 
   ngOnDestroy(): void {
