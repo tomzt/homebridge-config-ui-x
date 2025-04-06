@@ -109,7 +109,7 @@ export class RemoveIndividualAccessoriesComponent implements OnInit {
 
   toggleList(uuid: string, cacheFile: string) {
     if (this.toDelete.some((item: { cacheFile: string, uuid: string }) => item.uuid === uuid && item.cacheFile === cacheFile)) {
-      this.toDelete = this.toDelete.filter((item: { cacheFile: string, uuid: string }) => item.uuid !== uuid && item.cacheFile !== cacheFile)
+      this.toDelete = this.toDelete.filter((item: { cacheFile: string, uuid: string }) => item.uuid !== uuid || item.cacheFile !== cacheFile)
     } else {
       this.toDelete.push({ cacheFile, uuid })
     }

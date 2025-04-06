@@ -20,6 +20,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - updates to the `de.json` language file (#2403) (@Staubgeborener)
 - updates to the `de.json` language file (#2404) (@Staubgeborener)
 - improve icons in bridges widget
+- fix individual accessory deselect on remove modal
 
 ### Other Changes
 
