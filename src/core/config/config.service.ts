@@ -45,7 +45,10 @@ export class ConfigService {
   public runningInLinux = (!this.runningInDocker && !this.runningInSynologyPackage && !this.runningInPackageMode && platform() === 'linux')
   public runningInFreeBSD = (platform() === 'freebsd')
   public canShutdownRestartHost = (this.runningInLinux || process.env.UIX_CAN_SHUTDOWN_RESTART_HOST === '1')
-  public enableTerminalAccess = (this.runningInDocker && process.env.HOMEBRIDGE_CONFIG_UI_TERMINAL !== '0') || this.runningInSynologyPackage || this.runningInPackageMode || Boolean(process.env.HOMEBRIDGE_CONFIG_UI_TERMINAL === '1')
+  public enableTerminalAccess = (this.runningInDocker && process.env.HOMEBRIDGE_CONFIG_UI_TERMINAL !== '0')
+    || (this.runningInPackageMode && process.env.HOMEBRIDGE_CONFIG_UI_TERMINAL !== '0')
+    || this.runningInSynologyPackage
+    || Boolean(process.env.HOMEBRIDGE_CONFIG_UI_TERMINAL === '1')
 
   // Plugin management
   public usePnpm = (process.env.UIX_USE_PNPM === '1')
