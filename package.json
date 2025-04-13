@@ -120,12 +120,12 @@
     "unzipper": "0.12.3"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.11.0",
+    "@antfu/eslint-config": "^4.12.0",
     "@nestjs/testing": "^10.4.15",
     "@prettier/plugin-xml": "^3.4.1",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash": "^4.17.16",
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.14.1",
     "@types/node-schedule": "^2.1.7",
     "@types/passport-jwt": "^4.0.1",
     "@types/semver": "^7.7.0",

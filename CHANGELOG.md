@@ -28,6 +28,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - add lint job for checking all pull requests
 - allow package mode users to disable the terminal
 - various copilot improvements for file paths
+- updated dependencies
 
 ### Homebridge Dependencies
 
