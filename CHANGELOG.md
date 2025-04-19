@@ -31,6 +31,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - allow package mode users to disable the terminal
 - various copilot improvements for file paths
 - updated dependencies
+- remove `ubuntu-20.04` from actions as unsupported
 
 ### Homebridge Dependencies
 
