@@ -9,13 +9,16 @@
   <div class="d-flex flex-column h-100">
     <div [inlineSVG]="'/assets/hap-icons/lightbulb.svg'" [attr.aria-label]="'Light Bulb'" class="accessory-svg"></div>
     <div class="accessory-label mt-auto">{{ service.customName || service.serviceName }}</div>
-    @if (!service.values.Brightness) {
+    @if (service.values.Brightness) {
+    <div
+      class="accessory-label grey-text"
+      [innerText]="service.values.On ? service.values.Brightness + '%' : ('accessories.control.off' | translate)"
+    ></div>
+    } @else {
     <div
       class="accessory-label grey-text"
       [innerText]="(service.values.On ? 'accessories.control.on' : 'accessories.control.off') | translate"
     ></div>
-    } @if (service.values.Brightness) {
-    <div class="accessory-label grey-text">{{ service.values.Brightness }}%</div>
     }
   </div>
 </div>
