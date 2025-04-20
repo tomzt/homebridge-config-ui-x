@@ -8,6 +8,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 
 - improve plugin manage version ui (#2424) (@apexskier)
 - capitalise time zone in system info widget
+- add architecture to system info widget
 
 ## v4.73.0 (2025-04-19)
 
