@@ -11,7 +11,7 @@
   </div>
   <div class="modal-body text-center px-5">
     <div
-      class="temperature-circle mb-3"
+      class="temperature-circle temperature-circle-big mb-4"
       [innerText]="(service.values.CurrentTemperature | convertTemp | number:'1.0-1') + '°'"
       [ngClass]="{
         'cooling': service.values.CurrentHeatingCoolingState === 2 && service.values.TargetHeatingCoolingState > 0,
