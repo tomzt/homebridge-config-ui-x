@@ -27,11 +27,16 @@ export class SpeakerComponent {
   constructor() {}
 
   onClick() {
-    this.service.getCharacteristic('Mute').setValue(!this.service.values.Mute)
+    const active = this.service.getCharacteristic('Active')
+    if (active !== undefined) {
+      active.setValue(this.service.values.Active === 0 ? 1 : 0)
+    } else {
+      this.service.getCharacteristic('Mute').setValue(!this.service.values.Mute)
+    }
   }
 
   onLongClick() {
-    if ('Volume' in this.service.values) {
+    if ('Volume' in this.service.values || 'Active' in this.service.values) {
       const ref = this.$modal.open(SpeakerManageComponent, {
         size: 'md',
       })

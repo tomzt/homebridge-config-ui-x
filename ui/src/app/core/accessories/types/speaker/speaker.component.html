@@ -1,6 +1,6 @@
 <div
   class="accessory-box"
-  [ngClass]="{ 'switch-on': !service.values.Mute }"
+  [ngClass]="{ 'switch-on': (service.values.Active !== undefined) ? service.values.Active === 1 : !service.values.Mute }"
   appLongclick
   (longclick)="onLongClick()"
   (shortclick)="onClick()"
@@ -9,12 +9,14 @@
   <div class="d-flex flex-column h-100">
     <div [inlineSVG]="'/assets/hap-icons/speaker.svg'" [attr.aria-label]="'Speaker'" class="accessory-svg"></div>
     <div class="accessory-label mt-auto">{{ service.customName || service.serviceName }}</div>
-    @if (service.values.Mute) {
-    <div class="accessory-label red-text" [innerText]="'accessories.control.mute' | translate"></div>
-    } @if (service.values.Volume !== undefined && !service.values.Mute) {
+    @if (service.values.Active !== undefined && service.values.Active === 0) {
+    <div class="accessory-label grey-text" [innerText]="'accessories.control.off' | translate"></div>
+    } @else if (service.values.Mute) {
+    <div class="accessory-label grey-text" [innerText]="'accessories.control.mute' | translate"></div>
+    } @else if (service.values.Volume !== undefined) {
     <div class="accessory-label grey-text">{{ service.values.Volume }}%</div>
-    } @if (service.values.Volume === undefined && !service.values.Mute) {
-    <div class="accessory-label grey-text">{{ 'accessories.control.not_mute' | translate }}</div>
+    } @else {
+    <div class="accessory-label grey-text">{{ 'accessories.control.on' | translate }}</div>
     }
   </div>
 </div>

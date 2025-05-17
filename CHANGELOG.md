@@ -14,6 +14,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - add color temperature to lightbulb screen (@justjam2013)
 - add temperature units to heatercooler (@justjam2013)
 - add valve control modal (@justjam2013)
+- update speaker tile + control modal (@justjam2013)
 
 ### Homebridge Dependencies
 
