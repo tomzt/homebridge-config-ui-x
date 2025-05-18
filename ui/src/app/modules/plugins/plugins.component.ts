@@ -2,11 +2,13 @@ import { NgClass } from '@angular/common'
 import { Component, inject, OnDestroy, OnInit } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { NavigationEnd, Router } from '@angular/router'
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe, TranslateService } from '@ngx-translate/core'
 import { ToastrService } from 'ngx-toastr'
 import { firstValueFrom, Subscription } from 'rxjs'
 
 import { ApiService } from '@/app/core/api.service'
+import { RestartHomebridgeComponent } from '@/app/core/components/restart-homebridge/restart-homebridge.component'
 import { SpinnerComponent } from '@/app/core/components/spinner/spinner.component'
 import { ManagePluginsService } from '@/app/core/manage-plugins/manage-plugins.service'
 import { SettingsService } from '@/app/core/settings.service'
@@ -28,6 +30,7 @@ import { PluginCardComponent } from '@/app/modules/plugins/plugin-card/plugin-ca
 })
 export class PluginsComponent implements OnInit, OnDestroy {
   private $api = inject(ApiService)
+  private $modal = inject(NgbModal)
   private $plugin = inject(ManagePluginsService)
   private $router = inject(Router)
   private $settings = inject(SettingsService)
@@ -62,8 +65,15 @@ export class PluginsComponent implements OnInit, OnDestroy {
         const justInstalled = this.$router.parseUrl(this.$router.url).queryParams.installed
         if (justInstalled) {
           const plugin = this.installedPlugins.find(x => x.name === justInstalled)
-          if (plugin && !plugin.isConfigured) {
-            this.$plugin.settings(plugin)
+          if (plugin) {
+            if (plugin.isConfigured) {
+              this.$modal.open(RestartHomebridgeComponent, {
+                size: 'lg',
+                backdrop: 'static',
+              })
+            } else {
+              this.$plugin.settings(plugin)
+            }
           }
           this.$router.navigate(['/plugins'])
         }
