@@ -686,8 +686,6 @@ export class HomebridgeServiceHelper {
    */
   public async printPostInstallInstructions() {
     const defaultAdapter = await networkInterfaceDefault()
-    // See https://github.com/sebhildebrandt/systeminformation/issues/775#issuecomment-1741836906
-    // @ts-expect-error - These ts-ignore should be able to be removed in the next major release of 'systeminformation' (v6)
     const defaultInterface = (await networkInterfaces()).find((x: any) => x.iface === defaultAdapter)
 
     console.log('\nManage Homebridge by going to one of the following in your browser:\n')

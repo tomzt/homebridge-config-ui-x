@@ -571,8 +571,6 @@ export class ServerService {
   public async getSystemNetworkInterfaces(): Promise<Systeminformation.NetworkInterfacesData[]> {
     const fromCache: Systeminformation.NetworkInterfacesData[] = this.serverServiceCache.get('network-interfaces')
 
-    // See https://github.com/sebhildebrandt/systeminformation/issues/775#issuecomment-1741836906
-    // @ts-expect-error - These ts-ignore should be able to be removed in the next major release of 'systeminformation' (v6)
     const interfaces = fromCache || (await networkInterfaces()).filter((adapter: any) => {
       return !adapter.internal
         && (adapter.ip4 || (adapter.ip6))

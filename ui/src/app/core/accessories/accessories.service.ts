@@ -44,6 +44,7 @@ export class AccessoriesService {
   private roomsOrdered = false
   private hiddenTypes = [
     'InputSource',
+    'LockManagement',
     'CameraRTPStreamManagement',
     'ProtocolInformation',
   ]
@@ -207,6 +208,12 @@ export class AccessoriesService {
     services.forEach((service) => {
       const existing = this.accessories.services.find(x => x.uniqueId === service.uniqueId)
 
+      // Special case for locks - if there exists just one mechanism and one management service, link them
+      // This allows us to manage the settings for lock management inside the long press modal for the lock mechanism
+      if (service.type === 'LockMechanism') {
+        this.attachLockManagementToMechanism(service)
+      }
+
       if (existing) {
         Object.assign(existing, service)
       } else {
@@ -330,5 +337,29 @@ export class AccessoriesService {
         }
       }
     })
+  }
+
+  private attachLockManagementToMechanism(service: ServiceType) {
+    // Find the corresponding LockManagement service
+    const lockMechanisms: ServiceType[] = []
+    const lockManagements: ServiceType[] = []
+
+    // This is a bit of a hack to find matching services for a specific accessory
+    for (const serv of this.accessories.services) {
+      if (serv.type === 'LockMechanism' && serv.accessoryInformation.Name === service.accessoryInformation.Name && serv.accessoryInformation['Serial Number'] === service.accessoryInformation['Serial Number']) {
+        lockMechanisms.push(serv)
+      } else if (serv.type === 'LockManagement' && serv.accessoryInformation.Name === service.accessoryInformation.Name && serv.accessoryInformation['Serial Number'] === service.accessoryInformation['Serial Number']) {
+        lockManagements.push(serv)
+      }
+    }
+
+    if (lockMechanisms.length === 1 && lockManagements.length === 1) {
+      const lockManagement = lockManagements[0]
+
+      if (!service.linkedServices) {
+        service.linkedServices = {}
+      }
+      service.linkedServices[lockManagement.iid] = lockManagement
+    }
   }
 }

@@ -8,6 +8,9 @@ export class DurationPipe implements PipeTransform {
     }
     const minutes = Math.floor(value / 60)
     const seconds = value % 60
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    return [
+      minutes > 0 ? `${minutes.toString()}m` : '',
+      seconds > 0 ? `${seconds.toString()}s` : '',
+    ].filter(Boolean).join(' ')
   }
 }

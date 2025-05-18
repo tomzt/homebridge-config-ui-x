@@ -34,6 +34,7 @@ import { LightbulbComponent } from '@/app/core/accessories/types/lightbulb/light
 import { LightbulbManageComponent } from '@/app/core/accessories/types/lightbulb/lightbulb.manage.component'
 import { LightsensorComponent } from '@/app/core/accessories/types/lightsensor/lightsensor.component'
 import { LockmechanismComponent } from '@/app/core/accessories/types/lockmechanism/lockmechanism.component'
+import { LockmechanismManageComponent } from '@/app/core/accessories/types/lockmechanism/lockmechanism.manage.component'
 import { MotionsensorComponent } from '@/app/core/accessories/types/motionsensor/motionsensor.component'
 import { OccupancysensorComponent } from '@/app/core/accessories/types/occupancysensor/occupancysensor.component'
 import { OutletComponent } from '@/app/core/accessories/types/outlet/outlet.component'
@@ -81,6 +82,7 @@ import { WindowcoveringManageComponent } from '@/app/core/accessories/types/wind
     LightbulbManageComponent,
     LightsensorComponent,
     LockmechanismComponent,
+    LockmechanismManageComponent,
     TemperaturesensorComponent,
     GaragedooropenerComponent,
     MotionsensorComponent,
