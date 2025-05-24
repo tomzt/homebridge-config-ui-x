@@ -78,6 +78,13 @@ export class LightbulbManageComponent implements OnInit {
         max: TargetBrightness.maxValue,
         step: TargetBrightness.minStep,
       }
+
+      setTimeout(() => {
+        const sliderElement = document.querySelectorAll('.noUi-target')[0] as HTMLElement
+        if (sliderElement) {
+          sliderElement.style.background = 'linear-gradient(to right, #242424, #ffd6aa)'
+        }
+      }, 10)
     }
   }
 

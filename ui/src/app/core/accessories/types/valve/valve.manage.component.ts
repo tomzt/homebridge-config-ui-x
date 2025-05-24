@@ -57,6 +57,13 @@ export class ValveManageComponent implements OnInit {
         max: TargetSetDuration.maxValue,
         step: TargetSetDuration.minStep,
       }
+
+      setTimeout(() => {
+        const sliderElement = document.querySelectorAll('.noUi-target')[0] as HTMLElement
+        if (sliderElement) {
+          sliderElement.style.background = 'linear-gradient(to right, #add8e6, #416bdf)'
+        }
+      }, 10)
     }
   }
 

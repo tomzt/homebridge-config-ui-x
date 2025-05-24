@@ -1,25 +1,55 @@
-.batterylevel-circle {
+.batterylevel-battery {
   position: relative;
-  display: inline-block;
-  width: 50px;
-  padding: 6% 0;
-  border-radius: 50%;
-  font-size: 16px;
-  line-height: 35px;
-  text-align: center;
+  width: 75px;
+  height: 30px;
+  border: 1px solid rgb(128, 128, 128);
+  border-radius: 4px;
   margin-bottom: 6px;
-  background-color: grey;
-  color: lightgrey;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(211, 211, 211);
+  font-size: 14px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    right: -6px;
+    width: 6px;
+    height: 13px;
+    background-color: rgb(128, 128, 128);
+    border-radius: 2px;
+  }
+
+  .battery-level-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #42d672;
+    z-index: 1;
+    transition: width 0.3s ease-in-out;
+  }
+
+  .battery-text {
+    position: relative;
+    z-index: 2;
+    color: white;
+  }
 
   @media (max-width: 575px) {
-    width: 31px;
-    font-size: 10px;
-    margin-bottom: 7px;
-    line-height: 20px;
+    width: 50px;
+    height: 25px;
+    font-size: 12px;
+
+    &::after {
+      top: 4px;
+    }
   }
 }
 
-.lowbattery {
-  background-color: #ff8800;
-  color: #ffffff;
+.lowbattery .battery-level-fill {
+  background-color: #e69533;
 }
