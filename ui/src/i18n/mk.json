@@ -254,7 +254,7 @@
   "plugins.manage.installed": "Инсталирано",
   "plugins.manage.json_config": "JSON Config",
   "plugins.manage.manage_version": "Инсталирај претходна верзија",
-  "plugins.manage.manual_update_command": "To upgrade the package run open a Node.js command prompt as an Administrator and run the following commands:",
+  "plugins.manage.manual_update_command": "To upgrade the package, open a Node.js command prompt as an Administrator and run the following commands:",
   "plugins.manage.more_info": "More information about scoped {{ scopedLink }} and verified {{ verifiedLink }} plugins.",
   "plugins.manage.online_updates": "Онлајн ажурирање не е поддржано на Windows. Ќе треба рачно да го надградите Homebridge по запирање на Homebridge сервисот.",
   "plugins.manage.plugin_logs": "Plugin Logs",

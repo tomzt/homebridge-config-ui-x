@@ -254,7 +254,7 @@
   "plugins.manage.installed": "インストール済",
   "plugins.manage.json_config": "JSONのコンフィグ",
   "plugins.manage.manage_version": "以前のバージョンをインストール",
-  "plugins.manage.manual_update_command": "To upgrade the package run open a Node.js command prompt as an Administrator and run the following commands:",
+  "plugins.manage.manual_update_command": "To upgrade the package, open a Node.js command prompt as an Administrator and run the following commands:",
   "plugins.manage.more_info": "More information about scoped {{ scopedLink }} and verified {{ verifiedLink }} plugins.",
   "plugins.manage.online_updates": "Windowsではオンライン更新はサポートされていません。Homebridgeサービスを停止した後、手動でHomebridge UIをアップグレードする必要があります。",
   "plugins.manage.plugin_logs": "プラグインのログ",

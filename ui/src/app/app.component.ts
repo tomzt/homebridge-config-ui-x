@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core'
-import { Router, RouterOutlet } from '@angular/router'
+import { RouterOutlet } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 
 import { SettingsService } from '@/app/core/settings.service'
@@ -11,7 +11,6 @@ import { SettingsService } from '@/app/core/settings.service'
   imports: [RouterOutlet],
 })
 export class AppComponent {
-  private $router = inject(Router)
   private $translate = inject(TranslateService)
   private $settings = inject(SettingsService)
 
