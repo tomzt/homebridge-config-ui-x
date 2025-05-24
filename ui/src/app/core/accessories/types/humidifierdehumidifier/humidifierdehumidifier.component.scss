@@ -3,9 +3,9 @@
   display: inline-block;
   width: 50px;
   height: 50px;
-  line-height: 50px;
+  line-height: 42px;
   border-radius: 5% 55% 70% 55%;
-  font-size: 15px;
+  font-size: 14px;
   text-align: center;
   margin-bottom: 6px;
   margin-top: 9px;
@@ -18,25 +18,63 @@
   @media (max-width: 575px) {
     width: 31px;
     height: 31px;
-    line-height: 31px;
+    line-height: 28px;
     font-size: 10px;
     margin-bottom: 7px;
     margin-top: 5px;
+
+    .humidity-drop-text {
+      margin-left: -2px;
+    }
   }
 }
 
 .humidity-drop-text {
   transform: rotate(-45deg);
+  margin-left: -5px;
+}
+
+.humidity-drop-big {
+  width: 80px;
+  height: 80px;
+  line-height: 70px;
+  font-size: 22px;
+
+  .humidity-drop-text {
+    margin-left: -8px;
+  }
+}
+
+@keyframes animate-humidifying {
+  0% {
+    background-position: 0 100%;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+@keyframes animate-dehumidifying {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%;
+  }
 }
 
 .humidifying {
-  background-color: #33b5e5;
-  color: #fff;
+  animation: animate-dehumidifying 5s linear infinite;
+  background-image: linear-gradient(0deg, #1e8bbd, #66d6d6, #1e8bbd, #66d6d6);
+  background-size: 100% 300%;
+  color: #ffffff;
 }
 
 .dehumidifying {
-  background-color: #ff8800;
-  color: #fff;
+  animation: animate-humidifying 5s linear infinite;
+  background-image: linear-gradient(0deg, #cc5e00, #e69533, #cc5e00, #e69533);
+  background-size: 100% 300%;
+  color: #ffffff;
 }
 
 .no-current-state {

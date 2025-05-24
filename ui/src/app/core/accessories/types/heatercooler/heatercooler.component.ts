@@ -29,8 +29,15 @@ export class HeaterCoolerComponent {
 
   @Input() public service: ServiceTypeX
   model = 1
+  public hasHeating: boolean = false
+  public hasCooling: boolean = false
 
   constructor() {}
+
+  ngOnInit() {
+    this.hasHeating = !!this.service.getCharacteristic('HeatingThresholdTemperature')
+    this.hasCooling = !!this.service.getCharacteristic('CoolingThresholdTemperature')
+  }
 
   onClick() {
     this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)

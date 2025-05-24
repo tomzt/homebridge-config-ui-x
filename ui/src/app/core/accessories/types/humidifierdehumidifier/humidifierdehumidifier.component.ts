@@ -23,8 +23,15 @@ export class HumidifierDehumidifierComponent {
 
   @Input() public service: ServiceTypeX
   model = 1
+  public hasHumidifier: boolean = false
+  public hasDehumidifier: boolean = false
 
   constructor() {}
+
+  ngOnInit() {
+    this.hasHumidifier = !!this.service.getCharacteristic('RelativeHumidityHumidifierThreshold')
+    this.hasDehumidifier = !!this.service.getCharacteristic('RelativeHumidityDehumidifierThreshold')
+  }
 
   onClick() {
     this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)

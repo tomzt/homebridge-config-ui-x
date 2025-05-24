@@ -4,6 +4,7 @@ module.exports = antfu({
   ignores: ['dist', 'ui/.angular', 'ui/src/assets/monaco'],
   rules: {
     'curly': ['error'],
+    'format/prettier': 'off',
     'import/extensions': 'off',
     'import/order': 'off',
     'jsdoc/check-alignment': 'error',

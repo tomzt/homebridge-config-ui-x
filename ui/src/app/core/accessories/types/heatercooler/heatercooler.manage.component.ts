@@ -33,7 +33,8 @@ export class HeaterCoolerManageComponent implements OnInit {
   $settings = inject(SettingsService)
 
   @Input() public service: ServiceTypeX
-  public targetMode: number | 'off'
+  public targetState: number
+  public targetMode: number
   public targetTemperatureChanged: Subject<any> = new Subject<any>()
 
   public CoolingThresholdTemperature: CharacteristicType
@@ -45,35 +46,29 @@ export class HeaterCoolerManageComponent implements OnInit {
 
   constructor() {
     this.targetTemperatureChanged
-      .pipe(
-        debounceTime(300),
-      )
+      .pipe(debounceTime(300))
       .subscribe(() => {
-        switch (this.targetMode) {
-          case 0:
-            // auto
-            this.service.getCharacteristic('HeatingThresholdTemperature').setValue(this.autoTemp[0])
-            this.service.getCharacteristic('CoolingThresholdTemperature').setValue(this.autoTemp[1])
-            break
-          case 1:
-            // heat
-            this.service.getCharacteristic('HeatingThresholdTemperature').setValue(this.targetHeatingTemp)
-            break
-          case 2:
-            // cool
-            this.service.getCharacteristic('CoolingThresholdTemperature').setValue(this.targetCoolingTemp)
-            break
+        if (this.HeatingThresholdTemperature) {
+          this.service.getCharacteristic('HeatingThresholdTemperature').setValue(this.targetHeatingTemp)
+        }
+        if (this.CoolingThresholdTemperature) {
+          this.service.getCharacteristic('CoolingThresholdTemperature').setValue(this.targetCoolingTemp)
         }
       })
   }
 
   ngOnInit() {
-    this.targetMode = this.service.values.Active ? this.service.values.TargetHeaterCoolerState : 'off'
-
+    this.targetState = this.service.values.Active
+    this.targetMode = this.service.values.TargetHeaterCoolerState
     this.CoolingThresholdTemperature = this.service.getCharacteristic('CoolingThresholdTemperature')
     this.HeatingThresholdTemperature = this.service.getCharacteristic('HeatingThresholdTemperature')
-
     this.loadTargetTemperature()
+    setTimeout(() => {
+      const sliderElements = document.querySelectorAll('.noUi-target')
+      sliderElements.forEach((sliderElement: HTMLElement) => {
+        sliderElement.style.background = 'linear-gradient(to right, rgb(80, 80, 179), rgb(173, 216, 230), rgb(255, 185, 120), rgb(139, 90, 60))'
+      })
+    }, 10)
   }
 
   loadTargetTemperature() {
@@ -82,22 +77,26 @@ export class HeaterCoolerManageComponent implements OnInit {
     this.autoTemp = [this.targetHeatingTemp, this.targetCoolingTemp]
   }
 
-  setTargetMode(value: number | 'off') {
+  setTargetState(value: number) {
+    this.targetState = value
+    this.service.getCharacteristic('Active').setValue(this.targetState)
+    this.loadTargetTemperature()
+  }
+
+  setTargetMode(value: number) {
     this.targetMode = value
-
-    if (this.targetMode === 'off') {
-      this.service.getCharacteristic('Active').setValue(0)
-    } else {
-      if (this.service.getCharacteristic('Active').value === 0) {
-        this.service.getCharacteristic('Active').setValue(1)
-      }
-      this.service.getCharacteristic('TargetHeaterCoolerState').setValue(this.targetMode)
-    }
-
+    this.service.getCharacteristic('TargetHeaterCoolerState').setValue(this.targetMode)
     this.loadTargetTemperature()
   }
 
   onTemperatureStateChange() {
+    this.autoTemp = [this.targetHeatingTemp, this.targetCoolingTemp]
+    this.targetTemperatureChanged.next(undefined)
+  }
+
+  onAutoTemperatureStateChange() {
+    this.targetHeatingTemp = this.autoTemp[0]
+    this.targetCoolingTemp = this.autoTemp[1]
     this.targetTemperatureChanged.next(undefined)
   }
 }
