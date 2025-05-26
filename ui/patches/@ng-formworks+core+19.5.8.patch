@@ -1,8 +1,25 @@
 diff --git a/node_modules/@ng-formworks/core/fesm2022/ng-formworks-core.mjs b/node_modules/@ng-formworks/core/fesm2022/ng-formworks-core.mjs
-index 752fe83..e24bc43 100644
+index 752fe83..af0512a 100644
 --- a/node_modules/@ng-formworks/core/fesm2022/ng-formworks-core.mjs
 +++ b/node_modules/@ng-formworks/core/fesm2022/ng-formworks-core.mjs
-@@ -6742,6 +6742,9 @@ class JsonSchemaFormService {
+@@ -19,6 +19,7 @@ import uniqueId from 'lodash/uniqueId';
+ import * as i2$1 from 'nxt-sortablejs';
+ import { SortablejsModule } from 'nxt-sortablejs';
+ import { HttpClient } from '@angular/common/http';
++import ajvKeywords from 'ajv-keywords'
+ 
+ class Framework {
+     constructor() {
+@@ -6392,7 +6393,7 @@ class JsonSchemaFormService {
+             validateFormats: false,
+             strict: false
+         };
+-        this.ajv = new Ajv2019(this.ajvOptions); // AJV: Another JSON Schema Validator
++        this.ajv = ajvKeywords(new Ajv2019(this.ajvOptions), ['uniqueItemProperties']); // AJV: Another JSON Schema Validator
+         this.validateFormData = null; // Compiled AJV function to validate active form's schema
+         this.formValues = {}; // Internal form data (may not have correct types)
+         this.data = {}; // Output form data (formValues, formatted with correct data types)
+@@ -6742,6 +6743,9 @@ class JsonSchemaFormService {
              }
          };
          const parentNode = parentCtxAsSignals.layoutNode();
@@ -12,7 +29,7 @@ index 752fe83..e24bc43 100644
          const parentValues = this.getFormControlValue(parentCtxAsSignals);
          const isArrayItem = (parentNode.type || '').slice(-5) === 'array' && isArray(parentValues);
          const text = JsonPointer.getFirst(isArrayItem && childNode.type !== '$ref'
-@@ -7328,7 +7331,7 @@ class CheckboxComponent {
+@@ -7328,7 +7332,7 @@ class CheckboxComponent {
      static { this.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.1.0", version: "19.2.6", type: CheckboxComponent, isStandalone: false, selector: "checkbox-widget", inputs: { layoutNode: { classPropertyName: "layoutNode", publicName: "layoutNode", isSignal: true, isRequired: false, transformFunction: null }, layoutIndex: { classPropertyName: "layoutIndex", publicName: "layoutIndex", isSignal: true, isRequired: false, transformFunction: null }, dataIndex: { classPropertyName: "dataIndex", publicName: "dataIndex", isSignal: true, isRequired: false, transformFunction: null } }, ngImport: i0, template: `
      <label
        [attr.for]="'control' + layoutNode()?._id"
@@ -21,7 +38,7 @@ index 752fe83..e24bc43 100644
        <input *ngIf="boundControl"
          [formControl]="formControl"
          [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
-@@ -7355,6 +7358,7 @@ class CheckboxComponent {
+@@ -7355,6 +7359,7 @@ class CheckboxComponent {
        <span *ngIf="options?.title"
          [style.display]="options?.notitle ? 'none' : ''"
          [innerHTML]="options?.title"></span>
@@ -29,7 +46,7 @@ index 752fe83..e24bc43 100644
      </label>`, isInline: true, dependencies: [{ kind: "directive", type: i1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "directive", type: i2.CheckboxControlValueAccessor, selector: "input[type=checkbox][formControlName],input[type=checkbox][formControl],input[type=checkbox][ngModel]" }, { kind: "directive", type: i2.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i2.FormControlDirective, selector: "[formControl]", inputs: ["formControl", "disabled", "ngModel"], outputs: ["ngModelChange"], exportAs: ["ngForm"] }] }); }
  }
  i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImport: i0, type: CheckboxComponent, decorators: [{
-@@ -7365,7 +7369,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
+@@ -7365,7 +7370,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
                      template: `
      <label
        [attr.for]="'control' + layoutNode()?._id"
@@ -38,7 +55,7 @@ index 752fe83..e24bc43 100644
        <input *ngIf="boundControl"
          [formControl]="formControl"
          [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
-@@ -7392,6 +7396,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
+@@ -7392,6 +7397,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
        <span *ngIf="options?.title"
          [style.display]="options?.notitle ? 'none' : ''"
          [innerHTML]="options?.title"></span>
@@ -46,7 +63,7 @@ index 752fe83..e24bc43 100644
      </label>`,
                      standalone: false
                  }]
-@@ -7440,9 +7445,9 @@ class CheckboxesComponent {
+@@ -7440,9 +7446,9 @@ class CheckboxesComponent {
      <div *ngIf="layoutOrientation === 'horizontal'" [class]="options?.htmlClass || ''">
        <label *ngFor="let checkboxItem of checkboxList"
          [attr.for]="'control' + layoutNode()?._id + '/' + checkboxItem.value"
@@ -58,7 +75,7 @@ index 752fe83..e24bc43 100644
          <input type="checkbox"
            [attr.required]="options?.required"
            [checked]="checkboxItem.checked"
-@@ -7454,6 +7459,7 @@ class CheckboxesComponent {
+@@ -7454,6 +7460,7 @@ class CheckboxesComponent {
            [value]="checkboxItem.value"
            (change)="updateValue($event)">
          <span [innerHTML]="checkboxItem.name"></span>
@@ -66,7 +83,7 @@ index 752fe83..e24bc43 100644
        </label>
      </div>
  
-@@ -7462,20 +7468,21 @@ class CheckboxesComponent {
+@@ -7462,20 +7469,21 @@ class CheckboxesComponent {
        <div *ngFor="let checkboxItem of checkboxList" [class]="options?.htmlClass || ''">
          <label
            [attr.for]="'control' + layoutNode()?._id + '/' + checkboxItem.value"
@@ -91,7 +108,7 @@ index 752fe83..e24bc43 100644
          </label>
        </div>
      </div>`, isInline: true, dependencies: [{ kind: "directive", type: i1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "directive", type: i1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }] }); }
-@@ -7495,9 +7502,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
+@@ -7495,9 +7503,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
      <div *ngIf="layoutOrientation === 'horizontal'" [class]="options?.htmlClass || ''">
        <label *ngFor="let checkboxItem of checkboxList"
          [attr.for]="'control' + layoutNode()?._id + '/' + checkboxItem.value"
@@ -103,7 +120,7 @@ index 752fe83..e24bc43 100644
          <input type="checkbox"
            [attr.required]="options?.required"
            [checked]="checkboxItem.checked"
-@@ -7509,6 +7516,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
+@@ -7509,6 +7517,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
            [value]="checkboxItem.value"
            (change)="updateValue($event)">
          <span [innerHTML]="checkboxItem.name"></span>
@@ -111,7 +128,7 @@ index 752fe83..e24bc43 100644
        </label>
      </div>
  
-@@ -7517,20 +7525,21 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
+@@ -7517,20 +7526,21 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
        <div *ngFor="let checkboxItem of checkboxList" [class]="options?.htmlClass || ''">
          <label
            [attr.for]="'control' + layoutNode()?._id + '/' + checkboxItem.value"
@@ -136,7 +153,7 @@ index 752fe83..e24bc43 100644
          </label>
        </div>
      </div>`,
-@@ -7997,7 +8006,7 @@ class RadiosComponent {
+@@ -7997,7 +8007,7 @@ class RadiosComponent {
          [class]="(options?.itemLabelHtmlClass || '') +
            ((controlValue + '' === radioItem?.value + '') ?
            (' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')) :
@@ -145,7 +162,7 @@ index 752fe83..e24bc43 100644
          <input type="radio"
            [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
            [attr.readonly]="options?.readonly ? 'readonly' : null"
-@@ -8022,7 +8031,7 @@ class RadiosComponent {
+@@ -8022,7 +8032,7 @@ class RadiosComponent {
            [class]="(options?.itemLabelHtmlClass || '') +
              ((controlValue + '' === radioItem?.value + '') ?
              (' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')) :
@@ -154,7 +171,7 @@ index 752fe83..e24bc43 100644
            <input type="radio"
              [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
              [attr.readonly]="options?.readonly ? 'readonly' : null"
-@@ -8059,7 +8068,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
+@@ -8059,7 +8069,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
          [class]="(options?.itemLabelHtmlClass || '') +
            ((controlValue + '' === radioItem?.value + '') ?
            (' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')) :
@@ -163,7 +180,7 @@ index 752fe83..e24bc43 100644
          <input type="radio"
            [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
            [attr.readonly]="options?.readonly ? 'readonly' : null"
-@@ -8084,7 +8093,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
+@@ -8084,7 +8094,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
            [class]="(options?.itemLabelHtmlClass || '') +
              ((controlValue + '' === radioItem?.value + '') ?
              (' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')) :
@@ -172,7 +189,7 @@ index 752fe83..e24bc43 100644
            <input type="radio"
              [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
              [attr.readonly]="options?.readonly ? 'readonly' : null"
-@@ -8532,7 +8541,7 @@ class SectionComponent {
+@@ -8532,7 +8542,7 @@ class SectionComponent {
          [class]="options?.labelHelpBlockClass || ''"
          [innerHTML]="options?.description"></p>
        </div>
@@ -181,7 +198,7 @@ index 752fe83..e24bc43 100644
  }
  i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImport: i0, type: SectionComponent, decorators: [{
              type: Component,
-@@ -8597,7 +8606,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
+@@ -8597,7 +8607,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.6", ngImpor
          [class]="options?.labelHelpBlockClass || ''"
          [innerHTML]="options?.description"></p>
        </div>
@@ -190,7 +207,7 @@ index 752fe83..e24bc43 100644
          }] });
  
  class SelectComponent {
-@@ -8615,6 +8624,16 @@ class SelectComponent {
+@@ -8615,6 +8625,16 @@ class SelectComponent {
          this.options = this.layoutNode().options || {};
          this.selectList = buildTitleMap(this.options.titleMap || this.options.enumNames, this.options.enum, !!this.options.required, !!this.options.flatList);
          this.jsf.initializeControl(this);

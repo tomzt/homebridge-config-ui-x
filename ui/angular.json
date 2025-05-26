@@ -36,6 +36,7 @@
             "allowedCommonJsDependencies": [
               "@/app/modules/status/status.component",
               "ajv",
+              "ajv-keywords",
               "dayjs",
               "dragula",
               "emoji-js",
