@@ -10,14 +10,13 @@
     "experimentalDecorators": true,
     "baseUrl": "./",
     "module": "es2022",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "paths": {
       "@/*": [
         "src/*"
       ]
     },
     "declaration": false,
-    "downlevelIteration": true,
     "importHelpers": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
