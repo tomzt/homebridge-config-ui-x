@@ -21,6 +21,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - fix occasional issue in backup/restore, revert recent change
 - improvements to plugin config validation
   - use `ajv-keywords` to allow validation of unique properties in arrays
+- fix form field error state font colour (make it red)
 
 ### Other Changes
 
