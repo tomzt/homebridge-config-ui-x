@@ -155,6 +155,12 @@
       }
     }
 
+    .btn-read {
+      color: #ffffff;
+      background-color: #333333;
+      border-color: color.adjust(#333333, $lightness: -2%) !important;
+    }
+
     .btn-link {
       color: #9e9e9e !important;
     }

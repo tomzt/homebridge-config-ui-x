@@ -25,7 +25,10 @@ export class AirpurifierManageComponent implements OnInit {
   $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
-  public targetMode: any
+
+  public targetState: number
+  public targetMode: number
+  public targetModeValidValues: number[] = []
   public targetRotationSpeed: any
   public targetRotationSpeedChanged: Subject<string> = new Subject<string>()
 
@@ -38,26 +41,26 @@ export class AirpurifierManageComponent implements OnInit {
       .subscribe(() => {
         this.service.getCharacteristic('RotationSpeed').setValue(this.targetRotationSpeed.value)
 
-        // Turn bulb on or off when brightness is adjusted
+        // Turn the air purifier on or off when rotation speed is adjusted
         if (this.targetRotationSpeed.value && !this.service.values.Active) {
-          this.targetMode = 1
+          this.targetState = 1
           this.service.getCharacteristic('Active').setValue(this.targetMode)
         } else if (!this.targetRotationSpeed.value && this.service.values.Active) {
-          this.targetMode = 0
+          this.targetState = 0
           this.service.getCharacteristic('Active').setValue(this.targetMode)
         }
       })
   }
 
   ngOnInit() {
-    this.targetMode = this.service.values.Active
-
+    this.targetState = this.service.values.Active
+    this.targetMode = this.service.values.TargetAirPurifierState
+    this.targetModeValidValues = this.service.getCharacteristic('TargetAirPurifierState').validValues as number[]
     this.loadRotationSpeed()
   }
 
   loadRotationSpeed() {
     const RotationSpeed = this.service.getCharacteristic('RotationSpeed')
-
     if (RotationSpeed) {
       this.targetRotationSpeed = {
         value: RotationSpeed.value,
@@ -65,17 +68,28 @@ export class AirpurifierManageComponent implements OnInit {
         max: RotationSpeed.maxValue,
         step: RotationSpeed.minStep,
       }
+      setTimeout(() => {
+        const sliderElements = document.querySelectorAll('.noUi-target')
+        sliderElements.forEach((sliderElement: HTMLElement) => {
+          sliderElement.style.background = 'linear-gradient(to right, #add8e6, #416bdf)'
+        })
+      }, 10)
+    }
+  }
+
+  setTargetState(value: number) {
+    this.targetState = value
+    this.service.getCharacteristic('Active').setValue(this.targetState)
+
+    // Set the rotation speed to max if on 0% when turned on
+    if (this.targetState && this.targetRotationSpeed && !this.targetRotationSpeed.value) {
+      this.targetRotationSpeed.value = this.service.getCharacteristic('RotationSpeed').maxValue
     }
   }
 
   setTargetMode(value: number) {
     this.targetMode = value
-    this.service.getCharacteristic('Active').setValue(this.targetMode)
-
-    // Set the rotation speed to 100% if on 0% when turned on
-    if (this.targetMode && this.targetRotationSpeed && !this.targetRotationSpeed.value) {
-      this.targetRotationSpeed.value = 100
-    }
+    this.service.getCharacteristic('TargetAirPurifierState').setValue(this.targetMode)
   }
 
   onTargetRotationSpeedChange() {

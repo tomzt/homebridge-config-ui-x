@@ -24,7 +24,8 @@ export class FanManageComponent implements OnInit {
   $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
-  public targetMode: any
+
+  public targetMode: boolean
   public targetRotationSpeed: any
   public targetRotationSpeedChanged: Subject<string> = new Subject<string>()
   public hasRotationDirection = false
@@ -38,7 +39,7 @@ export class FanManageComponent implements OnInit {
       .subscribe(() => {
         this.service.getCharacteristic('RotationSpeed').setValue(this.targetRotationSpeed.value)
 
-        // Turn bulb on or off when brightness is adjusted
+        // Turn the fan on or off when rotation speed is adjusted
         if (this.targetRotationSpeed.value && !this.service.values.On) {
           this.targetMode = true
           this.service.getCharacteristic('On').setValue(this.targetMode)
@@ -70,6 +71,13 @@ export class FanManageComponent implements OnInit {
         step: RotationSpeed.minStep,
         unit: RotationSpeed.unit,
       }
+
+      setTimeout(() => {
+        const sliderElements = document.querySelectorAll('.noUi-target')
+        sliderElements.forEach((sliderElement: HTMLElement) => {
+          sliderElement.style.background = 'linear-gradient(to right, #add8e6, #416bdf)'
+        })
+      }, 10)
     }
   }
 

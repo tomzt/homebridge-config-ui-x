@@ -22,7 +22,7 @@
     "@angular/platform-browser-dynamic": "19.2.13",
     "@angular/router": "19.2.13",
     "@auth0/angular-jwt": "5.2.0",
-    "@homebridge/hap-client": "2.1.0",
+    "@homebridge/hap-client": "2.2.0",
     "@ng-bootstrap/ng-bootstrap": "18.0.0",
     "@ng-formworks/bootstrap5": "19.5.8",
     "@ng-formworks/core": "19.5.8",

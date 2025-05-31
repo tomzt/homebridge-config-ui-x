@@ -1,3 +1,5 @@
+import type { CharacteristicType } from '@homebridge/hap-client'
+
 import { DecimalPipe, NgClass, UpperCasePipe } from '@angular/common'
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormsModule } from '@angular/forms'
@@ -31,9 +33,18 @@ export class ThermostatManageComponent implements OnInit {
   $settings = inject(SettingsService)
 
   @Input() public service: ServiceTypeX
+
   public targetMode: number
   public targetTemperature: any
   public targetTemperatureChanged: Subject<string> = new Subject<string>()
+  public targetThresholdChanged: Subject<string> = new Subject<string>()
+  public targetStateValidValues: number[] = []
+  public CoolingThresholdTemperature: CharacteristicType
+  public HeatingThresholdTemperature: CharacteristicType
+  public targetCoolingTemp: number
+  public targetHeatingTemp: number
+  public autoTemp: [number, number]
+  public hasHumidity: boolean = false
 
   constructor() {
     this.targetTemperatureChanged
@@ -44,11 +55,28 @@ export class ThermostatManageComponent implements OnInit {
       .subscribe(() => {
         this.service.getCharacteristic('TargetTemperature').setValue(this.targetTemperature.value)
       })
+
+    this.targetThresholdChanged
+      .pipe(debounceTime(300))
+      .subscribe(() => {
+        if (this.HeatingThresholdTemperature) {
+          this.service.getCharacteristic('HeatingThresholdTemperature').setValue(this.targetHeatingTemp)
+        }
+        if (this.CoolingThresholdTemperature) {
+          this.service.getCharacteristic('CoolingThresholdTemperature').setValue(this.targetCoolingTemp)
+        }
+      })
   }
 
   ngOnInit() {
     this.targetMode = this.service.values.TargetHeatingCoolingState
+    this.CoolingThresholdTemperature = this.service.getCharacteristic('CoolingThresholdTemperature')
+    this.HeatingThresholdTemperature = this.service.getCharacteristic('HeatingThresholdTemperature')
+    this.targetStateValidValues = this.service.getCharacteristic('TargetHeatingCoolingState').validValues as number[]
     this.loadTargetTemperature()
+    if (this.service.getCharacteristic('CurrentRelativeHumidity')) {
+      this.hasHumidity = true
+    }
     setTimeout(() => {
       const sliderElements = document.querySelectorAll('.noUi-target')
       sliderElements.forEach((sliderElement: HTMLElement) => {
@@ -59,13 +87,15 @@ export class ThermostatManageComponent implements OnInit {
 
   loadTargetTemperature() {
     const TargetTemperature = this.service.getCharacteristic('TargetTemperature')
-
     this.targetTemperature = {
       value: TargetTemperature.value,
       min: TargetTemperature.minValue,
       max: TargetTemperature.maxValue,
       step: TargetTemperature.minStep,
     }
+    this.targetCoolingTemp = this.service.getCharacteristic('CoolingThresholdTemperature')?.value as number
+    this.targetHeatingTemp = this.service.getCharacteristic('HeatingThresholdTemperature')?.value as number
+    this.autoTemp = [this.targetHeatingTemp, this.targetCoolingTemp]
   }
 
   setTargetMode(value: number) {
@@ -75,5 +105,16 @@ export class ThermostatManageComponent implements OnInit {
 
   onTemperatureStateChange() {
     this.targetTemperatureChanged.next(this.targetTemperature.value)
+  }
+
+  onThresholdStateChange() {
+    this.autoTemp = [this.targetHeatingTemp, this.targetCoolingTemp]
+    this.targetThresholdChanged.next(undefined)
+  }
+
+  onAutoThresholdStateChange() {
+    this.targetHeatingTemp = this.autoTemp[0]
+    this.targetCoolingTemp = this.autoTemp[1]
+    this.targetThresholdChanged.next(undefined)
   }
 }

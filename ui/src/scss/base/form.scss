@@ -102,6 +102,8 @@
   margin-bottom: 1rem;
 }
 
-.noUi-touch-area {
-  cursor: pointer;
+.noUi-target:not([disabled='true']) {
+  .noUi-touch-area {
+    cursor: pointer;
+  }
 }

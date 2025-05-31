@@ -23,8 +23,14 @@ export class WindowcoveringManageComponent implements OnInit {
   $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
-  public targetMode: any
-  public targetPosition: any
+  public targetMode: string
+  public targetPosition: {
+    value: any
+    min: number
+    max: number
+    step: number
+  }
+
   public targetPositionChanged: Subject<string> = new Subject<string>()
 
   constructor() {
@@ -58,6 +64,13 @@ export class WindowcoveringManageComponent implements OnInit {
         max: TargetPosition.maxValue,
         step: TargetPosition.minStep,
       }
+
+      setTimeout(() => {
+        const sliderElements = document.querySelectorAll('.noUi-target')
+        sliderElements.forEach((sliderElement: HTMLElement) => {
+          sliderElement.style.background = 'linear-gradient(to right, #242424, #ffd6aa)'
+        })
+      }, 10)
     }
   }
 

@@ -27,13 +27,13 @@ export class HumidifierDehumidifierManageComponent implements OnInit {
   $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
+
   public targetState: number
   public targetMode: number
   public targetHumidityChanged: Subject<any> = new Subject<any>()
-
+  public targetStateValidValues: number[] = []
   public RelativeHumidityDehumidifierThreshold: CharacteristicType
   public RelativeHumidityHumidifierThreshold: CharacteristicType
-
   public targetDehumidifierHumidity: number
   public targetHumidifierHumidity: number
   public autoHumidity: [number, number]
@@ -56,6 +56,7 @@ export class HumidifierDehumidifierManageComponent implements OnInit {
     this.targetMode = this.service.values.TargetHumidifierDehumidifierState
     this.RelativeHumidityDehumidifierThreshold = this.service.getCharacteristic('RelativeHumidityDehumidifierThreshold')
     this.RelativeHumidityHumidifierThreshold = this.service.getCharacteristic('RelativeHumidityHumidifierThreshold')
+    this.targetStateValidValues = this.service.getCharacteristic('TargetHumidifierDehumidifierState').validValues as number[]
     this.loadTargetHumidity()
     setTimeout(() => {
       const sliderElements = document.querySelectorAll('.noUi-target')

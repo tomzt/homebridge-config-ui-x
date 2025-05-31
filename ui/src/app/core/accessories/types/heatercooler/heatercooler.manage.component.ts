@@ -33,13 +33,13 @@ export class HeaterCoolerManageComponent implements OnInit {
   $settings = inject(SettingsService)
 
   @Input() public service: ServiceTypeX
+
   public targetState: number
   public targetMode: number
   public targetTemperatureChanged: Subject<any> = new Subject<any>()
-
+  public targetStateValidValues: number[] = []
   public CoolingThresholdTemperature: CharacteristicType
   public HeatingThresholdTemperature: CharacteristicType
-
   public targetCoolingTemp: number
   public targetHeatingTemp: number
   public autoTemp: [number, number]
@@ -62,6 +62,7 @@ export class HeaterCoolerManageComponent implements OnInit {
     this.targetMode = this.service.values.TargetHeaterCoolerState
     this.CoolingThresholdTemperature = this.service.getCharacteristic('CoolingThresholdTemperature')
     this.HeatingThresholdTemperature = this.service.getCharacteristic('HeatingThresholdTemperature')
+    this.targetStateValidValues = this.service.getCharacteristic('TargetHeaterCoolerState').validValues as number[]
     this.loadTargetTemperature()
     setTimeout(() => {
       const sliderElements = document.querySelectorAll('.noUi-target')

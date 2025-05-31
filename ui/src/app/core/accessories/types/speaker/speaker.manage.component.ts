@@ -24,6 +24,7 @@ export class SpeakerManageComponent implements OnInit {
   $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
+
   public targetMode: any
   public targetVolume: any
   public targetVolumeChanged: Subject<string> = new Subject<string>()
@@ -42,9 +43,7 @@ export class SpeakerManageComponent implements OnInit {
 
   ngOnInit() {
     this.targetMode = this.service.values.Mute
-
     this.loadTargetVolume()
-
     if (this.service.serviceCharacteristics.find(c => c.type === 'Active')) {
       this.hasActive = true
     }
@@ -52,7 +51,6 @@ export class SpeakerManageComponent implements OnInit {
 
   loadTargetVolume() {
     const TargetVolume = this.service.getCharacteristic('Volume')
-
     if (TargetVolume) {
       this.targetVolume = {
         value: TargetVolume.value,
@@ -60,6 +58,12 @@ export class SpeakerManageComponent implements OnInit {
         max: TargetVolume.maxValue,
         step: TargetVolume.minStep,
       }
+      setTimeout(() => {
+        const sliderElements = document.querySelectorAll('.noUi-target')
+        sliderElements.forEach((sliderElement: HTMLElement) => {
+          sliderElement.style.background = 'linear-gradient(to right, #ffffff, #ffd966, #ff0000)'
+        })
+      }, 10)
     }
   }
 

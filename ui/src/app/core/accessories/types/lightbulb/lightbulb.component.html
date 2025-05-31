@@ -12,12 +12,16 @@
     @if (service.values.Brightness) {
     <div
       class="accessory-label grey-text"
-      [innerText]="service.values.On ? service.values.Brightness + '%' : ('accessories.control.off' | translate)"
+      [innerHTML]="service.values.On
+        ? service.values.Brightness + '%' + (hasAdaptiveLighting ? (' &middot; <i class=\'fa fa-sun ' + (isAdaptiveLightingEnabled ? 'on-text' : 'grey-text') + '\'></i>') : '')
+        : ('accessories.control.off' | translate)"
     ></div>
     } @else {
     <div
       class="accessory-label grey-text"
-      [innerText]="(service.values.On ? 'accessories.control.on' : 'accessories.control.off') | translate"
+      [innerHTML]="(service.values.On
+        ? 'accessories.control.on' + (hasAdaptiveLighting ? (' &middot; <i class=\'fa fa-sun ' + (isAdaptiveLightingEnabled ? 'on-text' : 'grey-text') + '\'></i>') : '')
+        : 'accessories.control.off') | translate"
     ></div>
     }
   </div>

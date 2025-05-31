@@ -28,7 +28,7 @@
     top: 0;
     left: 0;
     height: 100%;
-    background-color: #42d672;
+    background-color: #808080;
     z-index: 1;
     transition: width 0.3s ease-in-out;
   }
@@ -36,7 +36,14 @@
   .battery-text {
     position: relative;
     z-index: 2;
-    color: white;
+  }
+
+  .battery-over {
+    color: #ffffff;
+  }
+
+  .battery-under {
+    color: #808080;
   }
 
   @media (max-width: 575px) {

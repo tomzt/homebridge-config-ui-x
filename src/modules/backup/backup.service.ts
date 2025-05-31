@@ -322,7 +322,7 @@ export class BackupService {
 
     // Ensure the backupPath is within the instanceBackupPath
     if (!backupPath.startsWith(this.configService.instanceBackupPath)) {
-      throw new BadRequestException('Invalid backup path')
+      throw new BadRequestException(`Invalid backup path: ${backupPath} does not start with ${this.configService.instanceBackupPath}`)
     }
 
     return new StreamableFile(createReadStream(backupPath))
@@ -346,7 +346,7 @@ export class BackupService {
 
     // Ensure the backupPath is within the instanceBackupPath
     if (!backupPath.startsWith(this.configService.instanceBackupPath)) {
-      throw new BadRequestException('Invalid backup path')
+      throw new BadRequestException(`Invalid backup path: ${backupPath} does not start with ${this.configService.instanceBackupPath}`)
     }
 
     try {
@@ -376,7 +376,7 @@ export class BackupService {
 
     // Ensure the backupPath is within the instanceBackupPath
     if (!backupPath.startsWith(this.configService.instanceBackupPath)) {
-      throw new BadRequestException('Invalid backup path')
+      throw new BadRequestException(`Invalid backup path: ${backupPath} does not start with ${this.configService.instanceBackupPath}`)
     }
 
     // Clear restore directory

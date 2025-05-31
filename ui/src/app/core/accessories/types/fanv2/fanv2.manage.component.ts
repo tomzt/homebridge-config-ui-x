@@ -24,7 +24,8 @@ export class Fanv2ManageComponent implements OnInit {
   $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
-  public targetMode: any
+
+  public targetMode: number
   public targetRotationSpeed: any
   public targetRotationSpeedChanged: Subject<string> = new Subject<string>()
   public hasRotationDirection = false
@@ -38,7 +39,7 @@ export class Fanv2ManageComponent implements OnInit {
       .subscribe(() => {
         this.service.getCharacteristic('RotationSpeed').setValue(this.targetRotationSpeed.value)
 
-        // Turn bulb on or off when brightness is adjusted
+        // Turn fan on or off when rotation speed is adjusted
         if (this.targetRotationSpeed.value && !this.service.values.Active) {
           this.targetMode = 1
           this.service.getCharacteristic('Active').setValue(this.targetMode)
@@ -51,9 +52,7 @@ export class Fanv2ManageComponent implements OnInit {
 
   ngOnInit() {
     this.targetMode = this.service.values.Active
-
     this.loadRotationSpeed()
-
     if (this.service.serviceCharacteristics.find(c => c.type === 'RotationDirection')) {
       this.hasRotationDirection = true
     }
@@ -61,7 +60,6 @@ export class Fanv2ManageComponent implements OnInit {
 
   loadRotationSpeed() {
     const RotationSpeed = this.service.getCharacteristic('RotationSpeed')
-
     if (RotationSpeed) {
       this.targetRotationSpeed = {
         value: RotationSpeed.value,
@@ -70,6 +68,12 @@ export class Fanv2ManageComponent implements OnInit {
         step: RotationSpeed.minStep,
         unit: RotationSpeed.unit,
       }
+      setTimeout(() => {
+        const sliderElements = document.querySelectorAll('.noUi-target')
+        sliderElements.forEach((sliderElement: HTMLElement) => {
+          sliderElement.style.background = 'linear-gradient(to right, #add8e6, #416bdf)'
+        })
+      }, 10)
     }
   }
 

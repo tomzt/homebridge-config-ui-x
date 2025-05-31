@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe } from '@ngx-translate/core'
 import { NouisliderComponent } from 'ng2-nouislider'
-import { Subject } from 'rxjs'
+import { BehaviorSubject, Subject } from 'rxjs'
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
@@ -24,13 +24,18 @@ export class LightbulbManageComponent implements OnInit {
   $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
-  public targetMode: any
+  @Input() public isAdaptiveLightingEnabled$: BehaviorSubject<boolean>
 
+  public targetMode: any
   public targetBrightness: any
   public targetBrightnessChanged: Subject<string> = new Subject<string>()
-
+  public targetHue: any
+  public targetHueChanged: Subject<string> = new Subject<string>()
   public targetColorTemperature: any
   public targetColorTemperatureChanged: Subject<string> = new Subject<string>()
+  public hasAdaptiveLighting: boolean = false
+  public isAdaptiveLightingEnabled: boolean = false
+  public sliderIndex: number = 0
 
   constructor() {
     this.targetBrightnessChanged
@@ -41,13 +46,25 @@ export class LightbulbManageComponent implements OnInit {
       .subscribe(() => {
         this.service.getCharacteristic('Brightness').setValue(this.targetBrightness.value)
 
-        // Turn bulb on or off when brightness is adjusted
+        // Turn the bulb on or off when brightness is adjusted
         if (this.targetBrightness.value && !this.service.values.On) {
           this.targetMode = true
           this.service.getCharacteristic('On').setValue(this.targetMode)
         } else if (!this.targetBrightness.value && this.service.values.On) {
           this.targetMode = false
           this.service.getCharacteristic('On').setValue(this.targetMode)
+        }
+      })
+
+    this.targetHueChanged
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+      )
+      .subscribe(() => {
+        this.service.getCharacteristic('Hue').setValue(this.targetHue.value)
+        if (this.service.values.Saturation !== 100) {
+          this.service.getCharacteristic('Saturation').setValue(100)
         }
       })
 
@@ -63,14 +80,13 @@ export class LightbulbManageComponent implements OnInit {
 
   ngOnInit() {
     this.targetMode = this.service.values.On
-
     this.loadTargetBrightness()
+    this.loadTargetHue()
     this.loadTargetColorTemperature()
   }
 
   loadTargetBrightness() {
     const TargetBrightness = this.service.getCharacteristic('Brightness')
-
     if (TargetBrightness) {
       this.targetBrightness = {
         value: TargetBrightness.value,
@@ -78,19 +94,42 @@ export class LightbulbManageComponent implements OnInit {
         max: TargetBrightness.maxValue,
         step: TargetBrightness.minStep,
       }
-
       setTimeout(() => {
-        const sliderElement = document.querySelectorAll('.noUi-target')[0] as HTMLElement
+        const sliderElement = document.querySelectorAll('.noUi-target')[this.sliderIndex] as HTMLElement
         if (sliderElement) {
           sliderElement.style.background = 'linear-gradient(to right, #242424, #ffd6aa)'
+          this.sliderIndex += 1
         }
+      }, 10)
+    }
+  }
+
+  loadTargetHue() {
+    const HueTemperature = this.service.getCharacteristic('Hue')
+    if (HueTemperature) {
+      this.targetHue = {
+        value: this.service.getCharacteristic('Hue').value as number,
+      }
+
+      setTimeout(() => {
+        const sliderElement = document.querySelectorAll('.noUi-target')[this.sliderIndex] as HTMLElement
+        if (sliderElement) {
+          sliderElement.style.background = `linear-gradient(to right,
+            hsl(0, 100%, 50%),
+            hsl(60, 100%, 50%),
+            hsl(120, 100%, 50%),
+            hsl(180, 100%, 50%),
+            hsl(240, 100%, 50%),
+            hsl(300, 100%, 50%),
+            hsl(360, 100%, 50%))`
+        }
+        this.sliderIndex += 1
       }, 10)
     }
   }
 
   loadTargetColorTemperature() {
     const TargetColorTemperature = this.service.getCharacteristic('ColorTemperature')
-
     if (TargetColorTemperature) {
       // Here, the min and max are switched because mired and kelvin are inversely related
       this.targetColorTemperature = {
@@ -101,13 +140,20 @@ export class LightbulbManageComponent implements OnInit {
       }
 
       setTimeout(() => {
-        const minRgb = this.kelvinToRgb(this.targetColorTemperature.min)
-        const maxRgb = this.kelvinToRgb(this.targetColorTemperature.max)
-        const sliderElement = document.querySelectorAll('.noUi-target')[1] as HTMLElement
+        const sliderElement = document.querySelectorAll('.noUi-target')[this.sliderIndex] as HTMLElement
         if (sliderElement) {
-          sliderElement.style.background = `linear-gradient(to right, ${minRgb}, ${maxRgb})`
+          const minHsl = this.kelvinToHsl(this.targetColorTemperature.min)
+          const maxHsl = this.kelvinToHsl(this.targetColorTemperature.max)
+          sliderElement.style.background = `linear-gradient(to right, ${minHsl}, ${maxHsl})`
         }
       }, 10)
+
+      if (this.isAdaptiveLightingEnabled$) {
+        this.hasAdaptiveLighting = true
+        this.isAdaptiveLightingEnabled$.subscribe((value) => {
+          this.isAdaptiveLightingEnabled = value
+        })
+      }
     }
   }
 
@@ -117,12 +163,16 @@ export class LightbulbManageComponent implements OnInit {
 
     // Set the brightness to 100% if on 0% when turned on
     if (this.targetMode && this.targetBrightness && !this.targetBrightness.value) {
-      this.targetBrightness.value = 100
+      this.targetBrightness.value = this.service.getCharacteristic('Brightness').maxValue
     }
   }
 
   onBrightnessStateChange() {
     this.targetBrightnessChanged.next(this.targetBrightness.value)
+  }
+
+  onHueStateChange() {
+    this.targetHueChanged.next(this.targetHue.value)
   }
 
   onColorTemperatureStateChange() {
@@ -137,13 +187,9 @@ export class LightbulbManageComponent implements OnInit {
     return Math.round(1000000 / kelvin)
   }
 
-  kelvinToRgb(kelvin: number): string {
-    // Approximate conversion from Kelvin to RGB
+  kelvinToHsl(kelvin: number): string {
     const temp = kelvin / 100
-    let red: number
-    let green: number
-    let blue: number
-
+    let red: number, green: number, blue: number
     if (temp <= 66) {
       red = 255
       green = Math.min(99.4708025861 * Math.log(temp) - 161.1195681661, 255)
@@ -153,7 +199,28 @@ export class LightbulbManageComponent implements OnInit {
       green = Math.min(288.1221695283 * (temp - 60) ** -0.0755148492, 255)
       blue = 255
     }
-
-    return `rgb(${Math.round(red)}, ${Math.round(green)}, ${Math.round(blue)})`
+    red /= 255
+    green /= 255
+    blue /= 255
+    const max = Math.max(red, green, blue)
+    const min = Math.min(red, green, blue)
+    const delta = max - min
+    let hue = 0
+    if (delta !== 0) {
+      if (max === red) {
+        hue = ((green - blue) / delta) % 6
+      } else if (max === green) {
+        hue = (blue - red) / delta + 2
+      } else {
+        hue = (red - green) / delta + 4
+      }
+      hue = Math.round(hue * 60)
+      if (hue < 0) {
+        hue += 360
+      }
+    }
+    const lightness = (max + min) / 2
+    const saturation = delta === 0 ? 0 : delta / (1 - Math.abs(2 * lightness - 1))
+    return `hsl(${Math.round(hue)}, ${Math.round(saturation * 100)}%, ${Math.round(lightness * 100)}%)`
   }
 }
