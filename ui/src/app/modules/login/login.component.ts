@@ -1,5 +1,5 @@
-import { NgClass, NgStyle } from '@angular/common'
-import { Component, ElementRef, inject, OnInit, viewChild } from '@angular/core'
+import { NgClass, NgOptimizedImage, NgStyle } from '@angular/common'
+import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, inject, OnInit, viewChild } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router } from '@angular/router'
 import { TranslatePipe } from '@ngx-translate/core'
@@ -20,9 +20,10 @@ import { environment } from '@/environments/environment'
     ReactiveFormsModule,
     NgClass,
     TranslatePipe,
+    NgOptimizedImage,
   ],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewChecked {
   private $auth = inject(AuthService)
   private $router = inject(Router)
   private $settings = inject(SettingsService)
@@ -42,9 +43,10 @@ export class LoginComponent implements OnInit {
   public invalid2faCode = false
   public twoFactorCodeRequired = false
   public inProgress = false
+
   private targetRoute: string
 
-  constructor() {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -63,16 +65,20 @@ export class LoginComponent implements OnInit {
     this.setBackground()
   }
 
+  ngAfterViewChecked(): void {
+    this.cdr.detectChanges()
+  }
+
   async setBackground() {
     if (!this.$settings.settingsLoaded) {
       await firstValueFrom(this.$settings.onSettingsLoaded)
     }
 
     if (this.$settings.env.customWallpaperHash) {
-      const backgroundImageUrl = this.$settings.env.customWallpaperHash
-        ? `${environment.api.base}/auth/wallpaper/${this.$settings.env.customWallpaperHash}`
-        : '/assets/snapshot.jpg'
-      this.backgroundStyle = `url('${backgroundImageUrl}') center/cover`
+      if (this.$settings.env.customWallpaperHash) {
+        const backgroundImageUrl = `${environment.api.base}/auth/wallpaper/${this.$settings.env.customWallpaperHash}`
+        this.backgroundStyle = `url('${backgroundImageUrl}') center/cover`
+      }
     }
   }
 
@@ -80,6 +86,7 @@ export class LoginComponent implements OnInit {
     this.invalidCredentials = false
     this.invalid2faCode = false
     this.inProgress = true
+    document.getElementById('submit-button')?.blur()
 
     // Grab the values from the native element as they may be "populated" via autofill.
     const passwordInputValue = this.passwordInput()?.nativeElement.value
@@ -99,32 +106,30 @@ export class LoginComponent implements OnInit {
       }
     }
 
-    await this.$auth.login(this.form.getRawValue())
-      .then(() => {
-        this.$router.navigateByUrl(this.targetRoute)
-        window.sessionStorage.removeItem('target_route')
-      })
-      .catch((err) => {
-        if (err.status === 412) {
-          if (!this.form.controls.otp) {
-            this.form.addControl('otp', new FormControl('', [
-              Validators.required,
-              Validators.minLength(6),
-              Validators.maxLength(6),
-            ]))
-          } else {
-            this.form.controls.otp.setErrors(['Invalid Code'])
-            this.invalid2faCode = true
-          }
-          this.twoFactorCodeRequired = true
-          setTimeout(() => {
-            document.getElementById('form-ota').focus()
-          }, 100)
+    try {
+      await this.$auth.login(this.form.getRawValue())
+      this.$router.navigateByUrl(this.targetRoute)
+      window.sessionStorage.removeItem('target_route')
+    } catch (error) {
+      if (error.status === 412) {
+        if (!this.form.controls.otp) {
+          this.form.addControl('otp', new FormControl('', [
+            Validators.required,
+            Validators.minLength(6),
+            Validators.maxLength(6),
+          ]))
         } else {
-          this.invalidCredentials = true
+          this.form.controls.otp.setErrors(['Invalid Code'])
+          this.invalid2faCode = true
         }
-      })
-
+        this.twoFactorCodeRequired = true
+        setTimeout(() => {
+          document.getElementById('form-ota').focus()
+        }, 100)
+      } else {
+        this.invalidCredentials = true
+      }
+    }
     this.inProgress = false
   }
 }

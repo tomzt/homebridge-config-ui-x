@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common'
+import { CommonModule, NgOptimizedImage } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule } from '@ngx-translate/core'
@@ -13,6 +13,7 @@ import { LoginGuard } from '@/app/modules/login/login.guard'
     ReactiveFormsModule,
     TranslateModule,
     LoginComponent,
+    NgOptimizedImage,
   ],
   providers: [
     LoginGuard,

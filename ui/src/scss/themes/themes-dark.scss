@@ -432,6 +432,10 @@
         }
       }
     }
+
+    .gradient {
+      background: linear-gradient(130deg, $darkModePrimary, #4a266c, #2b2b2b);
+    }
   }
 }
 

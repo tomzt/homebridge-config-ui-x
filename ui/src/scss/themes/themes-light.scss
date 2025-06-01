@@ -215,6 +215,10 @@
       padding-top: 0;
       padding-bottom: 0;
     }
+
+    .gradient {
+      background: linear-gradient(130deg, $primary, #4a266c, $primary-dark);
+    }
   }
 }
 
