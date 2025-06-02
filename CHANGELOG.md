@@ -27,12 +27,13 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 ### Other Changes
 
 - upgrade to angular `v20`
+- bump `plugin-ui-utils` for new theme method
 
 ### Homebridge Dependencies
 
 - `@homebridge/hap-client` @ `v2.2.0`
 - `@homebridge/node-pty-prebuilt-multiarch` @ `v0.11.14`
-- `@homebridge/plugin-ui-utils` @ `v2.0.2`
+- `@homebridge/plugin-ui-utils` @ `v2.1.0`
 
 ## v4.75.0 (2025-05-25)
 

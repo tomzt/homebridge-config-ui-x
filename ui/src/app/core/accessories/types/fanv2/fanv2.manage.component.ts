@@ -5,7 +5,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe } from '@ngx-translate/core'
 import { NouisliderComponent } from 'ng2-nouislider'
 import { Subject } from 'rxjs'
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators'
+import { debounceTime } from 'rxjs/operators'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 
@@ -32,10 +32,7 @@ export class Fanv2ManageComponent implements OnInit {
 
   constructor() {
     this.targetRotationSpeedChanged
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-      )
+      .pipe(debounceTime(500))
       .subscribe(() => {
         this.service.getCharacteristic('RotationSpeed').setValue(this.targetRotationSpeed.value)
 

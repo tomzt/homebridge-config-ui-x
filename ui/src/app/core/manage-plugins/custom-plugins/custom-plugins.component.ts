@@ -192,6 +192,10 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
           this.formEnd()
           break
         }
+        case 'user.lightingMode': {
+          this.requestResponse(e, this.$settings.actualLightingMode)
+          break
+        }
         case 'i18n.lang': {
           this.requestResponse(e, this.$translate.currentLang)
           break

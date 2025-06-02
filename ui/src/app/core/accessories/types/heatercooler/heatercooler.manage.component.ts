@@ -46,7 +46,7 @@ export class HeaterCoolerManageComponent implements OnInit {
 
   constructor() {
     this.targetTemperatureChanged
-      .pipe(debounceTime(300))
+      .pipe(debounceTime(500))
       .subscribe(() => {
         if (this.HeatingThresholdTemperature) {
           this.service.getCharacteristic('HeatingThresholdTemperature').setValue(this.targetHeatingTemp)

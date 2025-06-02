@@ -5,7 +5,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe } from '@ngx-translate/core'
 import { NouisliderComponent } from 'ng2-nouislider'
 import { BehaviorSubject, Subject } from 'rxjs'
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators'
+import { debounceTime } from 'rxjs/operators'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 
@@ -39,10 +39,7 @@ export class LightbulbManageComponent implements OnInit {
 
   constructor() {
     this.targetBrightnessChanged
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-      )
+      .pipe(debounceTime(500))
       .subscribe(() => {
         this.service.getCharacteristic('Brightness').setValue(this.targetBrightness.value)
 
@@ -57,10 +54,7 @@ export class LightbulbManageComponent implements OnInit {
       })
 
     this.targetHueChanged
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-      )
+      .pipe(debounceTime(500))
       .subscribe(() => {
         this.service.getCharacteristic('Hue').setValue(this.targetHue.value)
         if (this.service.values.Saturation !== 100) {
@@ -71,7 +65,6 @@ export class LightbulbManageComponent implements OnInit {
     this.targetColorTemperatureChanged
       .pipe(
         debounceTime(500),
-        distinctUntilChanged(),
       )
       .subscribe(() => {
         this.service.getCharacteristic('ColorTemperature').setValue(this.kelvinToMired(this.targetColorTemperature.value))

@@ -7,7 +7,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe } from '@ngx-translate/core'
 import { NouisliderComponent } from 'ng2-nouislider'
 import { Subject } from 'rxjs'
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators'
+import { debounceTime } from 'rxjs/operators'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { ConvertTempPipe } from '@/app/core/pipes/convert-temp.pipe'
@@ -48,16 +48,13 @@ export class ThermostatManageComponent implements OnInit {
 
   constructor() {
     this.targetTemperatureChanged
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-      )
+      .pipe(debounceTime(500))
       .subscribe(() => {
         this.service.getCharacteristic('TargetTemperature').setValue(this.targetTemperature.value)
       })
 
     this.targetThresholdChanged
-      .pipe(debounceTime(300))
+      .pipe(debounceTime(500))
       .subscribe(() => {
         if (this.HeatingThresholdTemperature) {
           this.service.getCharacteristic('HeatingThresholdTemperature').setValue(this.targetHeatingTemp)

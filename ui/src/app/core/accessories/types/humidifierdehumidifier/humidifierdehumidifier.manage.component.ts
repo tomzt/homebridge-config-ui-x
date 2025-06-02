@@ -40,7 +40,7 @@ export class HumidifierDehumidifierManageComponent implements OnInit {
 
   constructor() {
     this.targetHumidityChanged
-      .pipe(debounceTime(300))
+      .pipe(debounceTime(500))
       .subscribe(() => {
         if (this.RelativeHumidityHumidifierThreshold) {
           this.service.getCharacteristic('RelativeHumidityHumidifierThreshold').setValue(this.targetHumidifierHumidity)
