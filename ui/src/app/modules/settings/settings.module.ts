@@ -14,6 +14,7 @@ import { ResetIndividualBridgesComponent } from '@/app/modules/settings/reset-in
 import { SelectNetworkInterfacesComponent } from '@/app/modules/settings/select-network-interfaces/select-network-interfaces.component'
 import { SettingsRoutingModule } from '@/app/modules/settings/settings-routing.module'
 import { SettingsComponent } from '@/app/modules/settings/settings.component'
+import { WallpaperComponent } from '@/app/modules/settings/wallpaper/wallpaper.component'
 
 @NgModule({
   imports: [
@@ -32,6 +33,7 @@ import { SettingsComponent } from '@/app/modules/settings/settings.component'
     SelectNetworkInterfacesComponent,
     RestoreComponent,
     BackupComponent,
+    WallpaperComponent,
   ],
 })
 export class SettingsModule {}

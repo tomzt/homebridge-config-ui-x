@@ -18,7 +18,7 @@
   @if (showFields.general) {
   <ul class="list-group list-group-box mt-2 mx-0" id="fieldsGeneral">
     <li class="list-group-item d-block d-md-flex justify-content-between align-items-center">
-      <span> Homebridge Name </span>
+      <span>Homebridge Name</span>
       <div class="my-3 my-md-0 pl-0 pl-md-5 w-auto">
         <input
           class="form-control custom-input resp-input"
@@ -30,7 +30,7 @@
       </div>
     </li>
     <li class="list-group-item d-flex justify-content-between align-items-center">
-      <span class="pe-2"> {{ 'menu.label_settings_advanced' | translate }} </span>
+      <span class="pe-2">{{ 'menu.label_settings_advanced' | translate }}</span>
       <button
         class="btn btn-primary waves-effect m-0 ms-3"
         style="min-width: 50px"
@@ -187,27 +187,6 @@
       </div>
     </li>
     <li class="list-group-item d-block d-md-flex justify-content-between align-items-center">
-      <span>
-        {{ 'settings.display.login_wallpaper' | translate }}<br />
-        <small
-          class="grey-text pe-2"
-          [innerHTML]="'settings.display.login_wallpaper_desc' | translate: { file }"
-        ></small>
-      </span>
-      <div class="my-3 my-md-0 ps-0 ps-md-5 w-auto">
-        <!-- 'search' in the name prevents safari showing the credentials prompt -->
-        <input
-          name="search_wallpaper"
-          autocomplete="off"
-          class="form-control custom-input resp-input"
-          type="text"
-          [ngModel]="$settings.loginWallpaper"
-          (ngModelChange)="saveUiSettingChange('loginWallpaper', $event)"
-          placeholder="/path-to/image.png"
-        />
-      </div>
-    </li>
-    <li class="list-group-item d-block d-md-flex justify-content-between align-items-center">
       {{ 'settings.display.temp_units' | translate }}
       <div class="my-3 my-md-0 ps-0 ps-md-5 w-auto">
         <select
@@ -220,18 +199,17 @@
         </select>
       </div>
     </li>
-    @if (hasChangedLoginWallpaper) {
-    <li class="list-group-item d-flex flex-column align-items-center">
-      <small class="grey-text my-2">{{ 'settings.changes.saved' | translate }}</small>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <span class="pe-2">{{ 'settings.display.wallpaper' | translate }}</span>
       <button
-        class="btn btn-primary waves-effect my-2"
-        routerLink="/restart"
-        [attr.aria-label]="'menu.tooltip_restart' | translate"
+        class="btn btn-primary waves-effect m-0 ms-3"
+        style="min-width: 50px"
+        (click)="openWallpaperModal()"
+        [attr.aria-label]="'settings.display.wallpaper' | translate"
       >
-        {{ 'menu.tooltip_restart' | translate }}
+        <i class="fas fa-fw fa-arrow-right"></i>
       </button>
     </li>
-    }
   </ul>
   }
 </div>

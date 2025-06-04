@@ -43,7 +43,7 @@ interface AppSettingsInterface {
   theme: string
   lightingMode: 'auto' | 'light' | 'dark'
   menuMode: 'default' | 'freeze'
-  loginWallpaper: string
+  wallpaper: string
   serverTimestamp: string
 }
 
@@ -65,7 +65,7 @@ export class SettingsService {
   public actualLightingMode: 'light' | 'dark'
   public browserLightingMode: 'light' | 'dark'
   public menuMode: 'default' | 'freeze'
-  public loginWallpaper: string
+  public wallpaper: string
   public serverTimeOffset = 0
   private readonly defaultTheme = 'orange'
   public readonly themeList = [
@@ -101,7 +101,7 @@ export class SettingsService {
     this.formAuth = data.formAuth
     this.env = data.env
     this.lightingMode = data.lightingMode
-    this.loginWallpaper = data.loginWallpaper
+    this.wallpaper = data.wallpaper
     this.setLightingMode(this.lightingMode, 'user')
     this.setTheme(data.theme)
     this.setMenuMode(data.menuMode)

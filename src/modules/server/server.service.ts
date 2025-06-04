@@ -1,9 +1,12 @@
+import type { MultipartFile } from '@fastify/multipart'
 import type { Systeminformation } from 'systeminformation'
 
 import { Buffer } from 'node:buffer'
 import { exec, spawn } from 'node:child_process'
-import { join, resolve } from 'node:path'
+import { extname, join, resolve } from 'node:path'
 import process from 'node:process'
+import { pipeline } from 'node:stream'
+import { promisify } from 'node:util'
 
 import { Categories } from '@homebridge/hap-client/dist/hap-types'
 import {
@@ -14,6 +17,7 @@ import {
   ServiceUnavailableException,
 } from '@nestjs/common'
 import {
+  createWriteStream,
   pathExists,
   readdir,
   readJson,
@@ -31,6 +35,8 @@ import { Logger } from '../../core/logger/logger.service'
 import { AccessoriesService } from '../accessories/accessories.service'
 import { ConfigEditorService } from '../config-editor/config-editor.service'
 import { HomebridgeMdnsSettingDto } from './server.dto'
+
+const pump = promisify(pipeline)
 
 @Injectable()
 export class ServerService {
@@ -700,5 +706,65 @@ export class ServerService {
         return res(result)
       })
     })
+  }
+
+  /**
+   * Upload and set a new wallpaper. Will delete an old wallpaper if it exists.
+   * File upload handler
+   */
+  async uploadWallpaper(data: MultipartFile) {
+    // Get the config file and find the UI config block
+    const configFile = await this.configEditorService.getConfigFile()
+    const uiConfigBlock = configFile.platforms.find(x => x.platform === 'config')
+
+    if (uiConfigBlock) {
+      // Delete the old wallpaper if it exists
+      if (uiConfigBlock.wallpaper) {
+        const oldPath = join(this.configService.storagePath, uiConfigBlock.wallpaper)
+        if (await pathExists(oldPath)) {
+          try {
+            await unlink(oldPath)
+            this.logger.log(`Old wallpaper file ${oldPath} deleted successfully.`)
+          } catch (e) {
+            this.logger.error(`Failed to delete old wallpaper ${oldPath} as ${e.message}.`)
+          }
+        }
+      }
+
+      // Save the uploaded image file to the storage path
+      const fileExtension = extname(data.filename)
+      const newPath = join(this.configService.storagePath, `ui-wallpaper${fileExtension}`)
+      await pump(data.file, createWriteStream(newPath))
+
+      // Update the config file with the new wallpaper path
+      uiConfigBlock.wallpaper = `ui-wallpaper${fileExtension}`
+      await this.configEditorService.updateConfigFile(configFile)
+      this.logger.log('Wallpaper uploaded and set in the config file.')
+    }
+  }
+
+  async deleteWallpaper(): Promise<void> {
+    // Get the config file and find the UI config block
+    const configFile = await this.configEditorService.getConfigFile()
+    const uiConfigBlock = configFile.platforms.find(x => x.platform === 'config')
+    const fullPath = join(this.configService.storagePath, uiConfigBlock.wallpaper)
+
+    // Delete the wallpaper file if it exists
+    if (uiConfigBlock && uiConfigBlock.wallpaper) {
+      if (await pathExists(fullPath)) {
+        try {
+          await unlink(fullPath)
+          this.logger.log(`Wallpaper file ${uiConfigBlock.wallpaper} deleted successfully.`)
+        } catch (e) {
+          this.logger.error(`Failed to delete wallpaper file (${uiConfigBlock.wallpaper}) as ${e.message}.`)
+        }
+      }
+
+      // Remove the wallpaper path from the config file
+      delete uiConfigBlock.wallpaper
+      await this.configEditorService.updateConfigFile(configFile)
+      this.configService.removeWallpaperCache()
+      this.logger.log('Wallpaper reference removed from the config file.')
+    }
   }
 }

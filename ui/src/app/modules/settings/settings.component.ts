@@ -18,6 +18,7 @@ import { RemoveIndividualAccessoriesComponent } from '@/app/modules/settings/rem
 import { ResetAllBridgesComponent } from '@/app/modules/settings/reset-all-bridges/reset-all-bridges.component'
 import { ResetIndividualBridgesComponent } from '@/app/modules/settings/reset-individual-bridges/reset-individual-bridges.component'
 import { SelectNetworkInterfacesComponent } from '@/app/modules/settings/select-network-interfaces/select-network-interfaces.component'
+import { WallpaperComponent } from '@/app/modules/settings/wallpaper/wallpaper.component'
 
 @Component({
   templateUrl: './settings.component.html',
@@ -51,7 +52,6 @@ export class SettingsComponent implements OnInit {
     port: 0,
   }
 
-  public originalLoginWallpaper = ''
   public originalMdnsSetting = ''
   public originalBridgeNetworkAdapters: string[] = []
   public originalHbPort = 0
@@ -63,7 +63,6 @@ export class SettingsComponent implements OnInit {
   public hasChangedBridgeNetworkAdapters = false
   public hasChangedHbPort = false
   public hasChangedHbName = false
-  public hasChangedLoginWallpaper = false
 
   public isInvalidHbPort = false
   public isInvalidHbName = false
@@ -81,7 +80,6 @@ export class SettingsComponent implements OnInit {
     port: new FormControl(0),
   })
 
-  public loginWallpaper = ''
   public legacyMdnsFormControl = new UntypedFormControl(false)
   public showAvahiMdnsOption = false
   public showResolvedMdnsOption = false
@@ -99,7 +97,6 @@ export class SettingsComponent implements OnInit {
     cache: true,
   }
 
-  public readonly file = '<span class="font-monospace">ui-wallpaper.jpg</span>'
   public readonly linkDebug = '<a href="https://github.com/homebridge/homebridge-config-ui-x/wiki/Debug-Common-Values" target="_blank"><i class="fa fa-fw fa-external-link-alt primary-text"></i></a>'
 
   constructor() {}
@@ -111,7 +108,6 @@ export class SettingsComponent implements OnInit {
     this.originalHbName = this.$settings.env.homebridgeInstanceName
 
     this.initUiSettingsForm()
-    this.initDisplaySettingsForm()
     this.initNetworkingOptions()
     if (this.$settings.env.serviceMode) {
       this.initServiceModeForm()
@@ -153,11 +149,6 @@ export class SettingsComponent implements OnInit {
     })
   }
 
-  initDisplaySettingsForm() {
-    this.originalLoginWallpaper = this.$settings.loginWallpaper
-    this.loginWallpaper = this.$settings.loginWallpaper
-  }
-
   saveUiSettingChange(key: string, value: any) {
     // Extra things to do per key
     switch (key) {
@@ -176,10 +167,6 @@ export class SettingsComponent implements OnInit {
         break
       case 'tempUnits':
         this.$settings.setEnvItem('temperatureUnits', value)
-        break
-      case 'loginWallpaper':
-        this.$settings.setEnvItem('loginWallpaper', value)
-        this.hasChangedLoginWallpaper = value !== this.originalLoginWallpaper
         break
       case 'port':
         if (!value || typeof value !== 'number' || value < 1025 || value > 65533 || Number.isInteger(value) === false || value === this.hbPortFormControl.value) {
@@ -210,6 +197,13 @@ export class SettingsComponent implements OnInit {
 
   openBackupModal() {
     this.$modal.open(BackupComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    })
+  }
+
+  openWallpaperModal() {
+    this.$modal.open(WallpaperComponent, {
       size: 'lg',
       backdrop: 'static',
     })

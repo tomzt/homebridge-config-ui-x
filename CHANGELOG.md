@@ -23,6 +23,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
   - use `ajv-keywords` to allow validation of unique properties in arrays
 - fix form field error state font colour (make it red)
 - redesigned login page
+- improve wallpaper selection with new modal to upload a file
 
 ### Other Changes
 

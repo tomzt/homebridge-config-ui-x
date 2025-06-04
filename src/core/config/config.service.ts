@@ -71,7 +71,6 @@ export class ConfigService {
   public setupWizardComplete = true
 
   // Custom wallpaper
-  public customWallpaperPath = resolve(this.storagePath, 'ui-wallpaper.jpg')
   public customWallpaperHash: string
 
   // Set true to force the ui to restart on next restart request
@@ -108,7 +107,7 @@ export class ConfigService {
     }
     temp?: string
     tempUnits?: string
-    loginWallpaper?: string
+    wallpaper?: string
     noFork?: boolean
     linux?: {
       shutdown?: string
@@ -237,7 +236,7 @@ export class ConfigService {
         temperatureUnits: this.ui.tempUnits || 'c',
         usePnpm: this.usePnpm,
       },
-      loginWallpaper: this.ui.loginWallpaper,
+      wallpaper: this.ui.wallpaper,
     }
   }
 
@@ -296,7 +295,7 @@ export class ConfigService {
     }
     this.ui.theme = this.ui.theme || process.env.HOMEBRIDGE_CONFIG_UI_THEME || 'orange'
     this.ui.auth = this.ui.auth || process.env.HOMEBRIDGE_CONFIG_UI_AUTH as 'form' | 'none' || 'form'
-    this.ui.loginWallpaper = this.ui.loginWallpaper || process.env.HOMEBRIDGE_CONFIG_UI_LOGIN_WALLPAPER || undefined
+    this.ui.wallpaper = this.ui.wallpaper || process.env.HOMEBRIDGE_CONFIG_UI_LOGIN_WALLPAPER || undefined
   }
 
   /**
@@ -357,13 +356,27 @@ export class ConfigService {
    */
   private async getCustomWallpaperHash(): Promise<void> {
     try {
-      const fileStat = await stat(this.ui.loginWallpaper || this.customWallpaperPath)
-      const hash = createHash('sha256')
-      hash.update(`${fileStat.birthtime}${fileStat.ctime}${fileStat.size}${fileStat.blocks}`)
-      this.customWallpaperHash = `${hash.digest('hex')}.jpg`
+      if (this.ui.wallpaper) {
+        const filePath = resolve(this.storagePath, this.ui.wallpaper)
+        const fileStat = await stat(filePath)
+        const hash = createHash('sha256')
+        hash.update(`${fileStat.birthtime}${fileStat.ctime}${fileStat.size}${fileStat.blocks}`)
+        this.customWallpaperHash = `${hash.digest('hex')}.jpg`
+      }
     } catch (e) {
       // Do nothing
     }
+  }
+
+  public removeWallpaperCache() {
+    this.customWallpaperHash = undefined
+  }
+
+  /**
+   * Stream the custom wallpaper
+   */
+  public streamCustomWallpaper(): ReadStream {
+    return createReadStream(resolve(this.storagePath, this.ui.wallpaper))
   }
 
   /**
@@ -375,13 +388,6 @@ export class ConfigService {
     } catch (e) {
       this.runningOnRaspberryPi = false
     }
-  }
-
-  /**
-   * Stream the custom wallpaper
-   */
-  public streamCustomWallpaper(): ReadStream {
-    return createReadStream(this.ui.loginWallpaper || this.customWallpaperPath)
   }
 }
 

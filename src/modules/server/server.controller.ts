@@ -1,18 +1,24 @@
+import type { FastifyRequest } from 'fastify'
+
 import {
   Body,
   Controller,
   Delete,
   Get,
   HttpCode,
+  InternalServerErrorException,
   Param,
+  Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger'
 
 import { AdminGuard } from '../../core/auth/guards/admin.guard'
+import { Logger } from '../../core/logger/logger.service'
 import { ChildBridgesService } from '../child-bridges/child-bridges.service'
 import { HomebridgeMdnsSettingDto, HomebridgeNetworkInterfacesDto } from './server.dto'
 import { ServerService } from './server.service'
@@ -25,6 +31,7 @@ export class ServerController {
   constructor(
     private serverService: ServerService,
     private childBridgesService: ChildBridgesService,
+    private logger: Logger,
   ) {}
 
   @Put('/restart')
@@ -243,5 +250,41 @@ export class ServerController {
   @Put('/port')
   setHomebridgePort(@Body() body: { port: number }) {
     return this.serverService.setHomebridgePort(body.port)
+  }
+
+  @UseGuards(AdminGuard)
+  @Post('/wallpaper')
+  @ApiOperation({ summary: 'Upload an image file to the Homebridge storage directory and reference this as a wallpaper in the config file.' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  async uploadWallpaper(@Req() req: FastifyRequest) {
+    try {
+      const data = await req.file()
+      if (data.file.truncated) {
+        throw new InternalServerErrorException(`Wallpaper exceeds maximum size ${globalThis.backup.maxBackupSizeText}.`)
+      }
+      await this.serverService.uploadWallpaper(data)
+    } catch (err) {
+      this.logger.error(`Wallpaper upload failed as ${err.message}`)
+      throw new InternalServerErrorException(err.message)
+    }
+  }
+
+  @UseGuards(AdminGuard)
+  @ApiOperation({ summary: 'Delete the current wallpaper file and remove the reference from the config file.' })
+  @Delete('/wallpaper')
+  @HttpCode(204)
+  async deleteWallpaper(): Promise<void> {
+    await this.serverService.deleteWallpaper()
   }
 }

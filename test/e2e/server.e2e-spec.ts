@@ -6,16 +6,20 @@ import type { HomebridgeConfig } from '../../src/core/config/config.service'
 import { resolve } from 'node:path'
 import process from 'node:process'
 
+import fastifyMultipart from '@fastify/multipart'
 import { ValidationPipe } from '@nestjs/common'
 import { FastifyAdapter } from '@nestjs/platform-fastify'
 import { Test } from '@nestjs/testing'
-import { copy, pathExists, readJson, remove, writeJson } from 'fs-extra'
+import FormData from 'form-data'
+import { copy, pathExists, readFile, readJson, remove, writeJson } from 'fs-extra'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { AuthModule } from '../../src/core/auth/auth.module'
 import { ConfigService } from '../../src/core/config/config.service'
 import { ServerModule } from '../../src/modules/server/server.module'
 import { ServerService } from '../../src/modules/server/server.service'
+
+import '../../src/globalDefaults'
 
 describe('ServerController (e2e)', () => {
   let app: NestFastifyApplication
@@ -49,7 +53,16 @@ describe('ServerController (e2e)', () => {
       imports: [ServerModule, AuthModule],
     }).compile()
 
-    app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter())
+    const fAdapter = new FastifyAdapter()
+
+    fAdapter.register(fastifyMultipart, {
+      limits: {
+        files: 1,
+        fileSize: globalThis.backup.maxBackupSize,
+      },
+    })
+
+    app = moduleFixture.createNestApplication<NestFastifyApplication>(fAdapter)
 
     app.useGlobalPipes(new ValidationPipe({
       whitelist: true,
@@ -535,6 +548,72 @@ describe('ServerController (e2e)', () => {
     expect(typeof res.json().port).toBe('number')
     expect(res.json().port).toBeGreaterThanOrEqual(30000)
     expect(res.json().port).toBeLessThanOrEqual(60000)
+  })
+
+  it('POST /server/wallpaper', async () => {
+    // create multipart form
+    const payload = new FormData()
+    payload.append('wallpaper', await readFile(resolve(__dirname, '../mocks/persist/wallpaper.png')), 'wallpaper.png')
+
+    const headers = payload.getHeaders()
+    headers.authorization = authorization
+
+    const res = await app.inject({
+      method: 'POST',
+      path: '/server/wallpaper',
+      headers,
+      payload,
+    })
+
+    expect(res.statusCode).toBe(201)
+
+    await new Promise(r => setTimeout(r, 100))
+
+    // Two things to ensure:
+    // 1. The wallpaper was saved to the correct location
+    const wallpaperPath = resolve(process.env.UIX_STORAGE_PATH, 'ui-wallpaper.png')
+    expect(await pathExists(wallpaperPath)).toBe(true)
+
+    // 2. The wallpaper was set in the config
+    const config = await readJson(configService.configPath)
+    expect(config.platforms[0].wallpaper).toBe('ui-wallpaper.png')
+  })
+
+  it('DELETE /server/wallpaper', async () => {
+    // Create wallpaper first (same as test above)
+    const payload = new FormData()
+    payload.append('wallpaper', await readFile(resolve(__dirname, '../mocks/persist/wallpaper.png')), 'wallpaper.png')
+
+    const headers = payload.getHeaders()
+    headers.authorization = authorization
+
+    const res = await app.inject({
+      method: 'POST',
+      path: '/server/wallpaper',
+      headers,
+      payload,
+    })
+
+    expect(res.statusCode).toBe(201)
+
+    await new Promise(r => setTimeout(r, 100))
+
+    // Now delete the wallpaper
+    const deleteRes = await app.inject({
+      method: 'DELETE',
+      path: '/server/wallpaper',
+      headers,
+    })
+
+    expect(deleteRes.statusCode).toBe(204)
+
+    // Check the wallpaper file was removed
+    const wallpaperPath = resolve(process.env.UIX_STORAGE_PATH, 'ui-wallpaper.png')
+    expect(await pathExists(wallpaperPath)).toBe(false)
+
+    // Check the config file was updated
+    const config = await readJson(configService.configPath)
+    expect(config.platforms[0].wallpaper).toBeUndefined()
   })
 
   afterAll(async () => {
