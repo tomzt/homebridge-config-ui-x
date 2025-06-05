@@ -756,16 +756,6 @@
           ]
         }
       ]
-    },
-    {
-      "ref": "scheduledBackup",
-      "type": "fieldset",
-      "expandable": true,
-      "title": "Scheduled Backup Settings",
-      "items": [
-        "scheduledBackupDisable",
-        "scheduledBackupPath"
-      ]
     }
   ]
 }

@@ -73,7 +73,7 @@
       } @if (!currentBridgeHasLinks) {
       <li class="list-group-item d-flex justify-content-between align-items-center flex-row pb-2">
         <span class="text-start">{{ 'child_bridge.config.use' | translate }}</span>
-        <div class="text-end grey-text">
+        <div class="text-end grey-text d-flex align-items-center">
           <input
             type="checkbox"
             class="rendux-input"
@@ -196,7 +196,7 @@
       @if (canShowBridgeDebug) {
       <li class="list-group-item d-flex justify-content-between align-items-center flex-row pb-2">
         <span class="text-start">{{ 'child_bridge.config.debug' | translate }} <code>-D</code></span>
-        <div class="text-end grey-text">
+        <div class="text-end grey-text d-flex align-items-center">
           <input
             type="checkbox"
             class="rendux-input"

@@ -51,13 +51,47 @@
         </button>
       </li>
     </ul>
+    <ul class="list-group list-group-box mt-3 mb-0">
+      <li class="list-group-item">
+        <h6 class="mb-1 text-center">{{ 'backup.settings_title' | translate }}</h6>
+        <p class="mb-0 small grey-text text-center">{{ 'form.auto_save' | translate }}</p>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center flex-row pb-2">
+        <span class="text-start">{{ 'backup.settings_enable' | translate }}</span>
+        <div class="text-end grey-text d-flex align-items-center">
+          <input
+            type="checkbox"
+            id="disableScheduledBackups"
+            class="rendux-input"
+            [formControl]="enabledFormControl"
+            [attr.aria-label]="'backup.settings_enable' | translate"
+          />
+          <label for="disableScheduledBackups" class="rendux-label"></label>
+        </div>
+      </li>
+      @if (currentSettingEnabled) {
+      <li class="list-group-item d-flex flex-column flex-md-row align-items-center">
+        <label class="mb-2 mb-md-0 w-100 w-md-50">{{ 'backup.settings_path' | translate }}</label>
+        <div class="text-start text-md-end w-100 w-md-50">
+          <input
+            type="text"
+            class="form-control custom-input"
+            placeholder="/home/pi/homebridge-backups"
+            [formControl]="pathFormControl"
+            [attr.aria-label]="'backup.settings_path' | translate"
+          />
+        </div>
+      </li>
+      }
+    </ul>
     @if (scheduledBackups.length) {
     <ul class="list-group list-group-box mt-3 mb-0">
       <li class="list-group-item">
         <h6 class="mb-1 text-center">{{ 'backup.files_auto' | translate }}</h6>
         <p class="small grey-text mb-0 text-center">
-          @if (backupTime) { {{ 'backup.scheduled_backup_time' | translate:{ backupTime: backupTime | date:'shortTime',
-          dayCount: 7 } }} } @if (!backupTime) { {{ 'backup.scheduled_backup_disabled' | translate }} }
+          @if (currentSettingEnabled && backupTime) { {{ 'backup.scheduled_backup_time' | translate:{ backupTime:
+          backupTime | date:'shortTime', dayCount: 7 } }} } @if (!currentSettingEnabled || !backupTime) { {{
+          'backup.scheduled_backup_disabled' | translate }} }
         </p>
       </li>
       @for (backup of scheduledBackups; track backup) {

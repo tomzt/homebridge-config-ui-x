@@ -1,11 +1,15 @@
 import { DatePipe, NgClass } from '@angular/common'
 import { Component, inject, OnInit } from '@angular/core'
+import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { NgbActiveModal, NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe, TranslateService } from '@ngx-translate/core'
 import { saveAs } from 'file-saver'
 import { ToastrService } from 'ngx-toastr'
+import { firstValueFrom } from 'rxjs'
+import { debounceTime } from 'rxjs/operators'
 
 import { ApiService } from '@/app/core/api.service'
+import { SettingsService } from '@/app/core/settings.service'
 import { RestoreComponent } from '@/app/modules/settings/backup/restore/restore.component'
 
 @Component({
@@ -16,12 +20,14 @@ import { RestoreComponent } from '@/app/modules/settings/backup/restore/restore.
     NgClass,
     DatePipe,
     TranslatePipe,
+    ReactiveFormsModule,
   ],
 })
 export class BackupComponent implements OnInit {
   $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $modal = inject(NgbModal)
+  private $settings = inject(SettingsService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
@@ -30,11 +36,45 @@ export class BackupComponent implements OnInit {
   public backupTime: string
   public deleting = null
 
+  public currentSettingEnabled = false
+  public currentSettingPath = ''
+  public enabledFormControl = new FormControl(false)
+  public pathFormControl = new FormControl('')
+
   constructor() {}
 
   ngOnInit(): void {
     this.getScheduledBackups()
     this.getNextBackup()
+
+    this.currentSettingEnabled = !this.$settings.env.scheduledBackupDisable
+    this.currentSettingPath = this.$settings.env.scheduledBackupPath
+
+    this.enabledFormControl.patchValue(this.currentSettingEnabled)
+    this.pathFormControl.patchValue(this.currentSettingPath)
+
+    this.enabledFormControl.valueChanges
+      .pipe(debounceTime(400))
+      .subscribe(async (value) => {
+        this.currentSettingEnabled = value
+        await this.saveUiSettingChange('scheduledBackupDisable', !this.currentSettingEnabled)
+      })
+
+    this.pathFormControl.valueChanges
+      .pipe(debounceTime(400))
+      .subscribe(async (value) => {
+        this.currentSettingPath = value
+        await this.saveUiSettingChange('scheduledBackupPath', this.currentSettingPath)
+      })
+  }
+
+  async saveUiSettingChange(key: string, value: any) {
+    try {
+      await firstValueFrom(this.$api.put('/config-editor/ui', { key, value }))
+    } catch (error) {
+      console.error(error)
+      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
+    }
   }
 
   getScheduledBackups() {

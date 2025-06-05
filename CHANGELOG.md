@@ -25,6 +25,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - redesigned login page
 - improve wallpaper selection with new modal to upload a file
 - refactor HBv2 and UIv5 readiness modals
+- move backup settings from ui advanced settings to backup/restore modal
 
 ### Other Changes
 
