@@ -18,6 +18,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 
 - updates to the `th.json` language file (#2472) (@tomzt)
 - auto restart after version change of hb or ui
+- redesigned setup wizard page
 
 ### Homebridge Dependencies
 
