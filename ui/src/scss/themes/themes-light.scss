@@ -224,6 +224,13 @@
     .gradient {
       background: linear-gradient(130deg, $primary, #4a266c, $primary-dark);
     }
+
+    .grey-outline {
+      border: 1px solid #cccccc;
+      border-top: 0;
+      border-bottom-left-radius: 0.25rem;
+      border-bottom-right-radius: 0.25rem;
+    }
   }
 }
 

@@ -29,10 +29,12 @@
         {{ 'accessories.control.on' | translate }}
         <div class="float-end"><i class="fas fa-fw fa-xl fa-blank"></i></div>
       </button>
+      @if (hasAdaptiveLighting) {
       <div></div>
+      }
     </div>
     @if (hasAdaptiveLighting) {
-    <div class="d-flex justify-content-center mb-0 p-0 mt-0">
+    <div class="d-flex justify-content-center mb-0 p-0 mt-0 grey-outline">
       <div class="mb-0 mx-0 p-3 btn-read w-100 no-round-top">
         <div class="float-start primary-text">
           <i

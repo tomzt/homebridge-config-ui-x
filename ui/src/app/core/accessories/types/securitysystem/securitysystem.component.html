@@ -6,16 +6,22 @@
   tabindex="0"
 >
   <div class="d-flex flex-column h-100">
-    @if (service.values.SecuritySystemCurrentState !== 3) {
-    <div
-      [inlineSVG]="'/assets/hap-icons/securitysystem-active.svg'"
-      [attr.aria-label]="'Armed'"
-      class="accessory-svg"
-    ></div>
-    } @if (service.values.SecuritySystemCurrentState === 3) {
+    @if (service.values.SecuritySystemCurrentState === 3) {
     <div
       [inlineSVG]="'/assets/hap-icons/securitysystem-off.svg'"
       [attr.aria-label]="'Disarmed'"
+      class="accessory-svg"
+    ></div>
+    } @else if (service.values.SecuritySystemCurrentState === 4) {
+    <div
+      [inlineSVG]="'/assets/hap-icons/securitysystem-triggered.svg'"
+      [attr.aria-label]="'accessories.control.triggered' | translate"
+      class="accessory-svg"
+    ></div>
+    } @else {
+    <div
+      [inlineSVG]="'/assets/hap-icons/securitysystem-active.svg'"
+      [attr.aria-label]="'Armed'"
       class="accessory-svg"
     ></div>
     }
