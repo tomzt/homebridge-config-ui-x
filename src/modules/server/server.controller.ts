@@ -253,6 +253,22 @@ export class ServerController {
   }
 
   @UseGuards(AdminGuard)
+  @ApiOperation({ summary: 'Get the usable ports as set in the config file.' })
+  @Get('/ports')
+  getUsablePort() {
+    return this.serverService.getUsablePorts()
+  }
+
+  @UseGuards(AdminGuard)
+  @Put('/ports')
+  @ApiOperation({ summary: 'Update the usable ports for Homebridge.' })
+  @ApiBody({ description: 'Object with start and end properties.', type: 'json', isArray: false })
+  @Put()
+  setUsablePorts(@Body() body) {
+    return this.serverService.setUsablePorts(body)
+  }
+
+  @UseGuards(AdminGuard)
   @Post('/wallpaper')
   @ApiOperation({ summary: 'Upload an image file to the Homebridge storage directory and reference this as a wallpaper in the config file.' })
   @ApiConsumes('multipart/form-data')

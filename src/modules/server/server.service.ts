@@ -654,6 +654,28 @@ export class ServerService {
   }
 
   /**
+   * Get the usable ports
+   */
+  public async getUsablePorts(): Promise<{ start?: number, end?: number }> {
+    const config = await this.configEditorService.getConfigFile()
+
+    // config.ports may not exist
+    let start: number
+    let end: number
+
+    if (config.ports && typeof config.ports === 'object') {
+      if (config.ports.start) {
+        start = config.ports.start
+      }
+      if (config.ports.end) {
+        end = config.ports.end
+      }
+    }
+
+    return { start, end }
+  }
+
+  /**
    * Set the Homebridge name
    */
   public async setHomebridgeName(name: string): Promise<void> {
@@ -682,6 +704,59 @@ export class ServerService {
 
     config.bridge.port = port
 
+    await this.configEditorService.updateConfigFile(config)
+  }
+
+  /**
+   * Set the usable ports in the config file
+   */
+  public async setUsablePorts(value: { start?: number, end?: number }) {
+    // 1. Get the current config
+    let config = await this.configEditorService.getConfigFile()
+
+    // 2. Validate the input
+    if (value.start === null) {
+      delete value.start
+    }
+    if (value.end === null) {
+      delete value.end
+    }
+
+    if ('start' in value && (typeof value.start !== 'number' || value.start < 1025 || value.start > 65533)) {
+      throw new BadRequestException('Port start must be a number between 1025 and 65533.')
+    }
+    if ('end' in value && (typeof value.end !== 'number' || value.end < 1025 || value.end > 65533)) {
+      throw new BadRequestException('Port end must be a number between 1025 and 65533.')
+    }
+    if ('start' in value && 'end' in value && value.start >= value.end) {
+      throw new BadRequestException('Ports start must be less than end.')
+    }
+    if ('start' in value && !('end' in value) && config.ports?.end && value.start >= config.ports.end) {
+      throw new BadRequestException('Ports start must be less than end.')
+    }
+    if ('end' in value && !('start' in value) && config.ports?.start && config.ports.start >= value.end) {
+      throw new BadRequestException('Ports start must be less than end.')
+    }
+
+    // 3. Update the config with the new ports
+    // Remove ports if neither start nor end is specified
+    if (!value.start && !value.end) {
+      delete config.ports
+    } else {
+      config.ports = {}
+      if (value.start) {
+        config.ports.start = value.start
+      }
+      if (value.end) {
+        config.ports.end = value.end
+      }
+    }
+
+    // 4. Bring the ports object to the front of the config, after the bridge object
+    const { bridge, ports, ...rest } = config
+    config = ports ? { bridge, ports, ...rest } : { bridge, ...rest }
+
+    // 5. Save the config file
     await this.configEditorService.updateConfigFile(config)
   }
 
