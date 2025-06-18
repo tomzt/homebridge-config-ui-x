@@ -23,7 +23,9 @@ export class AccessoryInfoComponent implements OnInit {
   @Input() public service: ServiceTypeX
   @Input() private accessoryCache: any[]
   @Input() private pairingCache: any[]
+
   public accessoryInformation: Array<any>
+  public extraServices: ServiceTypeX[] = []
   public matchedCachedAccessory: any = null
 
   constructor() {}
@@ -31,6 +33,12 @@ export class AccessoryInfoComponent implements OnInit {
   ngOnInit() {
     this.accessoryInformation = Object.entries(this.service.accessoryInformation).map(([key, value]) => ({ key, value }))
     this.matchedCachedAccessory = this.matchToCachedAccessory()
+
+    if (this.service.type === 'LockMechanism') {
+      Object.values(this.service.linkedServices)
+        .filter(service => service.type === 'LockManagement')
+        .forEach(service => this.extraServices.push(service))
+    }
   }
 
   matchToCachedAccessory() {
