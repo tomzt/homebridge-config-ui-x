@@ -26,6 +26,10 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - add option to hide update notifications for specific plugins
 - improve plugin search and result ordering (@justjam2013)
 
+### Other Changes
+
+- Removed redundant Google Smart Home components (@NorthernMan54)
+
 ### Homebridge Dependencies
 
 - `@homebridge/hap-client` @ `v2.2.0`

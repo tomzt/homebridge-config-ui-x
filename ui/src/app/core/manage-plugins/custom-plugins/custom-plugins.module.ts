@@ -9,7 +9,6 @@ import { NgxMdModule } from 'ngx-md'
 import { CustomPluginsComponent } from '@/app/core/manage-plugins/custom-plugins/custom-plugins.component'
 import { CustomPluginsService } from '@/app/core/manage-plugins/custom-plugins/custom-plugins.service'
 import { HomebridgeDeconzComponent } from '@/app/core/manage-plugins/custom-plugins/homebridge-deconz/homebridge-deconz.component'
-import { HomebridgeGoogleSmarthomeComponent } from '@/app/core/manage-plugins/custom-plugins/homebridge-google-smarthome/homebridge-google-smarthome.component'
 import { HomebridgeHueComponent } from '@/app/core/manage-plugins/custom-plugins/homebridge-hue/homebridge-hue.component'
 
 @NgModule({
@@ -23,7 +22,6 @@ import { HomebridgeHueComponent } from '@/app/core/manage-plugins/custom-plugins
     NgxMdModule,
     CustomPluginsComponent,
     HomebridgeDeconzComponent,
-    HomebridgeGoogleSmarthomeComponent,
     HomebridgeHueComponent,
   ],
   providers: [

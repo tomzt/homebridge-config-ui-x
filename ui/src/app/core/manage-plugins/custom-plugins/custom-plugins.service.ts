@@ -4,7 +4,6 @@ import { firstValueFrom } from 'rxjs'
 
 import { ApiService } from '@/app/core/api.service'
 import { CustomPluginsComponent } from '@/app/core/manage-plugins/custom-plugins/custom-plugins.component'
-import { HomebridgeGoogleSmarthomeComponent } from '@/app/core/manage-plugins/custom-plugins/homebridge-google-smarthome/homebridge-google-smarthome.component'
 
 @Injectable({
   providedIn: 'root',
@@ -13,9 +12,7 @@ export class CustomPluginsService {
   private $api = inject(ApiService)
   private $modal = inject(NgbModal)
 
-  public plugins = {
-    'homebridge-gsh': HomebridgeGoogleSmarthomeComponent,
-  }
+  public plugins = {}
 
   constructor() {}
 

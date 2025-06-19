@@ -12,6 +12,15 @@ import { readdir, readFile, readJson, stat, writeJson } from 'fs-extra'
 // Path to the project directory
 const projectDir = resolve(dirname(__dirname), 'ui/src')
 
+const ignoreKeys = [
+  'plugins.settings.custom.homebridge-gsh.label_account_linked',
+  'plugins.settings.custom.homebridge-gsh.label_link_account',
+  'plugins.settings.custom.homebridge-gsh.message_about',
+  'plugins.settings.custom.homebridge-gsh.message_account_link_required',
+  'plugins.settings.custom.homebridge-gsh.message_homebridge_restart_required',
+
+]
+
 async function getAllFiles(dirPath: string, arrayOfFiles: string[] = []): Promise<string[]> {
   const files = await readdir(dirPath)
 
@@ -51,6 +60,10 @@ async function main() {
   // Check each key
   const unusedKeys = []
   for (const key of keys) {
+    if (ignoreKeys.includes(key)) {
+      continue // Skip ignored keys
+    }
+
     const isUsed = await Promise.all(allFiles.map(file => isKeyUsedInFile(key, file)))
       .then(results => results.some(result => result))
     if (!isUsed) {
