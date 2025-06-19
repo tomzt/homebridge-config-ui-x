@@ -51,6 +51,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - refactor HBv2 and UIv5 readiness modals
 - move backup settings from ui advanced settings to backup/restore modal
 - show lock management service info on lock mechanism info modal
+- show characteristic descriptions in info modal when available
 
 ### Other Changes
 

@@ -70,8 +70,10 @@
         <span class="text-start">{{ characteristic.description }}</span>
         <span class="text-start text-md-end grey-text font-monospace">
           @switch (characteristic.unit) { @case ('percentage') { {{ characteristic.value }}% } @case ('celsius') { {{
-          characteristic.value | convertTemp }}&deg; } @default { {{ characteristic.value }} } }</span
-        >
+          characteristic.value | convertTemp }}&deg; } @default { {{ characteristic.value }} } } @if
+          (enums[characteristic.type]?.[characteristic.value]) { ({{ enums[characteristic.type][characteristic.value] |
+          prettify }}) }
+        </span>
       </li>
       }
     </ul>
@@ -93,8 +95,10 @@
         <span class="text-start">{{ characteristic.description }}</span>
         <span class="text-start text-md-end grey-text font-monospace">
           @switch (characteristic.unit) { @case ('percentage') { {{ characteristic.value }}% } @case ('celsius') { {{
-          characteristic.value | convertTemp }}&deg; } @default { {{ characteristic.value }} } }</span
-        >
+          characteristic.value | convertTemp }}&deg; } @default { {{ characteristic.value }} } } @if
+          (enums[characteristic.type]?.[characteristic.value]) { ({{ enums[characteristic.type][characteristic.value] |
+          prettify }}) }
+        </span>
       </li>
       }
     </ul>

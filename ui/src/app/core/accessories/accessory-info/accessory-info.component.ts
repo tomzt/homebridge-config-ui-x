@@ -1,10 +1,12 @@
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormsModule } from '@angular/forms'
+import { Enums } from '@homebridge/hap-client/dist/hap-types'
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe } from '@ngx-translate/core'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { ConvertTempPipe } from '@/app/core/pipes/convert-temp.pipe'
+import { PrettifyPipe } from '@/app/core/pipes/prettify.pipe'
 import { RemoveIndividualAccessoriesComponent } from '@/app/modules/settings/remove-individual-accessories/remove-individual-accessories.component'
 
 @Component({
@@ -14,6 +16,7 @@ import { RemoveIndividualAccessoriesComponent } from '@/app/modules/settings/rem
     FormsModule,
     TranslatePipe,
     ConvertTempPipe,
+    PrettifyPipe,
   ],
 })
 export class AccessoryInfoComponent implements OnInit {
@@ -27,6 +30,7 @@ export class AccessoryInfoComponent implements OnInit {
   public accessoryInformation: Array<any>
   public extraServices: ServiceTypeX[] = []
   public matchedCachedAccessory: any = null
+  public enums = Enums
 
   constructor() {}
 
