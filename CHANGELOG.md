@@ -25,6 +25,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - add support for `uiSchema` within plugin configurations
 - add option to hide update notifications for specific plugins
 - improve plugin search and result ordering (@justjam2013)
+- add icon and tile for filter maintenance accessory
 
 ### Other Changes
 

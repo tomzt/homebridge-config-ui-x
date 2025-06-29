@@ -11,6 +11,7 @@ import { ContactsensorComponent } from '@/app/core/accessories/types/contactsens
 import { DoorComponent } from '@/app/core/accessories/types/door/door.component'
 import { FanComponent } from '@/app/core/accessories/types/fan/fan.component'
 import { Fanv2Component } from '@/app/core/accessories/types/fanv2/fanv2.component'
+import { FilterMaintenanceComponent } from '@/app/core/accessories/types/filtermaintenance/filtermaintenance.component'
 import { GaragedooropenerComponent } from '@/app/core/accessories/types/garagedooropener/garagedooropener.component'
 import { HeaterCoolerComponent } from '@/app/core/accessories/types/heatercooler/heatercooler.component'
 import { HumidifierDehumidifierComponent } from '@/app/core/accessories/types/humidifierdehumidifier/humidifierdehumidifier.component'
@@ -73,6 +74,7 @@ import { WindowCoveringComponent } from '@/app/core/accessories/types/windowcove
     HeaterCoolerComponent,
     HumidifierDehumidifierComponent,
     StatelessprogrammableswitchComponent,
+    FilterMaintenanceComponent,
     UnknownComponent,
   ],
 })

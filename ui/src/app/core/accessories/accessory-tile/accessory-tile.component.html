@@ -71,6 +71,8 @@
   <app-humidifierdehumidifier [service]="service">Humidifier Dehumidifier</app-humidifierdehumidifier>
   } @case ('StatelessProgrammableSwitch') {
   <app-statelessprogrammableswitch [service]="service">Stateless Programmable Switch</app-statelessprogrammableswitch>
+  } @case ('FilterMaintenance') {
+  <app-filtermaintenance [service]="service">Filter Maintenance</app-filtermaintenance>
   } @default {
   <app-unknown [service]="service">{{ service.humanType }}</app-unknown>
   } }
