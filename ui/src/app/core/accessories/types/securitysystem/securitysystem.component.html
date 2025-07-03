@@ -2,6 +2,7 @@
   class="accessory-box"
   [ngClass]="{ 'switch-on': service.values.SecuritySystemCurrentState !== 3 }"
   appLongclick
+  (longclick)="onClick()"
   (shortclick)="onClick()"
   tabindex="0"
 >

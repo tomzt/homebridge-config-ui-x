@@ -22,6 +22,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - various updates to the backup/restore modal
 - fix list of selected network adapters in modal
 - battery - style as green when charging
+- thermostat - open control modal on long click
 
 ### Homebridge Dependencies
 
