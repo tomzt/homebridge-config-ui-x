@@ -1185,6 +1185,7 @@ export class SettingsComponent implements OnInit {
     })
 
     ref.componentInstance.adaptersAvailable = this.adaptersAvailable
+    ref.componentInstance.adaptersSelected = this.adaptersSelected
 
     try {
       const adapters: string[] = await ref.result

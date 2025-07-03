@@ -138,8 +138,10 @@ export class ServerService {
         }
       }
 
-      uiConfig.accessoryControl.instanceBlacklist = uiConfig.accessoryControl.instanceBlacklist
-        .sort((a: string, b: string) => a.localeCompare(b))
+      if (blacklistChanged) {
+        uiConfig.accessoryControl.instanceBlacklist = uiConfig.accessoryControl.instanceBlacklist
+          .sort((a: string, b: string) => a.localeCompare(b))
+      }
 
       await this.configEditorService.updateConfigFile(configFile)
     } catch (e) {
