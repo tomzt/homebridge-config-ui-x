@@ -1,9 +1,10 @@
-<div class="accessory-box">
+<div class="accessory-box" [ngClass]="{ 'switch-on': service.values.ChargingState === 1 }">
   <div class="d-flex flex-column h-100">
     <div
       class="batterylevel-battery mt-2"
       [ngClass]="{
-        'lowbattery': service.values.StatusLowBattery === 1
+        'lowbattery': service.values.StatusLowBattery === 1 && service.values.ChargingState !== 1,
+        'charging': service.values.ChargingState === 1,
       }"
     >
       <div class="battery-level-fill" [style.width.%]="service.values.BatteryLevel || 0"></div>

@@ -21,6 +21,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - updates to the `nl.json` language file (#2487) (@hendriksen-mark)
 - various updates to the backup/restore modal
 - fix list of selected network adapters in modal
+- battery - style as green when charging
 
 ### Homebridge Dependencies
 
