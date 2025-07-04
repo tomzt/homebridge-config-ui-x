@@ -25,6 +25,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - thermostat - open control modal on long click
 - show release notes when npm and gh release match
 - add control modal for filter to reset filter life
+- show bool characteristic descriptions in info modals
 
 ### Homebridge Dependencies
 

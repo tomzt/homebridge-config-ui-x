@@ -72,7 +72,8 @@
           @switch (characteristic.unit) { @case ('percentage') { {{ characteristic.value }}% } @case ('celsius') { {{
           characteristic.value | convertTemp }}&deg; } @default { {{ characteristic.value }} } } @if
           (enums[characteristic.type]?.[characteristic.value]) { ({{ enums[characteristic.type][characteristic.value] |
-          prettify }}) }
+          prettify }}) } @else if (characteristic.format === 'bool') { ({{ (characteristic.value ?
+          'status.widget.info.yes' : 'status.widget.info.no') | translate }}) }
         </span>
       </li>
       }
@@ -97,7 +98,8 @@
           @switch (characteristic.unit) { @case ('percentage') { {{ characteristic.value }}% } @case ('celsius') { {{
           characteristic.value | convertTemp }}&deg; } @default { {{ characteristic.value }} } } @if
           (enums[characteristic.type]?.[characteristic.value]) { ({{ enums[characteristic.type][characteristic.value] |
-          prettify }}) }
+          prettify }}) } @else if (characteristic.format === 'bool') { ({{ (characteristic.value ?
+          'status.widget.info.yes' : 'status.widget.info.no') | translate }}) }
         </span>
       </li>
       }
