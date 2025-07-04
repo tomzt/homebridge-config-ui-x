@@ -23,6 +23,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - fix list of selected network adapters in modal
 - battery - style as green when charging
 - thermostat - open control modal on long click
+- show release notes when npm and gh release match
 
 ### Homebridge Dependencies
 

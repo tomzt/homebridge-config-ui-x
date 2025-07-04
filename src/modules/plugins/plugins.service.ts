@@ -1143,6 +1143,9 @@ export class PluginsService {
           const release = await firstValueFrom(this.httpService.get(`https://api.github.com/repos/${match[1]}/${match[2]}/releases/latest`))
           const latestTag = release.data.tag_name
 
+          // The latest npm version may not match the latest GitHub release
+          const isReleaseMatch = latestVersion?.replace(/[^0-9.]/g, '').includes(release.data.tag_name?.replace(/[^0-9.]/g, ''))
+
           // The plugin may have a custom changelog path from this.pluginChangelogs[pkg.package.name]
           const changelogPath = this.pluginChangelogs[pluginName] || ''
           let changelogData = null
@@ -1158,8 +1161,8 @@ export class PluginsService {
           }
 
           return {
-            name: release.data.name || null,
-            notes: release.data.body || null,
+            name: isReleaseMatch && release.data.tag_name ? release.data.tag_name : null,
+            notes: isReleaseMatch && release.data.body ? release.data.body : null,
             changelog: changelogData,
             latestVersion,
           }
