@@ -1,0 +1,27 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" [innerText]="service.customName || service.serviceName"></h5>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="modal"
+      [attr.aria-label]="'form.button_close' | translate"
+      (click)="$activeModal.dismiss('Dismiss')"
+    ></button>
+  </div>
+  <div class="modal-body text-center px-5">
+    <h6 class="mb-4">{{ 'accessories.control.filter_level' | translate }}: {{ service.values.FilterLifeLevel }}%</h6>
+    <nouislider [min]="0" [max]="100" [step]="1" [disabled]="true" [(ngModel)]="service.values.FilterLifeLevel">
+    </nouislider>
+    <div
+      class="btn-group-vertical d-flex justify-content-center mt-5 mb-0 p-0"
+      role="group"
+      aria-label="Fan Mode Control"
+    >
+      <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="resetFilterLife(); $event.target.blur()">
+        {{ 'form.button_reset' | translate }}
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer"></div>
+</div>
