@@ -33,6 +33,8 @@ export class LightbulbManageComponent implements OnInit {
   public targetBrightnessChanged: Subject<number> = new Subject<number>()
   public targetHue: any
   public targetHueChanged: Subject<number> = new Subject<number>()
+  public targetSaturation: any
+  public targetSaturationChanged: Subject<number> = new Subject<number>()
   public targetColorTemperature: any
   public targetColorTemperatureChanged: Subject<number> = new Subject<number>()
   public hasAdaptiveLighting: boolean = false
@@ -59,9 +61,12 @@ export class LightbulbManageComponent implements OnInit {
       .pipe(debounceTime(500))
       .subscribe(() => {
         this.service.getCharacteristic('Hue').setValue(this.targetHue.value)
-        if (this.service.values.Saturation !== 100) {
-          this.service.getCharacteristic('Saturation').setValue(100)
-        }
+      })
+
+    this.targetSaturationChanged
+      .pipe(debounceTime(500))
+      .subscribe(() => {
+        this.service.getCharacteristic('Saturation').setValue(this.targetSaturation.value)
       })
 
     this.targetColorTemperatureChanged
@@ -75,6 +80,7 @@ export class LightbulbManageComponent implements OnInit {
     this.targetMode = this.service.values.On
     this.loadTargetBrightness()
     this.loadTargetHue()
+    this.loadTargetSaturation()
     this.loadTargetColorTemperature()
   }
 
@@ -98,8 +104,8 @@ export class LightbulbManageComponent implements OnInit {
   }
 
   loadTargetHue() {
-    const HueTemperature = this.service.getCharacteristic('Hue')
-    if (HueTemperature) {
+    const Hue = this.service.getCharacteristic('Hue')
+    if (Hue) {
       this.targetHue = {
         value: this.service.getCharacteristic('Hue').value as number,
       }
@@ -115,6 +121,26 @@ export class LightbulbManageComponent implements OnInit {
             hsl(240, 100%, 50%),
             hsl(300, 100%, 50%),
             hsl(360, 100%, 50%))`
+        }
+        this.sliderIndex += 1
+      }, 10)
+    }
+  }
+
+  loadTargetSaturation() {
+    const Saturation = this.service.getCharacteristic('Saturation')
+    if (Saturation) {
+      this.targetSaturation = {
+        value: this.service.getCharacteristic('Saturation').value as number,
+      }
+
+      setTimeout(() => {
+        const sliderElement = document.querySelectorAll('.noUi-target')[this.sliderIndex] as HTMLElement
+        if (sliderElement) {
+          const hue = this.targetHue.value || 0
+          sliderElement.style.background = `linear-gradient(to right,
+            hsl(${hue}, 0%, 50%),
+            hsl(${hue}, 100%, 50%))`
         }
         this.sliderIndex += 1
       }, 10)
@@ -167,6 +193,18 @@ export class LightbulbManageComponent implements OnInit {
 
   onHueStateChange() {
     this.targetHueChanged.next(this.targetHue.value)
+
+    const sliderElement = document.querySelectorAll('.noUi-target')[this.sliderIndex - 1] as HTMLElement
+    if (sliderElement) {
+      const hue = this.targetHue.value
+      sliderElement.style.background = `linear-gradient(to right,
+        hsl(${hue}, 0%, 50%),
+        hsl(${hue}, 100%, 50%))`
+    }
+  }
+
+  onSaturationStateChange() {
+    this.targetSaturationChanged.next(this.targetSaturation.value)
   }
 
   onColorTemperatureStateChange() {

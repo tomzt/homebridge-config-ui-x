@@ -71,6 +71,21 @@
     <div class="d-flex text-center mt-0 mb-1">
       <span class="grey-text small">{{ 'accessories.control.adaptive_lighting_note' | translate }}</span>
     </div>
+    } } @if (targetSaturation) {
+    <h6 class="mt-4">{{ 'accessories.control.saturation' | translate }}: {{ targetSaturation.value }}%</h6>
+    <nouislider
+      [min]="0"
+      [max]="100"
+      [step]="1"
+      [(ngModel)]="targetSaturation.value"
+      (ngModelChange)="onSaturationStateChange()"
+      [ngClass]="{ 'mb-1': isAdaptiveLightingEnabled, '': !isAdaptiveLightingEnabled }"
+    >
+    </nouislider>
+    @if (isAdaptiveLightingEnabled) {
+    <div class="d-flex text-center mt-0 mb-1">
+      <span class="grey-text small">{{ 'accessories.control.adaptive_lighting_note' | translate }}</span>
+    </div>
     } } @if (targetColorTemperature) {
     <h6 class="mt-4">
       {{ 'accessories.control.color_temperature' | translate }}: {{ targetColorTemperature.mired | convertMired }}

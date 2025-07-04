@@ -27,6 +27,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - add control modal for filter to reset filter life
 - show bool characteristic descriptions in info modals
 - show colour temp values in mired and kelvin
+- add saturation control to lightbulb control modal
 
 ### Homebridge Dependencies
 
