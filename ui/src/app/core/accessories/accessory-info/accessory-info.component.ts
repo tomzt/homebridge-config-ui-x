@@ -5,6 +5,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe } from '@ngx-translate/core'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
+import { ConvertMiredPipe } from '@/app/core/pipes/convert-mired.pipe'
 import { ConvertTempPipe } from '@/app/core/pipes/convert-temp.pipe'
 import { PrettifyPipe } from '@/app/core/pipes/prettify.pipe'
 import { RemoveIndividualAccessoriesComponent } from '@/app/modules/settings/remove-individual-accessories/remove-individual-accessories.component'
@@ -17,6 +18,7 @@ import { RemoveIndividualAccessoriesComponent } from '@/app/modules/settings/rem
     TranslatePipe,
     ConvertTempPipe,
     PrettifyPipe,
+    ConvertMiredPipe,
   ],
 })
 export class AccessoryInfoComponent implements OnInit {

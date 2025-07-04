@@ -8,6 +8,7 @@ import { BehaviorSubject, Subject } from 'rxjs'
 import { debounceTime } from 'rxjs/operators'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
+import { ConvertMiredPipe } from '@/app/core/pipes/convert-mired.pipe'
 
 @Component({
   selector: 'app-lightbulb-manage',
@@ -18,6 +19,7 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
     NouisliderComponent,
     TranslatePipe,
     NgClass,
+    ConvertMiredPipe,
   ],
 })
 export class LightbulbManageComponent implements OnInit {
@@ -28,11 +30,11 @@ export class LightbulbManageComponent implements OnInit {
 
   public targetMode: any
   public targetBrightness: any
-  public targetBrightnessChanged: Subject<string> = new Subject<string>()
+  public targetBrightnessChanged: Subject<number> = new Subject<number>()
   public targetHue: any
-  public targetHueChanged: Subject<string> = new Subject<string>()
+  public targetHueChanged: Subject<number> = new Subject<number>()
   public targetColorTemperature: any
-  public targetColorTemperatureChanged: Subject<string> = new Subject<string>()
+  public targetColorTemperatureChanged: Subject<number> = new Subject<number>()
   public hasAdaptiveLighting: boolean = false
   public isAdaptiveLightingEnabled: boolean = false
   public sliderIndex: number = 0
@@ -63,11 +65,9 @@ export class LightbulbManageComponent implements OnInit {
       })
 
     this.targetColorTemperatureChanged
-      .pipe(
-        debounceTime(500),
-      )
-      .subscribe(() => {
-        this.service.getCharacteristic('ColorTemperature').setValue(this.kelvinToMired(this.targetColorTemperature.value))
+      .pipe(debounceTime(500))
+      .subscribe((miredValue) => {
+        this.service.getCharacteristic('ColorTemperature').setValue(miredValue)
       })
   }
 
@@ -127,6 +127,7 @@ export class LightbulbManageComponent implements OnInit {
       // Here, the min and max are switched because mired and kelvin are inversely related
       this.targetColorTemperature = {
         value: this.miredToKelvin(TargetColorTemperature.value as number),
+        mired: TargetColorTemperature.value as number,
         min: this.miredToKelvin(TargetColorTemperature.maxValue),
         max: this.miredToKelvin(TargetColorTemperature.minValue),
         step: TargetColorTemperature.minStep,
@@ -169,14 +170,16 @@ export class LightbulbManageComponent implements OnInit {
   }
 
   onColorTemperatureStateChange() {
-    this.targetColorTemperatureChanged.next(this.targetColorTemperature.value)
+    const miredValue = this.kelvinToMired(this.targetColorTemperature.value)
+    this.targetColorTemperature.mired = miredValue
+    this.targetColorTemperatureChanged.next(miredValue)
   }
 
-  miredToKelvin(kelvin: number) {
+  miredToKelvin(kelvin: number): number {
     return Math.round(1000000 / kelvin)
   }
 
-  kelvinToMired(kelvin: number) {
+  kelvinToMired(kelvin: number): number {
     return Math.round(1000000 / kelvin)
   }
 

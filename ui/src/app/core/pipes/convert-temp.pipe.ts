@@ -11,7 +11,11 @@ export class ConvertTempPipe implements PipeTransform {
 
   constructor() {}
 
-  transform(value: number, unit: 'c' | 'f' = this.$settings.env.temperatureUnits): number {
+  transform(value: boolean | string | number, unit: 'c' | 'f' = this.$settings.env.temperatureUnits): boolean | string | number {
+    if (typeof value !== 'number') {
+      return value
+    }
+
     if (unit === 'f') {
       return value * 1.8 + 32
     }

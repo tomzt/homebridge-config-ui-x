@@ -72,7 +72,9 @@
       <span class="grey-text small">{{ 'accessories.control.adaptive_lighting_note' | translate }}</span>
     </div>
     } } @if (targetColorTemperature) {
-    <h6 class="mt-4">{{ 'accessories.control.color_temperature' | translate }}: {{ targetColorTemperature.value }}K</h6>
+    <h6 class="mt-4">
+      {{ 'accessories.control.color_temperature' | translate }}: {{ targetColorTemperature.mired | convertMired }}
+    </h6>
     <nouislider
       [min]="targetColorTemperature.min"
       [max]="targetColorTemperature.max"
