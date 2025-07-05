@@ -309,6 +309,7 @@
   "plugins.placeholder_search_first": "위 검색창을 사용해 첫 플러그인을 찾아보세요.",
   "plugins.placeholder_search_none": "No results were found",
   "plugins.placeholder_search_plugin": "설치할 플러그인 검색…",
+  "plugins.search": "Search Plugins",
   "plugins.settings.custom.homebridge-gsh.label_account_linked": "계정 연결됨",
   "plugins.settings.custom.homebridge-gsh.label_link_account": "계정 연결",
   "plugins.settings.custom.homebridge-gsh.message_about": "Homebridge Google Smart Home 플러그인을 사용하면 Google Home 지원 스마트 스피커 또는 Google Home 모바일 앱에서 Homebridge 액세서리를 제어 할 수 있습니다.",

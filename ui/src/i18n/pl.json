@@ -309,6 +309,7 @@
   "plugins.placeholder_search_first": "Użyj paska wyszukiwania powyżej, aby znaleźć swoją pierwszą wtyczkę.",
   "plugins.placeholder_search_none": "No results were found",
   "plugins.placeholder_search_plugin": "Wyszukaj dostępne wtyczki…",
+  "plugins.search": "Search Plugins",
   "plugins.settings.custom.homebridge-gsh.label_account_linked": "Konto podłączone",
   "plugins.settings.custom.homebridge-gsh.label_link_account": "Podłącz konto",
   "plugins.settings.custom.homebridge-gsh.message_about": "Wtyczka Homebridge Google Smart Home umożliwia kontrolę akcesoriów za pomocą głośników lub aplikacji mobilnej Google Home.",

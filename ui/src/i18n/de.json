@@ -309,6 +309,7 @@
   "plugins.placeholder_search_first": "Verwenden Sie die Suchleiste oben, um Ihr erstes Plugin zu finden",
   "plugins.placeholder_search_none": "Keine Ergebnisse gefunden",
   "plugins.placeholder_search_plugin": "Suche nach installierbaren Plugins …",
+  "plugins.search": "Search Plugins",
   "plugins.settings.custom.homebridge-gsh.label_account_linked": "Konto verbunden",
   "plugins.settings.custom.homebridge-gsh.label_link_account": "Konto verbinden",
   "plugins.settings.custom.homebridge-gsh.message_about": "Das Homebridge Google Smart Home-Plugin erlaubt es dir, deine Homebridge-Geräte durch einen Google Home-fähigen smarten Lautsprecher oder durch die Google Home Mobile-App zu steuern.",

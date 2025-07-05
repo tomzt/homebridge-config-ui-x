@@ -309,6 +309,7 @@
   "plugins.placeholder_search_first": "Usa la barra de búsqueda que encontrarás arriba para buscar tu primer plugin.",
   "plugins.placeholder_search_none": "No se encontraron resultados",
   "plugins.placeholder_search_plugin": "Buscar plugins disponibles para instalar…",
+  "plugins.search": "Search Plugins",
   "plugins.settings.custom.homebridge-gsh.label_account_linked": "Cuenta vinculada",
   "plugins.settings.custom.homebridge-gsh.label_link_account": "Vincular cuenta",
   "plugins.settings.custom.homebridge-gsh.message_about": "El plugin Homebridge Google Smart Home te permite controlar tus accesorios de Homebridge desde un altavoz inteligente Google Home o desde la aplicación móvil Google Home.",

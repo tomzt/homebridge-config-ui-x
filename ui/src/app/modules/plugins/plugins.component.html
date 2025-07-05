@@ -9,6 +9,14 @@
   <div class="col-6 text-end d-none d-sm-inline-block">
     <button
       type="button"
+      class="btn btn-elegant my-0 me-2"
+      (click)="showSearch()"
+      [attr.aria-label]="'plugins.search' | translate"
+    >
+      <i class="fas fa-fw{{ showSearchBar ? ' primary-text' : '' }} fa-search"></i>
+    </button>
+    <button
+      type="button"
       class="btn btn-elegant my-0 me-0"
       (click)="openSupport()"
       [attr.aria-label]="'support.title' | translate"
@@ -18,12 +26,14 @@
   </div>
 </div>
 
+@if (showSearchBar) {
 <div class="row">
   <div class="col-md-12">
     <form novalidate (ngSubmit)="onSubmit(form)" [formGroup]="form">
       <input
         type="text"
         class="hb-npm-search"
+        #searchInput
         [placeholder]="'plugins.placeholder_search_plugin' | translate"
         formControlName="query"
       />
@@ -35,8 +45,7 @@
     </form>
   </div>
 </div>
-
-@if (!loading) {
+} @if (!loading) {
 <div class="d-flex flex-wrap justify-content-between">
   @for (plugin of installedPlugins; track plugin) {
   <div class="hb-plugin-space-between">

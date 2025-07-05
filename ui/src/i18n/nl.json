@@ -309,6 +309,7 @@
   "plugins.placeholder_search_first": "Gebruik de zoekbalk hierboven om uw eerste plugin te zoeken.",
   "plugins.placeholder_search_none": "Geen resultaten gevonden",
   "plugins.placeholder_search_plugin": "Zoeken naar plug-ins om te installeren…",
+  "plugins.search": "Search Plugins",
   "plugins.settings.custom.homebridge-gsh.label_account_linked": "Account Gekoppeld",
   "plugins.settings.custom.homebridge-gsh.label_link_account": "Koppel Account",
   "plugins.settings.custom.homebridge-gsh.message_about": "De Homebridge Google Smart Home plugin maakt het mogelijk om uw Homebridge accessoires te besturen met een Google Home geschikte smart speaker of de Google Home mobile app.",

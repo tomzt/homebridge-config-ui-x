@@ -309,6 +309,7 @@
   "plugins.placeholder_search_first": "ใช้แถบค้นหาด้านบนเพื่อค้นหาปลั๊กอินแรกของคุณ",
   "plugins.placeholder_search_none": "ไม่พบผลลัพธ์",
   "plugins.placeholder_search_plugin": "ค้นหาปลั๊กอินที่จะติดตั้ง…",
+  "plugins.search": "Search Plugins",
   "plugins.settings.custom.homebridge-gsh.label_account_linked": "เชื่อมโยงบัญชีแล้ว",
   "plugins.settings.custom.homebridge-gsh.label_link_account": "เชื่อมโยงบัญชี",
   "plugins.settings.custom.homebridge-gsh.message_about": "Homebridge Google Smart Home ปลั๊กอินช่วยให้คุณควบคุมอุปกรณ์เสริม Homebridge จากลำโพงอัจฉริยะที่เปิดใช้งาน Google Home หรือแอป Google Home บนอุปกรณ์เคลื่อนที่",

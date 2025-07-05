@@ -31,6 +31,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - add transparency to slider handles in accessory control modals
 - obtain hb/ui changelog from the most recent github tag
 - add plugin support button and modal
+- add plugin search button, hide bar by default
 
 ### Homebridge Dependencies
 

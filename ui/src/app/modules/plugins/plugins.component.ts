@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common'
-import { Component, inject, OnDestroy, OnInit } from '@angular/core'
+import { Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { NavigationEnd, Router } from '@angular/router'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
@@ -30,6 +30,8 @@ import { PluginSupportComponent } from '@/app/modules/plugins/plugin-support/plu
   ],
 })
 export class PluginsComponent implements OnInit, OnDestroy {
+  @ViewChild('searchInput') searchInput!: ElementRef
+
   private $api = inject(ApiService)
   private $modal = inject(NgbModal)
   private $plugin = inject(ManagePluginsService)
@@ -44,6 +46,7 @@ export class PluginsComponent implements OnInit, OnDestroy {
   public loading = true
   public installedPlugins: any = []
   public childBridges = []
+  public showSearchBar = false
   public showExitButton = false
   public form = new FormGroup({
     query: new FormControl(''),
@@ -62,6 +65,10 @@ export class PluginsComponent implements OnInit, OnDestroy {
 
       // Load list of installed plugins
       await this.loadInstalledPlugins()
+
+      if (!this.installedPlugins.length) {
+        this.showSearch()
+      }
 
       // Get any query parameters
       const { action: queryAction, plugin: queryPlugin } = this.$router.parseUrl(this.$router.url).queryParams
@@ -274,6 +281,21 @@ export class PluginsComponent implements OnInit, OnDestroy {
 
   getPluginChildBridges(plugin: any) {
     return this.childBridges.filter(x => x.plugin === plugin.name)
+  }
+
+  showSearch() {
+    if (this.showSearchBar) {
+      this.showSearchBar = false
+      if (this.isSearchMode) {
+        this.isSearchMode = false
+        this.form.setValue({ query: '' })
+        this.loadInstalledPlugins()
+      }
+      setTimeout(() => this.searchInput.nativeElement.blur(), 0)
+    } else {
+      this.showSearchBar = true
+      setTimeout(() => this.searchInput.nativeElement.focus(), 0)
+    }
   }
 
   openSupport() {

@@ -309,6 +309,7 @@
   "plugins.placeholder_search_first": "Använd sökfältet ovan för att hitta din första plugin",
   "plugins.placeholder_search_none": "No results were found",
   "plugins.placeholder_search_plugin": "Sök efter plugins att installera…",
+  "plugins.search": "Search Plugins",
   "plugins.settings.custom.homebridge-gsh.label_account_linked": "Konto länkat",
   "plugins.settings.custom.homebridge-gsh.label_link_account": "Länka konto",
   "plugins.settings.custom.homebridge-gsh.message_about": "Med pluginet Homebridge Google Smart Home kan du kontrollera dina Homebridge-tillbehör från en Google Home-aktiverad smarthögtalare eller Google Home-mobilappen.",
