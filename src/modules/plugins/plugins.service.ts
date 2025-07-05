@@ -1099,7 +1099,8 @@ export class PluginsService {
       case 'homebridge-config-ui-x': {
         try {
           const release = await firstValueFrom(this.httpService.get(`https://api.github.com/repos/homebridge/${pluginName}/releases/latest`))
-          const changelog = await firstValueFrom(this.httpService.get(`https://raw.githubusercontent.com/homebridge/${pluginName}/refs/tags/${release.data.tag_name}/CHANGELOG.md`))
+          const tags = await firstValueFrom(this.httpService.get(`https://api.github.com/repos/homebridge/${pluginName}/tags`))
+          const changelog = await firstValueFrom(this.httpService.get(`https://raw.githubusercontent.com/homebridge/${pluginName}/refs/tags/${tags.data[0].name}/CHANGELOG.md`))
           return {
             name: release.data.name,
             notes: release.data.body,

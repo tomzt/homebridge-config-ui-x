@@ -29,6 +29,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - show colour temp values in mired and kelvin
 - add saturation control to lightbulb control modal
 - add transparency to slider handles in accessory control modals
+- obtain hb/ui changelog from the most recent github tag
 
 ### Homebridge Dependencies
 
