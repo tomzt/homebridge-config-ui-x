@@ -30,6 +30,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - add saturation control to lightbulb control modal
 - add transparency to slider handles in accessory control modals
 - obtain hb/ui changelog from the most recent github tag
+- add plugin support button and modal
 
 ### Homebridge Dependencies
 

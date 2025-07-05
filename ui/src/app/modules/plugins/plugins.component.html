@@ -3,8 +3,18 @@
 }
 
 <div class="row mb-3">
-  <div class="col-12">
+  <div class="col-6">
     <h3 class="primary-text m-0">{{ 'menu.label_plugins' | translate }}</h3>
+  </div>
+  <div class="col-6 text-end d-none d-sm-inline-block">
+    <button
+      type="button"
+      class="btn btn-elegant my-0 me-0"
+      (click)="openSupport()"
+      [attr.aria-label]="'support.title' | translate"
+    >
+      <i class="fa fa-fw fa-question-circle-o"></i>
+    </button>
   </div>
 </div>
 

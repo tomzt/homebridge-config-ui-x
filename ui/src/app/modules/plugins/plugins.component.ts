@@ -14,6 +14,7 @@ import { ManagePluginsService } from '@/app/core/manage-plugins/manage-plugins.s
 import { SettingsService } from '@/app/core/settings.service'
 import { IoNamespace, WsService } from '@/app/core/ws.service'
 import { PluginCardComponent } from '@/app/modules/plugins/plugin-card/plugin-card.component'
+import { PluginSupportComponent } from '@/app/modules/plugins/plugin-support/plugin-support.component'
 
 @Component({
   templateUrl: './plugins.component.html',
@@ -273,6 +274,13 @@ export class PluginsComponent implements OnInit, OnDestroy {
 
   getPluginChildBridges(plugin: any) {
     return this.childBridges.filter(x => x.plugin === plugin.name)
+  }
+
+  openSupport() {
+    this.$modal.open(PluginSupportComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    })
   }
 
   ngOnDestroy() {
