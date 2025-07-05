@@ -58,6 +58,7 @@ async function bootstrap(): Promise<NestFastifyApplication> {
         connectSrc: ['\'self\'', 'https://openweathermap.org', 'https://api.openweathermap.org', (req) => {
           return `wss://${req.headers.host} ws://${req.headers.host} ${startupConfig.cspWsOverride || ''}`
         }],
+        frameSrc: ['\'self\'', 'data:', 'https://developers.homebridge.io'],
         scriptSrcAttr: null,
         fontSrc: null,
         objectSrc: null,

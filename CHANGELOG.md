@@ -32,6 +32,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - obtain hb/ui changelog from the most recent github tag
 - add plugin support button and modal
 - add plugin search button, hide bar by default
+- add tab in plugins showing plugin analytics in `iframe`
 
 ### Homebridge Dependencies
 

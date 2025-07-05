@@ -322,6 +322,8 @@
   "plugins.settings.message_manual_config_required": "Этот плагин должен быть настроен вручную через редактор конфигурации Homebridge UI.",
   "plugins.settings.plugin_config_saved": "Конфигурация плагина сохранена",
   "plugins.settings.restart_required": "Перезапустите Homebridge для применения изменений.",
+  "plugins.stats": "Plugin Statistics",
+  "plugins.stats_note": "Plugins cannot be installed from this page, this is provided just for interest.",
   "plugins.status_disabled": "Отключён",
   "plugins.status_installed": "Установлен",
   "plugins.support.list_1": "Homebridge plugins are the building blocks of Homebridge, allowing you to add support for new accessories and platforms. Plugins add support for smart lights, cameras, TVs, etc, for brands that don't natively support HomeKit. For example, to bring your Ring doorbells and cameras into HomeKit, you can install the <code>homebridge-ring</code> plugin.",

@@ -36,3 +36,29 @@
     width: 100%;
   }
 }
+
+.hb-stats-header {
+  background: #242424;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+
+  code {
+    border: 1px solid grey;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 0.8rem;
+    color: lightgrey;
+  }
+}
+
+.hb-stats {
+  height: calc(100% - 121px);
+  width: 100%;
+  overflow: hidden;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+
+  @media (max-width: 767px) {
+    height: calc(100% - 60px);
+  }
+}
