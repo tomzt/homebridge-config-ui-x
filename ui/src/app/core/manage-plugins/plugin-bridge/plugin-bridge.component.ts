@@ -1,3 +1,5 @@
+import type { DeviceInfo, PluginSchema } from '@/app/core/manage-plugins/manage-plugins.interfaces'
+
 import { NgClass } from '@angular/common'
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormsModule } from '@angular/forms'
@@ -11,23 +13,7 @@ import { ApiService } from '@/app/core/api.service'
 import { QrcodeComponent } from '@/app/core/components/qrcode/qrcode.component'
 import { RestartHomebridgeComponent } from '@/app/core/components/restart-homebridge/restart-homebridge.component'
 import { ManagePluginsService } from '@/app/core/manage-plugins/manage-plugins.service'
-import { PluginSchema } from '@/app/core/manage-plugins/plugin-config/plugin-config.component'
 import { SettingsService } from '@/app/core/settings.service'
-
-interface DeviceInfo {
-  category: number
-  configVersion: number
-  displayName: string
-  lastFirmwareVersion: string
-  pincode: string
-  setupID: string
-  _category: string
-  _id: string
-  _isPaired: boolean
-  _main: boolean
-  _setupCode: string
-  _username: string
-}
 
 @Component({
   templateUrl: './plugin-bridge.component.html',

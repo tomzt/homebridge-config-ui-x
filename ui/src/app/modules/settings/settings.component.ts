@@ -1,3 +1,5 @@
+import type { NetworkAdapterAvailable, NetworkAdapterSelected } from '@/app/modules/settings/settings.interfaces'
+
 import { animate, style, transition, trigger } from '@angular/animations'
 import { NgClass, TitleCasePipe } from '@angular/common'
 import { Component, inject, OnInit } from '@angular/core'
@@ -22,39 +24,6 @@ import { ResetAllBridgesComponent } from '@/app/modules/settings/reset-all-bridg
 import { ResetIndividualBridgesComponent } from '@/app/modules/settings/reset-individual-bridges/reset-individual-bridges.component'
 import { SelectNetworkInterfacesComponent } from '@/app/modules/settings/select-network-interfaces/select-network-interfaces.component'
 import { WallpaperComponent } from '@/app/modules/settings/wallpaper/wallpaper.component'
-
-interface NetworkAdapterAvailable {
-  carrierChanges?: number
-  default?: boolean
-  dhcp?: boolean
-  dnsSuffix?: string
-  duplex?: string
-  ieee8021xAuth?: string
-  ieee8021xState?: string
-  iface: string
-  ifaceName: string
-  internal: boolean
-  ip4: string
-  ip4subnet: string
-  ip6: string
-  ip6subnet: string
-  mac: string
-  mtu: number
-  missing?: boolean
-  operstate: string
-  selected: boolean
-  speed: number
-  type: string
-  virtual?: boolean
-}
-
-interface NetworkAdapterSelected {
-  iface: string
-  missing: boolean
-  selected: true
-  ip4?: string
-  ip6?: string
-}
 
 @Component({
   templateUrl: './settings.component.html',

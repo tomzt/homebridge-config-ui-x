@@ -1,10 +1,10 @@
+/* global NodeJS */
 import { NgClass } from '@angular/common'
 import { Component, inject, OnDestroy, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { TranslatePipe, TranslateService } from '@ngx-translate/core'
 import { ToastrService } from 'ngx-toastr'
 
-/* global NodeJS */
 import { ApiService } from '@/app/core/api.service'
 import { SettingsService } from '@/app/core/settings.service'
 import { IoNamespace, WsService } from '@/app/core/ws.service'

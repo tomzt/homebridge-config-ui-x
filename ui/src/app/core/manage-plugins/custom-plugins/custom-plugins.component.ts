@@ -1,3 +1,5 @@
+import type { PluginSchema } from '@/app/core/manage-plugins/manage-plugins.interfaces'
+
 import { NgClass } from '@angular/common'
 import { Component, ElementRef, inject, Input, OnDestroy, OnInit, viewChild } from '@angular/core'
 import { NgbActiveModal, NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap'
@@ -11,7 +13,6 @@ import { RestartChildBridgesComponent } from '@/app/core/components/restart-chil
 import { RestartHomebridgeComponent } from '@/app/core/components/restart-homebridge/restart-homebridge.component'
 import { SchemaFormComponent } from '@/app/core/components/schema-form/schema-form.component'
 import { ManagePluginsService } from '@/app/core/manage-plugins/manage-plugins.service'
-import { PluginSchema } from '@/app/core/manage-plugins/plugin-config/plugin-config.component'
 import { SettingsService } from '@/app/core/settings.service'
 import { IoNamespace, WsService } from '@/app/core/ws.service'
 import { environment } from '@/environments/environment'

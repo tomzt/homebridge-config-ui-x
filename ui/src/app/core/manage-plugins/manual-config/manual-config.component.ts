@@ -1,3 +1,5 @@
+import type { PluginSchema } from '@/app/core/manage-plugins/manage-plugins.interfaces'
+
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
@@ -22,7 +24,6 @@ import { ApiService } from '@/app/core/api.service'
 import { RestartChildBridgesComponent } from '@/app/core/components/restart-child-bridges/restart-child-bridges.component'
 import { RestartHomebridgeComponent } from '@/app/core/components/restart-homebridge/restart-homebridge.component'
 import { ManagePluginsService } from '@/app/core/manage-plugins/manage-plugins.service'
-import { PluginSchema } from '@/app/core/manage-plugins/plugin-config/plugin-config.component'
 import { MobileDetectService } from '@/app/core/mobile-detect.service'
 import { SettingsService } from '@/app/core/settings.service'
 

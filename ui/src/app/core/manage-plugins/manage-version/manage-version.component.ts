@@ -1,3 +1,5 @@
+import type { VersionData } from '@/app/core/manage-plugins/manage-plugins.interfaces'
+
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
@@ -10,14 +12,6 @@ import { rcompare } from 'semver'
 
 import { ApiService } from '@/app/core/api.service'
 import { SettingsService } from '@/app/core/settings.service'
-
-interface VersionData {
-  version: string
-  engines?: {
-    homebridge: string
-    node: string
-  }
-}
 
 @Component({
   templateUrl: './manage-version.component.html',

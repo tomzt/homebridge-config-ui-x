@@ -1,3 +1,5 @@
+import type { Pairing } from '@/app/modules/settings/settings.interfaces'
+
 import { NgClass } from '@angular/common'
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormsModule } from '@angular/forms'
@@ -8,14 +10,6 @@ import { ToastrService } from 'ngx-toastr'
 import { firstValueFrom } from 'rxjs'
 
 import { ApiService } from '@/app/core/api.service'
-
-interface Pairing {
-  _id: string
-  _username: string
-  _main?: boolean
-  name: string
-  accessories: any[]
-}
 
 @Component({
   templateUrl: './remove-individual-accessories.component.html',

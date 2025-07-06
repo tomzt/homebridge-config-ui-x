@@ -1,40 +1,9 @@
+import type { NetworkAdapterAvailable, NetworkAdapterSelected } from '@/app/modules/settings/settings.interfaces'
+
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe } from '@ngx-translate/core'
-
-interface NetworkAdapterAvailable {
-  carrierChanges?: number
-  default?: boolean
-  dhcp?: boolean
-  dnsSuffix?: string
-  duplex?: string
-  ieee8021xAuth?: string
-  ieee8021xState?: string
-  iface: string
-  ifaceName: string
-  internal: boolean
-  ip4: string
-  ip4subnet: string
-  ip6: string
-  ip6subnet: string
-  mac: string
-  mtu: number
-  missing?: boolean
-  operstate: string
-  selected?: boolean
-  speed: number
-  type: string
-  virtual?: boolean
-}
-
-interface NetworkAdapterSelected {
-  iface: string
-  ip4: string
-  ip6: string
-  missing: boolean
-  selected: boolean
-}
 
 @Component({
   templateUrl: './select-network-interfaces.component.html',

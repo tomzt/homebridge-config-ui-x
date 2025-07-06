@@ -7,19 +7,7 @@ import { ToastrService } from 'ngx-toastr'
 import { firstValueFrom } from 'rxjs'
 
 import { ApiService } from '@/app/core/api.service'
-
-interface ChildBridge {
-  identifier: string
-  manuallyStopped: boolean
-  name: string
-  paired: boolean
-  pid: number
-  pin: string
-  plugin: string
-  setupUri: string
-  status: string
-  username: string
-}
+import { ChildBridge } from '@/app/core/manage-plugins/manage-plugins.interfaces'
 
 @Component({
   templateUrl: './reset-accessories.component.html',

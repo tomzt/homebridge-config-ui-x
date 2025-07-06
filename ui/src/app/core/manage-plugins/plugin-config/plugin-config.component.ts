@@ -1,3 +1,5 @@
+import type { PluginConfigBlock, PluginSchema } from '@/app/core/manage-plugins/manage-plugins.interfaces'
+
 import { NgClass } from '@angular/common'
 import { Component, inject, Input, OnInit } from '@angular/core'
 import {
@@ -27,24 +29,6 @@ import { HomebridgeHueComponent } from '@/app/core/manage-plugins/custom-plugins
 import { ManagePluginsService } from '@/app/core/manage-plugins/manage-plugins.service'
 import { InterpolateMdPipe } from '@/app/core/pipes/interpolate-md.pipe'
 import { SettingsService } from '@/app/core/settings.service'
-
-export interface PluginConfigBlock {
-  config: Record<string, any>
-  name: string
-  __uuid__: string
-}
-
-export interface PluginSchema {
-  pluginAlias: string
-  pluginType: 'platform' | 'accessory'
-  strictValidation?: boolean
-  singular?: boolean
-  headerDisplay?: string
-  footerDisplay?: string
-  schema: any
-  form?: any
-  display?: any
-}
 
 @Component({
   templateUrl: './plugin-config.component.html',
