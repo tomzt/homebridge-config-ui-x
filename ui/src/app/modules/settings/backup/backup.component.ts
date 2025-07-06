@@ -74,6 +74,10 @@ export class BackupComponent implements OnInit {
   async saveUiSettingChange(key: string, value: any) {
     try {
       await firstValueFrom(this.$api.put('/config-editor/ui', { key, value }))
+
+      // Update the environment variable in the settings service
+      this.$settings.setEnvItem(key, value)
+
       this.showRestartToast()
     } catch (error) {
       console.error(error)
@@ -150,26 +154,37 @@ export class BackupComponent implements OnInit {
 
   async onDownloadBackupClick() {
     this.clicked = true
-    this.$api.get('/backup/download', { observe: 'response', responseType: 'blob' }).subscribe({
-      next: (res) => {
-        const archiveName = res.headers.get('File-Name') || 'homebridge-backup.tar.gz'
-        this.clicked = false
-        const sizeInBytes = res.body.size
-        if (sizeInBytes > globalThis.backup.maxBackupSize) {
-          const message = this.$translate.instant('backup.backup_exceeds_max_size', {
-            maxBackupSizeText: globalThis.backup.maxBackupSizeText,
-            size: `${(sizeInBytes / (1024 * 1024)).toFixed(1)}MB`,
-          })
-          this.$toastr.warning(message, this.$translate.instant('toast.title_warning'))
-        }
-        saveAs(res.body, archiveName)
-      },
-      error: (error) => {
-        this.clicked = false
-        console.error(error)
-        this.$toastr.error(this.$translate.instant('backup.backup_download_failed'), this.$translate.instant('toast.title_error'))
-      },
-    })
+    try {
+      const res = await firstValueFrom(this.$api.get('/backup/download', { observe: 'response', responseType: 'blob' }))
+      const archiveName = res.headers.get('File-Name') || 'homebridge-backup.tar.gz'
+      const sizeInBytes = res.body.size
+      if (sizeInBytes > globalThis.backup.maxBackupSize) {
+        const message = this.$translate.instant('backup.backup_exceeds_max_size', {
+          maxBackupSizeText: globalThis.backup.maxBackupSizeText,
+          size: `${(sizeInBytes / (1024 * 1024)).toFixed(1)}MB`,
+        })
+        this.$toastr.warning(message, this.$translate.instant('toast.title_warning'))
+      }
+      saveAs(res.body, archiveName)
+      this.clicked = false
+    } catch (error) {
+      this.clicked = false
+      console.error(error)
+      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
+    }
+  }
+
+  async onCreateBackupClick() {
+    this.clicked = true
+    try {
+      await firstValueFrom(this.$api.post('/backup', {}))
+      this.clicked = false
+      this.getScheduledBackups()
+    } catch (error) {
+      this.clicked = false
+      console.error(error)
+      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
+    }
   }
 
   showRestartToast() {

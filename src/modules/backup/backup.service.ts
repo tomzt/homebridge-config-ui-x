@@ -369,12 +369,6 @@ export class BackupService {
   async downloadBackup(reply: FastifyReply): Promise<StreamableFile> {
     const { backupDir, backupPath, backupFileName } = await this.createBackup()
 
-    // Remove temp files (called when download finished)
-    async function cleanup() {
-      await remove(resolve(backupDir))
-      this.logger.log(`Backup complete, removing ${backupDir}.`)
-    }
-
     // Set download headers
     reply.raw.setHeader('Content-type', 'application/octet-stream')
     reply.raw.setHeader('Content-disposition', `attachment; filename=${backupFileName}`)
@@ -385,7 +379,34 @@ export class BackupService {
       reply.raw.setHeader('access-control-allow-origin', 'http://localhost:4200')
     }
 
-    return new StreamableFile(createReadStream(backupPath).on('close', cleanup.bind(this)))
+    return new StreamableFile(createReadStream(backupPath).on('close', () => remove(resolve(backupDir))))
+  }
+
+  /**
+   * Create a backup file and save it in the backup directory
+   */
+  async createBackupInDirectory(): Promise<void> {
+    // Ensure backup path exists
+    try {
+      await this.ensureScheduledBackupPath()
+    } catch (error) {
+      this.logger.error(`Create backup failed: ${error.message}`)
+      throw new NotFoundException()
+    }
+
+    try {
+      const { backupDir, backupPath, instanceId } = await this.createBackup()
+
+      await copy(backupPath, resolve(
+        this.configService.instanceBackupPath,
+        `homebridge-backup-${instanceId}.${new Date().getTime().toString()}.tar.gz`,
+      ))
+
+      await remove(resolve(backupDir))
+    } catch (error) {
+      this.logger.error(`Create backup failed: ${error.message}`)
+      throw new InternalServerErrorException(error.message)
+    }
   }
 
   /**

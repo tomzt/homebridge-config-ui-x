@@ -212,6 +212,8 @@ export class ConfigService {
         port: this.ui.port,
         serviceMode: this.serviceMode,
         setupWizardComplete: this.setupWizardComplete,
+        scheduledBackupDisable: Boolean(this.ui.scheduledBackupDisable),
+        scheduledBackupPath: this.ui.scheduledBackupPath || this.instanceBackupPath,
       },
       formAuth: Boolean(this.ui.auth !== 'none'),
       sessionTimeout: this.ui.sessionTimeout || 28800,

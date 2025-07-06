@@ -2,7 +2,7 @@
 
 All notable changes to `homebridge-config-ui-x` will be documented in this file. This project tries to adhere to [Semantic Versioning](http://semver.org/).
 
-## v4.78.1 (2025-07-03)
+## v4.79.0 (Unreleased)
 
 ### ⚠️ Upcoming Deprecations:
 
@@ -12,7 +12,22 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
   - Drop support for Node.js `v18` and earlier, so please update to `v20` or `v22` - [more info on updating](https://github.com/homebridge/homebridge/wiki/How-To-Update-Node.js)
   - Drop support for Raspberry Pi devices running on the `armv6` architecture (like the Pi 1 and Pi Zero) - please update your hardware
   - Drop support for instances using `pnpm` as the package manager - consider updating your Homebridge instance to use npm instead - [more info on updating](https://github.com/homebridge/homebridge-apt-pkg/blob/latest/README.md#using-apt)
-- Note that these are not requirements for UI `v4.78.1`
+- Note that these are not requirements for UI `v4.79.0`
+
+### UI Changes
+
+- updates to the `th.json` language file (#2482) (@tomzt)
+- updates to the `th.json` language file (#2483) (@tomzt)
+- updates to the `nl.json` language file (#2487) (@hendriksen-mark)
+- various updates to the backup/restore modal
+
+### Homebridge Dependencies
+
+- `@homebridge/hap-client` @ `v3.1.0`
+- `@homebridge/node-pty-prebuilt-multiarch` @ `v0.11.14`
+- `@homebridge/plugin-ui-utils` @ `v2.1.0`
+
+## v4.78.1 (2025-07-03)
 
 ### Other Changes
 
@@ -77,6 +92,11 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - `@homebridge/plugin-ui-utils` @ `v2.1.0`
 
 ## v4.76.0 (2025-06-07)
+
+### ⚠️ Config Property Change:
+
+- The `loginWallpaper` UI config property has been renamed to `wallpaper`
+- This was detected after the release of v4.76.0, and is being documented here post-release.
 
 ### UI Changes
 

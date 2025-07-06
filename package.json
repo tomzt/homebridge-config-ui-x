@@ -122,10 +122,10 @@
   "devDependencies": {
     "@antfu/eslint-config": "^4.16.2",
     "@nestjs/testing": "^10.4.19",
-    "@prettier/plugin-xml": "^3.4.1",
+    "@prettier/plugin-xml": "^3.4.2",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash": "^4.17.20",
-    "@types/node": "^24.0.10",
+    "@types/node": "^24.0.12",
     "@types/node-schedule": "^2.1.7",
     "@types/passport-jwt": "^4.0.1",
     "@types/semver": "^7.7.0",

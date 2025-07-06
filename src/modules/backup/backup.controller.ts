@@ -38,6 +38,13 @@ export class BackupController {
   ) {}
 
   @UseGuards(AdminGuard)
+  @ApiOperation({ summary: 'Create a backup file and save it in the backup directory.' })
+  @Post('/')
+  async createBackupInDirectory(): Promise<void> {
+    return await this.backupService.createBackupInDirectory()
+  }
+
+  @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Download a `.tar.gz` of the Homebridge instance.' })
   @Get('/download')
   async downloadBackup(@Res({ passthrough: true }) res): Promise<StreamableFile> {

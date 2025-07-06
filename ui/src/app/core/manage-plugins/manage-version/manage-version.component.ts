@@ -1,7 +1,7 @@
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
-import { NgbActiveModal, NgbAlert } from '@ng-bootstrap/ng-bootstrap'
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe, TranslateService } from '@ngx-translate/core'
 import { ToastrService } from 'ngx-toastr'
 import { firstValueFrom } from 'rxjs'
@@ -25,7 +25,6 @@ interface VersionData {
   imports: [
     FormsModule,
     TranslatePipe,
-    NgbAlert,
     ReactiveFormsModule,
   ],
 })

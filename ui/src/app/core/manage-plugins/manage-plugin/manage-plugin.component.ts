@@ -3,7 +3,6 @@ import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import {
   NgbActiveModal,
-  NgbAlert,
   NgbModal,
   NgbNav,
   NgbNavContent,
@@ -36,7 +35,6 @@ import { HbV2ModalComponent } from '@/app/modules/status/widgets/update-info-wid
     PluginsMarkdownDirective,
     TranslatePipe,
     NgClass,
-    NgbAlert,
     NgbNavOutlet,
     NgbNav,
     NgbNavItem,
