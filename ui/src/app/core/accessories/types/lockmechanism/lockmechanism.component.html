@@ -8,11 +8,13 @@
 >
   <div class="d-flex flex-column h-100">
     @if (service.values.LockCurrentState === 0) {
-    <div [inlineSVG]="'/assets/hap-icons/lock-unlocked.svg'" [attr.aria-label]="'Unlocked'" class="accessory-svg"></div>
-    } @if (service.values.LockCurrentState === 1) {
-    <div [inlineSVG]="'/assets/hap-icons/lock-locked.svg'" [attr.aria-label]="'Locked'" class="accessory-svg"></div>
-    } @if (service.values.LockCurrentState > 1) {
-    <div [inlineSVG]="'/assets/hap-icons/unknown.svg'" [attr.aria-label]="'Error'" class="accessory-svg"></div>
+    <div [inlineSVG]="'/assets/hap-icons/lock-unlocked.svg'" [attr.aria-label]="'Lock (Unlocked)'" class="accessory-svg"></div>
+    } @else if (service.values.LockCurrentState === 1) {
+    <div [inlineSVG]="'/assets/hap-icons/lock-locked.svg'" [attr.aria-label]="'Lock (Locked)'" class="accessory-svg"></div>
+    } @else if (service.values.LockCurrentState === 2) {
+    <div [inlineSVG]="'/assets/hap-icons/lock-unlocked.svg'" [attr.aria-label]="'Lock (Jammed)'" class="accessory-svg"></div>
+    } @else if (service.values.LockCurrentState === 3) {
+    <div [inlineSVG]="'/assets/hap-icons/unknown.svg'" [attr.aria-label]="'Lock (Error)'" class="accessory-svg"></div>
     }
 
     <div class="accessory-label mt-auto">{{ service.customName || service.serviceName }}</div>
@@ -23,9 +25,9 @@
       [innerText]="(service.values.LockCurrentState ? 'accessories.control.locked' : 'accessories.control.unlocked') | translate"
       [ngClass]="{ 'red-text': !service.values.LockCurrentState, 'grey-text': service.values.LockCurrentState }"
     ></div>
-    } @if (service.values.LockCurrentState === 2) {
+    } @else if (service.values.LockCurrentState === 2) {
     <div class="accessory-label red-text">{{ 'accessories.control.jammed' | translate }}</div>
-    } @if (service.values.LockCurrentState === 3) {
+    } @else if (service.values.LockCurrentState === 3) {
     <div class="accessory-label red-text">{{ 'accessories.control.unknown' | translate }}</div>
     }
   </div>

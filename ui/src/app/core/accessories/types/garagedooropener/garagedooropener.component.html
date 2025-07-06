@@ -6,7 +6,7 @@
   tabindex="0"
 >
   <div class="d-flex flex-column h-100">
-    <div [inlineSVG]="'/assets/hap-icons/garagedoor.svg'" [attr.aria-label]="'Garage Door'" class="accessory-svg"></div>
+    <div [inlineSVG]="'/assets/hap-icons/garage-door.svg'" [attr.aria-label]="'Garage Door'" class="accessory-svg"></div>
     <div class="accessory-label mt-auto">{{ service.customName || service.serviceName }}</div>
 
     @if (service.values.CurrentDoorState < 2 ) {

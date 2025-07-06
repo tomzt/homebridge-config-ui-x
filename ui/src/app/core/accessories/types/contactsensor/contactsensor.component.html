@@ -8,14 +8,14 @@
   <div class="d-flex flex-column h-100">
     @if (service.values.ContactSensorState) {
     <div
-      [inlineSVG]="'/assets/hap-icons/contactsensor-open.svg'"
-      [attr.aria-label]="'Switch'"
+      [inlineSVG]="'/assets/hap-icons/contact-sensor-open.svg'"
+      [attr.aria-label]="'Contact Sensor (Open)'"
       class="accessory-svg"
     ></div>
     } @if (!service.values.ContactSensorState) {
     <div
-      [inlineSVG]="'/assets/hap-icons/contactsensor-closed.svg'"
-      [attr.aria-label]="'Switch'"
+      [inlineSVG]="'/assets/hap-icons/contact-sensor-closed.svg'"
+      [attr.aria-label]="'Contact Sensor (Closed)'"
       class="accessory-svg"
     ></div>
     }

@@ -9,14 +9,14 @@
   <div class="d-flex flex-column h-100">
     @if (!service.values.TargetPosition) {
     <div
-      [inlineSVG]="'/assets/hap-icons/windowcovering-closed.svg'"
-      [attr.aria-label]="'Window Covering'"
+      [inlineSVG]="'/assets/hap-icons/window-covering-closed.svg'"
+      [attr.aria-label]="'Window Covering (Closed)'"
       class="accessory-svg"
     ></div>
     } @if (service.values.TargetPosition) {
     <div
-      [inlineSVG]="'/assets/hap-icons/windowcovering-open.svg'"
-      [attr.aria-label]="'Window Covering'"
+      [inlineSVG]="'/assets/hap-icons/window-covering-open.svg'"
+      [attr.aria-label]="'Window Covering (Open)'"
       class="accessory-svg"
     ></div>
     }

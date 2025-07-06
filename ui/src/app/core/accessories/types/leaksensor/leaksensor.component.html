@@ -6,7 +6,7 @@
   }"
 >
   <div class="d-flex flex-column h-100">
-    <div [inlineSVG]="'/assets/hap-icons/leaksensor.svg'" [attr.aria-label]="'Leak Sensor'" class="accessory-svg"></div>
+    <div [inlineSVG]="'/assets/hap-icons/leak-sensor.svg'" [attr.aria-label]="'Leak Sensor'" class="accessory-svg"></div>
     <div class="accessory-label mt-auto">{{ service.customName || service.serviceName }}</div>
     @if (service.values.LeakDetected) {
     <div class="accessory-label red-text">{{ 'accessories.control.detected' | translate }}</div>

@@ -9,7 +9,7 @@
   preserveAspectRatio="xMidYMid meet"
 >
   <g transform="scale(1, 0.75) translate(0, -40)">
-    <g id="airpurifier">
+    <g id="filter-maintenance">
       <polygon
         id="Path"
         fill="#808080"

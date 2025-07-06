@@ -8,11 +8,11 @@
 >
   <div class="d-flex flex-column h-100">
     @if (!service.values.Active) {
-    <img src="/assets/hap-icons/fan-off.svg" alt="Fan" class="accessory-img" />
+    <img src="/assets/hap-icons/fan-off.svg" alt="Fan (Off)" class="accessory-img" />
     } @if (service.values.Active) {
     <img
       src="/assets/hap-icons/fan-on.svg"
-      alt="Fan"
+      alt="Fan (On)"
       class="accessory-img"
       [ngClass]="{
         'spin': !hasRotationDirection || (hasRotationDirection && service.values.RotationDirection === 0),
