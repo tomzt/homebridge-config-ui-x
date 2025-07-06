@@ -34,6 +34,10 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - add plugin search button, hide bar by default
 - add tab in plugins showing plugin analytics in `iframe`
 
+### Other Changes
+
+- code cleanup inside angular module files
+
 ### Homebridge Dependencies
 
 - `@homebridge/hap-client` @ `v3.1.0`

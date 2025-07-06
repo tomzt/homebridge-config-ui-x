@@ -1,8 +1,5 @@
-import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { JwtModule } from '@auth0/angular-jwt'
-import { TranslateModule } from '@ngx-translate/core'
 
 import { AdminGuard } from '@/app/core/auth/admin.guard'
 import { AuthGuard } from '@/app/core/auth/auth.guard'
@@ -13,10 +10,6 @@ const tokenGetter = () => localStorage.getItem(environment.jwt.tokenKey)
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TranslateModule.forChild(),
     JwtModule.forRoot({
       config: {
         authScheme: 'bearer ',
