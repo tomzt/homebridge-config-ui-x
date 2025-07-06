@@ -14,8 +14,8 @@ import { ConvertTempPipe } from '@/app/core/pipes/convert-temp.pipe'
 import { SettingsService } from '@/app/core/settings.service'
 
 @Component({
-  templateUrl: './thermostat.manage.component.html',
-  styleUrls: ['./thermostat.component.scss'],
+  templateUrl: './heater-cooler.manage.component.html',
+  styleUrls: ['./heater-cooler.component.scss'],
   standalone: true,
   imports: [
     NgClass,
@@ -27,32 +27,24 @@ import { SettingsService } from '@/app/core/settings.service'
     UpperCasePipe,
   ],
 })
-export class ThermostatManageComponent implements OnInit {
+export class HeaterCoolerManageComponent implements OnInit {
   $activeModal = inject(NgbActiveModal)
   $settings = inject(SettingsService)
 
   @Input() public service: ServiceTypeX
 
+  public targetState: number
   public targetMode: number
-  public targetTemperature: any
-  public targetTemperatureChanged: Subject<string> = new Subject<string>()
-  public targetThresholdChanged: Subject<string> = new Subject<string>()
+  public targetTemperatureChanged: Subject<any> = new Subject<any>()
   public targetStateValidValues: number[] = []
   public CoolingThresholdTemperature: CharacteristicType
   public HeatingThresholdTemperature: CharacteristicType
   public targetCoolingTemp: number
   public targetHeatingTemp: number
   public autoTemp: [number, number]
-  public hasHumidity: boolean = false
 
   constructor() {
     this.targetTemperatureChanged
-      .pipe(debounceTime(500))
-      .subscribe(() => {
-        this.service.getCharacteristic('TargetTemperature').setValue(this.targetTemperature.value)
-      })
-
-    this.targetThresholdChanged
       .pipe(debounceTime(500))
       .subscribe(() => {
         if (this.HeatingThresholdTemperature) {
@@ -65,14 +57,12 @@ export class ThermostatManageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.targetMode = this.service.values.TargetHeatingCoolingState
+    this.targetState = this.service.values.Active
+    this.targetMode = this.service.values.TargetHeaterCoolerState
     this.CoolingThresholdTemperature = this.service.getCharacteristic('CoolingThresholdTemperature')
     this.HeatingThresholdTemperature = this.service.getCharacteristic('HeatingThresholdTemperature')
-    this.targetStateValidValues = this.service.getCharacteristic('TargetHeatingCoolingState').validValues as number[]
+    this.targetStateValidValues = this.service.getCharacteristic('TargetHeaterCoolerState').validValues as number[]
     this.loadTargetTemperature()
-    if (this.service.getCharacteristic('CurrentRelativeHumidity')) {
-      this.hasHumidity = true
-    }
     setTimeout(() => {
       const sliderElements = document.querySelectorAll('.noUi-target')
       sliderElements.forEach((sliderElement: HTMLElement) => {
@@ -82,35 +72,31 @@ export class ThermostatManageComponent implements OnInit {
   }
 
   loadTargetTemperature() {
-    const TargetTemperature = this.service.getCharacteristic('TargetTemperature')
-    this.targetTemperature = {
-      value: TargetTemperature.value,
-      min: TargetTemperature.minValue,
-      max: TargetTemperature.maxValue,
-      step: TargetTemperature.minStep,
-    }
     this.targetCoolingTemp = this.service.getCharacteristic('CoolingThresholdTemperature')?.value as number
     this.targetHeatingTemp = this.service.getCharacteristic('HeatingThresholdTemperature')?.value as number
     this.autoTemp = [this.targetHeatingTemp, this.targetCoolingTemp]
   }
 
+  setTargetState(value: number) {
+    this.targetState = value
+    this.service.getCharacteristic('Active').setValue(this.targetState)
+    this.loadTargetTemperature()
+  }
+
   setTargetMode(value: number) {
     this.targetMode = value
-    this.service.getCharacteristic('TargetHeatingCoolingState').setValue(this.targetMode)
+    this.service.getCharacteristic('TargetHeaterCoolerState').setValue(this.targetMode)
+    this.loadTargetTemperature()
   }
 
   onTemperatureStateChange() {
-    this.targetTemperatureChanged.next(this.targetTemperature.value)
-  }
-
-  onThresholdStateChange() {
     this.autoTemp = [this.targetHeatingTemp, this.targetCoolingTemp]
-    this.targetThresholdChanged.next(undefined)
+    this.targetTemperatureChanged.next(undefined)
   }
 
-  onAutoThresholdStateChange() {
+  onAutoTemperatureStateChange() {
     this.targetHeatingTemp = this.autoTemp[0]
     this.targetCoolingTemp = this.autoTemp[1]
-    this.targetThresholdChanged.next(undefined)
+    this.targetTemperatureChanged.next(undefined)
   }
 }

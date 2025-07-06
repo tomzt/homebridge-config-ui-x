@@ -7,7 +7,6 @@ import { TranslatePipe } from '@ngx-translate/core'
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 
 @Component({
-  selector: 'app-television-manage',
   templateUrl: './television.manage.component.html',
   standalone: true,
   imports: [

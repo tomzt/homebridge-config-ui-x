@@ -11,7 +11,6 @@ import { LongClickDirective } from '@/app/core/directives/longclick.directive'
 @Component({
   selector: 'app-door',
   templateUrl: './door.component.html',
-  styleUrls: ['./door.component.scss'],
   standalone: true,
   imports: [
     LongClickDirective,

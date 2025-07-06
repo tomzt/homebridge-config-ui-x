@@ -5,12 +5,12 @@ import { TranslatePipe } from '@ngx-translate/core'
 import { InlineSVGModule } from 'ng-inline-svg-2'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
-import { WindowManageComponent } from '@/app/core/accessories/types/window/window.manage.component'
+import { LockMechanismManageComponent } from '@/app/core/accessories/types/lock-mechanism/lock-mechanism.manage.component'
 import { LongClickDirective } from '@/app/core/directives/longclick.directive'
 
 @Component({
-  selector: 'app-window',
-  templateUrl: './window.component.html',
+  selector: 'app-lock-mechanism',
+  templateUrl: './lock-mechanism.component.html',
   standalone: true,
   imports: [
     LongClickDirective,
@@ -19,23 +19,19 @@ import { LongClickDirective } from '@/app/core/directives/longclick.directive'
     TranslatePipe,
   ],
 })
-export class WindowComponent {
-  private $modal = inject(NgbModal)
-
+export class LockMechanismComponent {
   @Input() public service: ServiceTypeX
+
+  private $modal = inject(NgbModal)
 
   constructor() {}
 
   onClick() {
-    if (this.service.values.TargetPosition) {
-      this.service.getCharacteristic('TargetPosition').setValue(0)
-    } else {
-      this.service.getCharacteristic('TargetPosition').setValue(100)
-    }
+    this.service.getCharacteristic('LockTargetState').setValue(this.service.values.LockTargetState ? 0 : 1)
   }
 
   onLongClick() {
-    const ref = this.$modal.open(WindowManageComponent, {
+    const ref = this.$modal.open(LockMechanismManageComponent, {
       size: 'md',
       backdrop: 'static',
     })

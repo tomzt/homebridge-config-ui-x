@@ -5,12 +5,13 @@ import { TranslatePipe } from '@ngx-translate/core'
 import { InlineSVGModule } from 'ng-inline-svg-2'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
-import { WindowManageComponent } from '@/app/core/accessories/types/window/window.manage.component'
+import { AirPurifierManageComponent } from '@/app/core/accessories/types/air-purifier/air-purifier.manage.component'
 import { LongClickDirective } from '@/app/core/directives/longclick.directive'
 
 @Component({
-  selector: 'app-window',
-  templateUrl: './window.component.html',
+  selector: 'app-air-purifier',
+  templateUrl: './air-purifier.component.html',
+  styleUrls: ['./air-purifier.component.scss'],
   standalone: true,
   imports: [
     LongClickDirective,
@@ -19,7 +20,7 @@ import { LongClickDirective } from '@/app/core/directives/longclick.directive'
     TranslatePipe,
   ],
 })
-export class WindowComponent {
+export class AirPurifierComponent {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
@@ -27,15 +28,16 @@ export class WindowComponent {
   constructor() {}
 
   onClick() {
-    if (this.service.values.TargetPosition) {
-      this.service.getCharacteristic('TargetPosition').setValue(0)
-    } else {
-      this.service.getCharacteristic('TargetPosition').setValue(100)
+    this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+
+    // Set the brightness to 100% if on 0% when turned on
+    if (!this.service.values.On && 'RotationSpeed' in this.service.values && !this.service.values.RotationSpeed) {
+      this.service.getCharacteristic('RotationSpeed').setValue(100)
     }
   }
 
   onLongClick() {
-    const ref = this.$modal.open(WindowManageComponent, {
+    const ref = this.$modal.open(AirPurifierManageComponent, {
       size: 'md',
       backdrop: 'static',
     })

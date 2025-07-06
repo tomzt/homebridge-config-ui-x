@@ -5,12 +5,12 @@ import { TranslatePipe } from '@ngx-translate/core'
 import { InlineSVGModule } from 'ng-inline-svg-2'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
-import { WindowManageComponent } from '@/app/core/accessories/types/window/window.manage.component'
+import { WindowCoveringManageComponent } from '@/app/core/accessories/types/window-covering/window-covering.manage.component'
 import { LongClickDirective } from '@/app/core/directives/longclick.directive'
 
 @Component({
-  selector: 'app-window',
-  templateUrl: './window.component.html',
+  selector: 'app-window-covering',
+  templateUrl: './window-covering.component.html',
   standalone: true,
   imports: [
     LongClickDirective,
@@ -19,7 +19,7 @@ import { LongClickDirective } from '@/app/core/directives/longclick.directive'
     TranslatePipe,
   ],
 })
-export class WindowComponent {
+export class WindowCoveringComponent {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
@@ -35,7 +35,7 @@ export class WindowComponent {
   }
 
   onLongClick() {
-    const ref = this.$modal.open(WindowManageComponent, {
+    const ref = this.$modal.open(WindowCoveringManageComponent, {
       size: 'md',
       backdrop: 'static',
     })

@@ -11,7 +11,6 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { DurationPipe } from '@/app/core/pipes/duration.pipe'
 
 @Component({
-  selector: 'app-valve-manage',
   templateUrl: './valve.manage.component.html',
   standalone: true,
   imports: [

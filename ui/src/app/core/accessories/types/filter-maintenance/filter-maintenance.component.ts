@@ -5,21 +5,21 @@ import { TranslatePipe } from '@ngx-translate/core'
 import { InlineSVGModule } from 'ng-inline-svg-2'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
-import { WindowManageComponent } from '@/app/core/accessories/types/window/window.manage.component'
+import { FilterMaintenanceManageComponent } from '@/app/core/accessories/types/filter-maintenance/filter-maintenance.manage.component'
 import { LongClickDirective } from '@/app/core/directives/longclick.directive'
 
 @Component({
-  selector: 'app-window',
-  templateUrl: './window.component.html',
+  selector: 'app-filter-maintenance',
+  templateUrl: './filter-maintenance.component.html',
   standalone: true,
   imports: [
-    LongClickDirective,
-    NgClass,
     InlineSVGModule,
+    NgClass,
     TranslatePipe,
+    LongClickDirective,
   ],
 })
-export class WindowComponent {
+export class FilterMaintenanceComponent {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
@@ -27,15 +27,7 @@ export class WindowComponent {
   constructor() {}
 
   onClick() {
-    if (this.service.values.TargetPosition) {
-      this.service.getCharacteristic('TargetPosition').setValue(0)
-    } else {
-      this.service.getCharacteristic('TargetPosition').setValue(100)
-    }
-  }
-
-  onLongClick() {
-    const ref = this.$modal.open(WindowManageComponent, {
+    const ref = this.$modal.open(FilterMaintenanceManageComponent, {
       size: 'md',
       backdrop: 'static',
     })

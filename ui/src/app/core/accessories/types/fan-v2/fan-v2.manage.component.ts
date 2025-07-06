@@ -10,7 +10,7 @@ import { debounceTime } from 'rxjs/operators'
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 
 @Component({
-  templateUrl: './fan.manage.component.html',
+  templateUrl: './fan-v2.manage.component.html',
   standalone: true,
   imports: [
     FormsModule,
@@ -19,12 +19,12 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
     NgClass,
   ],
 })
-export class FanManageComponent implements OnInit {
+export class FanV2ManageComponent implements OnInit {
   $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
 
-  public targetMode: boolean
+  public targetMode: number
   public targetRotationSpeed: any
   public targetRotationSpeedChanged: Subject<string> = new Subject<string>()
   public hasRotationDirection = false
@@ -35,22 +35,20 @@ export class FanManageComponent implements OnInit {
       .subscribe(() => {
         this.service.getCharacteristic('RotationSpeed').setValue(this.targetRotationSpeed.value)
 
-        // Turn the fan on or off when rotation speed is adjusted
-        if (this.targetRotationSpeed.value && !this.service.values.On) {
-          this.targetMode = true
-          this.service.getCharacteristic('On').setValue(this.targetMode)
-        } else if (!this.targetRotationSpeed.value && this.service.values.On) {
-          this.targetMode = false
-          this.service.getCharacteristic('On').setValue(this.targetMode)
+        // Turn fan on or off when rotation speed is adjusted
+        if (this.targetRotationSpeed.value && !this.service.values.Active) {
+          this.targetMode = 1
+          this.service.getCharacteristic('Active').setValue(this.targetMode)
+        } else if (!this.targetRotationSpeed.value && this.service.values.Active) {
+          this.targetMode = 0
+          this.service.getCharacteristic('Active').setValue(this.targetMode)
         }
       })
   }
 
   ngOnInit() {
-    this.targetMode = this.service.values.On
-
+    this.targetMode = this.service.values.Active
     this.loadRotationSpeed()
-
     if (this.service.serviceCharacteristics.find(c => c.type === 'RotationDirection')) {
       this.hasRotationDirection = true
     }
@@ -58,7 +56,6 @@ export class FanManageComponent implements OnInit {
 
   loadRotationSpeed() {
     const RotationSpeed = this.service.getCharacteristic('RotationSpeed')
-
     if (RotationSpeed) {
       this.targetRotationSpeed = {
         value: RotationSpeed.value,
@@ -67,7 +64,6 @@ export class FanManageComponent implements OnInit {
         step: RotationSpeed.minStep,
         unit: RotationSpeed.unit,
       }
-
       setTimeout(() => {
         const sliderElements = document.querySelectorAll('.noUi-target')
         sliderElements.forEach((sliderElement: HTMLElement) => {
@@ -77,9 +73,9 @@ export class FanManageComponent implements OnInit {
     }
   }
 
-  setTargetMode(value: boolean) {
+  setTargetMode(value: number) {
     this.targetMode = value
-    this.service.getCharacteristic('On').setValue(this.targetMode)
+    this.service.getCharacteristic('Active').setValue(this.targetMode)
 
     // Set the rotation speed to max if on 0% when turned on
     if (this.targetMode && this.targetRotationSpeed && !this.targetRotationSpeed.value) {

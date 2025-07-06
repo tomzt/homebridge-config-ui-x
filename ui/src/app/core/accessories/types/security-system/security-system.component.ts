@@ -5,12 +5,12 @@ import { TranslatePipe } from '@ngx-translate/core'
 import { InlineSVGModule } from 'ng-inline-svg-2'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
-import { WindowManageComponent } from '@/app/core/accessories/types/window/window.manage.component'
+import { SecuritySystemManageComponent } from '@/app/core/accessories/types/security-system/security-system.manage.component'
 import { LongClickDirective } from '@/app/core/directives/longclick.directive'
 
 @Component({
-  selector: 'app-window',
-  templateUrl: './window.component.html',
+  selector: 'app-security-system',
+  templateUrl: './security-system.component.html',
   standalone: true,
   imports: [
     LongClickDirective,
@@ -19,7 +19,7 @@ import { LongClickDirective } from '@/app/core/directives/longclick.directive'
     TranslatePipe,
   ],
 })
-export class WindowComponent {
+export class SecuritySystemComponent {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
@@ -27,15 +27,7 @@ export class WindowComponent {
   constructor() {}
 
   onClick() {
-    if (this.service.values.TargetPosition) {
-      this.service.getCharacteristic('TargetPosition').setValue(0)
-    } else {
-      this.service.getCharacteristic('TargetPosition').setValue(100)
-    }
-  }
-
-  onLongClick() {
-    const ref = this.$modal.open(WindowManageComponent, {
+    const ref = this.$modal.open(SecuritySystemManageComponent, {
       size: 'md',
       backdrop: 'static',
     })

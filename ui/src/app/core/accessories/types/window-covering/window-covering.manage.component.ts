@@ -9,7 +9,7 @@ import { debounceTime } from 'rxjs/operators'
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 
 @Component({
-  templateUrl: './window.manage.component.html',
+  templateUrl: './window-covering.manage.component.html',
   standalone: true,
   imports: [
     NouisliderComponent,
@@ -17,7 +17,7 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
     TranslatePipe,
   ],
 })
-export class WindowManageComponent implements OnInit {
+export class WindowCoveringManageComponent implements OnInit {
   $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX

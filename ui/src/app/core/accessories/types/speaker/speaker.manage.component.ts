@@ -10,7 +10,6 @@ import { debounceTime } from 'rxjs/operators'
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 
 @Component({
-  selector: 'app-speaker-manage',
   templateUrl: './speaker.manage.component.html',
   standalone: true,
   imports: [

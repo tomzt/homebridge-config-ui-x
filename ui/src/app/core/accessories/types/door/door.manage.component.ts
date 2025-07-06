@@ -9,9 +9,7 @@ import { debounceTime } from 'rxjs/operators'
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 
 @Component({
-  selector: 'app-door-manage',
   templateUrl: './door.manage.component.html',
-  styleUrls: ['./door.component.scss'],
   standalone: true,
   imports: [
     NouisliderComponent,
