@@ -10,25 +10,23 @@ import { environment } from '@/environments/environment'
 export class ApiService {
   private $http = inject(HttpClient)
 
-  constructor() {}
-
-  get(url: string, options?): Observable<any> {
+  public get(url: string, options?): Observable<any> {
     return this.$http.get(`${environment.api.base}${url}`, options)
   }
 
-  post(url: string, body: any | null, options?): Observable<any> {
+  public post(url: string, body: any | null, options?): Observable<any> {
     return this.$http.post(`${environment.api.base}${url}`, body, options)
   }
 
-  put(url: string, body: any | null, options?): Observable<any> {
+  public put(url: string, body: any | null, options?): Observable<any> {
     return this.$http.put(`${environment.api.base}${url}`, body, options)
   }
 
-  patch(url: string, body: any | null, options?): Observable<any> {
+  public patch(url: string, body: any | null, options?): Observable<any> {
     return this.$http.patch(`${environment.api.base}${url}`, body, options)
   }
 
-  delete(url: string, options?): Observable<any> {
+  public delete(url: string, options?): Observable<any> {
     return this.$http.delete(`${environment.api.base}${url}`, options)
   }
 }

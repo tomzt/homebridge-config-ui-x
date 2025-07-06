@@ -6,7 +6,7 @@
       class="btn-close"
       data-bs-dismiss="modal"
       [attr.aria-label]="'form.button_close' | translate"
-      (click)="$activeModal.dismiss('Dismiss')"
+      (click)="dismissModal()"
       [disabled]="clicked"
     ></button>
   </div>
@@ -54,7 +54,13 @@
   </div>
   <div class="modal-footer justify-content-between">
     <div class="text-start">
-      <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="cancel()" [disabled]="clicked">
+      <button
+        type="button"
+        class="btn btn-elegant"
+        data-bs-dismiss="modal"
+        (click)="dismissModal()"
+        [disabled]="clicked"
+      >
         {{ 'form.button_close' | translate }}
       </button>
     </div>

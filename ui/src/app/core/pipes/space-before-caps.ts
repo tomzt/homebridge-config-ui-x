@@ -1,6 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core'
 
-@Pipe({ name: 'spaceBeforeCaps' })
+@Pipe({
+  name: 'spaceBeforeCaps',
+  standalone: true,
+})
 export class SpaceBeforeCapsPipe implements PipeTransform {
   transform(value: string): string {
     if (typeof value !== 'string' || !value) {

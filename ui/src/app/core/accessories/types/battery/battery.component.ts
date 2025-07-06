@@ -17,6 +17,4 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 })
 export class BatteryComponent {
   @Input() public service: ServiceTypeX
-
-  constructor() {}
 }

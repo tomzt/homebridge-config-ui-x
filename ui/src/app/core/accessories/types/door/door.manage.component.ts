@@ -18,18 +18,18 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
   ],
 })
 export class DoorManageComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
+
   public targetMode: string
+  public targetPositionChanged: Subject<string> = new Subject<string>()
   public targetPosition: {
     value: any
     min: number
     max: number
     step: number
   }
-
-  public targetPositionChanged: Subject<string> = new Subject<string>()
 
   constructor() {
     this.targetPositionChanged
@@ -44,12 +44,20 @@ export class DoorManageComponent implements OnInit {
       })
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.targetMode = this.service.values.On
     this.loadTargetPosition()
   }
 
-  loadTargetPosition() {
+  public onTargetPositionChange() {
+    this.targetPositionChanged.next(this.targetPosition.value)
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private loadTargetPosition() {
     const TargetPosition = this.service.getCharacteristic('TargetPosition')
 
     if (TargetPosition) {
@@ -67,9 +75,5 @@ export class DoorManageComponent implements OnInit {
         })
       }, 10)
     }
-  }
-
-  onTargetPositionChange() {
-    this.targetPositionChanged.next(this.targetPosition.value)
   }
 }

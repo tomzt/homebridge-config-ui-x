@@ -23,7 +23,7 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
   ],
 })
 export class HumidifierDehumidifierManageComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
 
@@ -50,7 +50,7 @@ export class HumidifierDehumidifierManageComponent implements OnInit {
       })
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.targetState = this.service.values.Active
     this.targetMode = this.service.values.TargetHumidifierDehumidifierState
     this.RelativeHumidityDehumidifierThreshold = this.service.getCharacteristic('RelativeHumidityDehumidifierThreshold')
@@ -65,32 +65,42 @@ export class HumidifierDehumidifierManageComponent implements OnInit {
     }, 10)
   }
 
-  loadTargetHumidity() {
+  private loadTargetHumidity() {
     this.targetDehumidifierHumidity = this.service.getCharacteristic('RelativeHumidityDehumidifierThreshold')?.value as number
     this.targetHumidifierHumidity = this.service.getCharacteristic('RelativeHumidityHumidifierThreshold')?.value as number
     this.autoHumidity = [this.targetHumidifierHumidity, this.targetDehumidifierHumidity]
   }
 
-  setTargetState(value: number) {
+  public setTargetState(value: number, event: MouseEvent) {
     this.targetState = value
     this.service.getCharacteristic('Active').setValue(this.targetState)
     this.loadTargetHumidity()
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
   }
 
-  setTargetMode(value: number) {
+  public setTargetMode(value: number, event: MouseEvent) {
     this.targetMode = value
     this.service.getCharacteristic('TargetHumidifierDehumidifierState').setValue(this.targetMode)
     this.loadTargetHumidity()
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
   }
 
-  onHumidityStateChange() {
+  public onHumidityStateChange() {
     this.autoHumidity = [this.targetHumidifierHumidity, this.targetDehumidifierHumidity]
     this.targetHumidityChanged.next(undefined)
   }
 
-  onAutoHumidityStateChange() {
+  public onAutoHumidityStateChange() {
     this.targetHumidifierHumidity = this.autoHumidity[0]
     this.targetDehumidifierHumidity = this.autoHumidity[1]
     this.targetHumidityChanged.next(undefined)
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

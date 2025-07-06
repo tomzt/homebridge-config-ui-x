@@ -6,7 +6,7 @@
       class="btn-close"
       data-bs-dismiss="modal"
       [attr.aria-label]="'form.button_close' | translate"
-      (click)="$activeModal.close('Dismiss')"
+      (click)="closeModal()"
     ></button>
   </div>
   <div class="modal-body text-center">
@@ -134,7 +134,7 @@
         type="button"
         class="btn btn-elegant"
         data-bs-dismiss="modal"
-        (click)="$activeModal.close('Dismiss')"
+        (click)="closeModal()"
         [attr.aria-label]="'form.button_close' | translate"
       >
         {{ 'form.button_close' | translate }}

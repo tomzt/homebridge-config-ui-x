@@ -29,8 +29,6 @@ export class ManagePluginsService {
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
-  constructor() {}
-
   installPlugin(plugin: any, targetVersion: string) {
     const ref = this.$modal.open(ManagePluginComponent, {
       size: 'lg',

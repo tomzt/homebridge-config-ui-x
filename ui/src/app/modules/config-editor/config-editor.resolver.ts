@@ -13,9 +13,7 @@ export class ConfigEditorResolver implements Resolve<any> {
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
-  constructor() {}
-
-  async resolve() {
+  public async resolve() {
     try {
       const json = await firstValueFrom(this.$api.get('/config-editor'))
       return JSON.stringify(json, null, 4)

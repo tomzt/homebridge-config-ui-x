@@ -15,6 +15,4 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 })
 export class LightSensorComponent {
   @Input() public service: ServiceTypeX
-
-  constructor() {}
 }

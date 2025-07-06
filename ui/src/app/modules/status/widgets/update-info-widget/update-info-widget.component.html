@@ -20,7 +20,7 @@
           @if (homebridgePkg.installedVersion) {
           <a
             href="javascript:void(0)"
-            (click)="$plugin.installAlternateVersion(homebridgePkg)"
+            (click)="installAlternateVersion(homebridgePkg)"
             class="card-link card-link-title"
             >Homebridge</a
           >
@@ -48,13 +48,8 @@
           @if (!homebridgePkg.installedVersion) {
           <span class="grey-text small">{{ 'status.homebridge.checking' | translate }}</span>
           } @if (homebridgePkg.installedVersion) {
-          <span class="grey-text small">v{{ $settings.env.homebridgeVersion }}</span> @if
-          (homebridgePkg.updateAvailable) { &middot;
-          <a
-            href="javascript:void(0)"
-            (click)="$plugin.upgradeHomebridge(homebridgePkg, homebridgePkg.latestVersion)"
-            class="primary-text small"
-          >
+          <span class="grey-text small">v{{ homebridgeVersion }}</span> @if (homebridgePkg.updateAvailable) { &middot;
+          <a href="javascript:void(0)" (click)="updatePackage(homebridgePkg)" class="primary-text small">
             {{ 'plugins.button_update' | translate }}
           </a>
           } }
@@ -76,7 +71,7 @@
           @if (homebridgeUiPkg.installedVersion) {
           <a
             href="javascript:void(0)"
-            (click)="$plugin.installAlternateVersion(homebridgeUiPkg)"
+            (click)="installAlternateVersion(homebridgeUiPkg)"
             class="card-link card-link-title"
             >Homebridge UI</a
           >
@@ -104,13 +99,9 @@
           @if (!homebridgeUiPkg.installedVersion) {
           <span class="grey-text small">{{ 'status.homebridge.checking' | translate }}</span>
           } @if (homebridgeUiPkg.installedVersion) {
-          <span class="grey-text small">v{{ $settings.env.packageVersion }}</span>
+          <span class="grey-text small">v{{ packageVersion }}</span>
           @if (homebridgeUiPkg.updateAvailable) { &middot;
-          <a
-            href="javascript:void(0)"
-            (click)="$plugin.upgradeHomebridge(homebridgeUiPkg, homebridgeUiPkg.latestVersion)"
-            class="primary-text small"
-          >
+          <a href="javascript:void(0)" (click)="updatePackage(homebridgeUiPkg)" class="primary-text small">
             {{ 'plugins.button_update' | translate }}
           </a>
           } }

@@ -7,7 +7,7 @@
         class="btn-close"
         data-bs-dismiss="modal"
         [attr.aria-label]="'form.button_close' | translate"
-        (click)="$activeModal.dismiss('Dismiss')"
+        (click)="dismissModal()"
       ></button>
     </div>
     <div class="modal-body">
@@ -43,7 +43,7 @@
           </div>
         </li>
         <li class="list-group-item d-flex flex-column flex-md-row align-items-center">
-          <label for="form-pass" class="mb-2 mb-md-0 w-100 w-md-50">{{ page.password | translate }}</label>
+          <label for="form-pass" class="mb-2 mb-md-0 w-100 w-md-50">{{ 'users.label_password' | translate }}</label>
           <div class="text-start text-md-end w-100 w-md-50">
             <input
               formControlName="password"
@@ -54,7 +54,7 @@
               [ngClass]="{
                 'is-invalid': form.controls.password.dirty && form.controls.password.errors
               }"
-              [attr.aria-label]="page.password | translate"
+              [attr.aria-label]="'users.label_password' | translate"
             />
           </div>
         </li>
@@ -92,7 +92,7 @@
     </div>
     <div class="modal-footer justify-content-between">
       <div class="text-start">
-        <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="$activeModal.dismiss('Dismiss')">
+        <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="dismissModal()">
           {{ 'form.button_close' | translate }}
         </button>
       </div>

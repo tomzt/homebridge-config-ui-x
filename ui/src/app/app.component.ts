@@ -15,13 +15,10 @@ export class AppComponent {
   private $settings = inject(SettingsService)
 
   constructor() {
-    const $translate = this.$translate
-    const $settings = this.$settings
-
     // Detect if the user has a dark mode preference
     const colorSchemeQueryList = window.matchMedia('(prefers-color-scheme: dark)')
     const setLightingMode = (event: MediaQueryList | MediaQueryListEvent) => {
-      $settings.setBrowserLightingMode(event.matches ? 'dark' : 'light')
+      this.$settings.setBrowserLightingMode(event.matches ? 'dark' : 'light')
     }
     setLightingMode(colorSchemeQueryList)
     colorSchemeQueryList.addEventListener('change', setLightingMode)
@@ -64,21 +61,21 @@ export class AppComponent {
     ]
 
     // Watch for lang changes
-    $translate.onLangChange.subscribe(() => {
-      $settings.rtl = rtlLanguages.includes($translate.currentLang)
+    this.$translate.onLangChange.subscribe(() => {
+      this.$settings.rtl = rtlLanguages.includes(this.$translate.currentLang)
     })
 
-    const browserLang = languages.find(x => x === $translate.getBrowserLang() || x === $translate.getBrowserCultureLang())
+    const browserLang = languages.find(x => x === this.$translate.getBrowserLang() || x === this.$translate.getBrowserCultureLang())
 
     for (const lang of languages) {
       // eslint-disable-next-line ts/no-require-imports
-      $translate.setTranslation(lang, require(`../i18n/${lang}.json`))
+      this.$translate.setTranslation(lang, require(`../i18n/${lang}.json`))
     }
 
     if (browserLang) {
-      $translate.use(browserLang)
+      this.$translate.use(browserLang)
     } else {
-      $translate.setDefaultLang('en')
+      this.$translate.setDefaultLang('en')
     }
   }
 }

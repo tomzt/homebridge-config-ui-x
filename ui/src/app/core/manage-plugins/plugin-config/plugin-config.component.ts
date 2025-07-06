@@ -53,7 +53,7 @@ import { SettingsService } from '@/app/core/settings.service'
   ],
 })
 export class PluginConfigComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $plugin = inject(ManagePluginsService)
   private $modal = inject(NgbModal)
@@ -76,46 +76,14 @@ export class PluginConfigComponent implements OnInit {
   public formIsValid = true
   public strictValidation = false
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.pluginAlias = this.schema.pluginAlias
     this.pluginType = this.schema.pluginType
     this.strictValidation = this.schema.strictValidation
     this.loadPluginConfig()
   }
 
-  loadPluginConfig() {
-    this.$api.get(`/config-editor/plugin/${encodeURIComponent(this.plugin.name)}`).subscribe({
-      next: (pluginConfig) => {
-        for (const block of pluginConfig) {
-          const pluginConfigBlock = {
-            __uuid__: uuid(),
-            name: block.name || this.schema.pluginAlias,
-            config: block,
-          }
-          this.pluginConfig.push(pluginConfigBlock)
-        }
-
-        if (!this.pluginConfig.length) {
-          this.isFirstSave = true
-          this.addBlock()
-        } else {
-          this.show = this.pluginConfig[0].__uuid__
-        }
-
-        if (this.plugin.name === 'homebridge-hue' && this.pluginConfig.length) {
-          this.homebridgeHueFix(this.pluginConfig[0].config)
-        }
-      },
-      error: (error) => {
-        console.error(error)
-        this.$toastr.error(error.error?.message || this.$translate.instant('plugins.config.load_error'), this.$translate.instant('toast.title_error'))
-      },
-    })
-  }
-
-  async save() {
+  public async save() {
     this.saveInProgress = true
     const configBlocks = this.pluginConfig.map(x => x.config)
 
@@ -164,20 +132,20 @@ export class PluginConfigComponent implements OnInit {
     }
   }
 
-  blockShown(event: string) {
+  public blockShown(event: string) {
     this.show = event
     for (const block of this.pluginConfig) {
       block.name = block.config.name || block.name
     }
   }
 
-  blockHidden(event: string) {
+  public blockHidden(event: string) {
     if (this.show === event) {
       this.show = ''
     }
   }
 
-  addBlock() {
+  public addBlock() {
     const __uuid__ = uuid()
 
     this.pluginConfig.push({
@@ -192,7 +160,7 @@ export class PluginConfigComponent implements OnInit {
     this.blockShown(__uuid__)
   }
 
-  removeBlock(__uuid__: string) {
+  public removeBlock(__uuid__: string) {
     const pluginConfigIndex = this.pluginConfig.findIndex(x => x.__uuid__ === __uuid__)
     this.pluginConfig.splice(pluginConfigIndex, 1)
 
@@ -202,25 +170,50 @@ export class PluginConfigComponent implements OnInit {
     }
   }
 
-  async getChildBridges(): Promise<void> {
-    try {
-      const data: any[] = await firstValueFrom(this.$api.get('/status/homebridge/child-bridges'))
-      data.forEach((bridge) => {
-        if (this.plugin.name === bridge.plugin) {
-          this.childBridges.push(bridge)
-        }
-      })
-    } catch (error) {
-      console.error(error)
-      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
-      this.childBridges = []
-    }
+  public onIsValid($event: boolean, index: number) {
+    this.formBlocksValid[index] = $event
+    this.formIsValid = Object.values(this.formBlocksValid).every(x => x)
   }
 
-  /**
-   * Homebridge Hue - ensure users object is preserved
-   */
-  homebridgeHueFix(platform: any) {
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  public closeModal() {
+    this.$activeModal.close()
+  }
+
+  private loadPluginConfig() {
+    this.$api.get(`/config-editor/plugin/${encodeURIComponent(this.plugin.name)}`).subscribe({
+      next: (pluginConfig) => {
+        for (const block of pluginConfig) {
+          const pluginConfigBlock = {
+            __uuid__: uuid(),
+            name: block.name || this.schema.pluginAlias,
+            config: block,
+          }
+          this.pluginConfig.push(pluginConfigBlock)
+        }
+
+        if (!this.pluginConfig.length) {
+          this.isFirstSave = true
+          this.addBlock()
+        } else {
+          this.show = this.pluginConfig[0].__uuid__
+        }
+
+        if (this.plugin.name === 'homebridge-hue' && this.pluginConfig.length) {
+          this.homebridgeHueFix(this.pluginConfig[0].config)
+        }
+      },
+      error: (error) => {
+        console.error(error)
+        this.$toastr.error(error.error?.message || this.$translate.instant('plugins.config.load_error'), this.$translate.instant('toast.title_error'))
+      },
+    })
+  }
+
+  private homebridgeHueFix(platform: any) {
     this.schema.schema.properties.users = {
       type: 'object',
       properties: {},
@@ -237,8 +230,18 @@ export class PluginConfigComponent implements OnInit {
     }
   }
 
-  onIsValid($event: boolean, index: number) {
-    this.formBlocksValid[index] = $event
-    this.formIsValid = Object.values(this.formBlocksValid).every(x => x)
+  private async getChildBridges(): Promise<void> {
+    try {
+      const data: any[] = await firstValueFrom(this.$api.get('/status/homebridge/child-bridges'))
+      data.forEach((bridge) => {
+        if (this.plugin.name === bridge.plugin) {
+          this.childBridges.push(bridge)
+        }
+      })
+    } catch (error) {
+      console.error(error)
+      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
+      this.childBridges = []
+    }
   }
 }

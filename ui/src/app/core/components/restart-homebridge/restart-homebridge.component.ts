@@ -9,13 +9,15 @@ import { TranslatePipe } from '@ngx-translate/core'
   imports: [TranslatePipe],
 })
 export class RestartHomebridgeComponent {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $router = inject(Router)
-
-  constructor() {}
 
   public onRestartHomebridgeClick() {
     this.$router.navigate(['/restart'])
     this.$activeModal.close()
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

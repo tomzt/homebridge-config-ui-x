@@ -1,4 +1,4 @@
-@if ($settings.env.enableAccessories) {
+@if (enableAccessories) {
 <div class="row mb-3">
   <div class="col-6">
     <h3 class="primary-text m-0">{{ 'accessories.title_accessories' | translate }}</h3>
@@ -30,7 +30,13 @@
       [ngbTooltip]="hideHidden ? ('accessories.button_hidden_show' | translate) : ('accessories.button_hidden_hide' | translate)"
       [attr.aria-label]="hideHidden ? ('accessories.button_hidden_show' | translate) : ('accessories.button_hidden_hide' | translate)"
     >
-      <i class="fas fa-fw" [ngClass]="hideHidden ? 'fa-eye-slash' : 'fa-eye'"></i>
+      <i
+        class="fas fa-fw"
+        [ngClass]="{
+        'fa-eye': !hideHidden,
+        'fa-eye-slash': hideHidden
+      }"
+      ></i>
     </button>
     <div class="btn-group me-2" role="group">
       <button
@@ -117,7 +123,7 @@
   </div>
   }
 </div>
-} @if (!$settings.env.enableAccessories) {
+} @else {
 <div class="row">
   <div class="col-12">
     <h3 class="primary-text m-0 mb-3">{{ 'accessories.title_accessories' | translate }}</h3>
@@ -129,7 +135,7 @@
         class="mb-0"
         [innerHTML]="'accessories.message_must_use_insecure_mode' | translate: { link: linkInsecure }"
       ></p>
-      @if ($auth.user.admin) {
+      @if (isAdmin) {
       <p class="mt-3 mb-0">{{ 'accessories.settings_link' | translate }}</p>
       }
     </div>

@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { ThermostatManageComponent } from '@/app/core/accessories/types/thermostat/thermostat.manage.component'
-import { LongClickDirective } from '@/app/core/directives/longclick.directive'
+import { LongClickDirective } from '@/app/core/directives/long-click.directive'
 import { ConvertTempPipe } from '@/app/core/pipes/convert-temp.pipe'
 import { SettingsService } from '@/app/core/settings.service'
 
@@ -25,14 +25,13 @@ import { SettingsService } from '@/app/core/settings.service'
 })
 export class ThermostatComponent {
   private $modal = inject(NgbModal)
-  $settings = inject(SettingsService)
+  private $settings = inject(SettingsService)
 
   @Input() public service: ServiceTypeX
-  model = 1
 
-  constructor() {}
+  public temperatureUnits = this.$settings.env.temperatureUnits
 
-  onClick() {
+  public onClick() {
     const ref = this.$modal.open(ThermostatManageComponent, {
       size: 'md',
       backdrop: 'static',

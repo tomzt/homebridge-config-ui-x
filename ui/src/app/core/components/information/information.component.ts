@@ -8,7 +8,7 @@ import { TranslatePipe } from '@ngx-translate/core'
   imports: [TranslatePipe],
 })
 export class InformationComponent {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() title: string
   @Input() subtitle?: string
@@ -18,5 +18,7 @@ export class InformationComponent {
   @Input() ctaButtonLink?: string
   @Input() faIconClass: string
 
-  constructor() {}
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
 }

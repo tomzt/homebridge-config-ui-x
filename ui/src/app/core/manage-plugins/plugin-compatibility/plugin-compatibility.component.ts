@@ -11,25 +11,31 @@ import { SettingsService } from '@/app/core/settings.service'
   imports: [TranslatePipe, NgbAlert],
 })
 export class PluginCompatibilityComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $settings = inject(SettingsService)
 
   @Input() plugin: any
   @Input() isValidNode: boolean
   @Input() isValidHb: boolean
-  @Input() action: string // 'install' | 'update' | 'alternate'
+  @Input() action: 'install' | 'update' | 'alternate'
 
   public nodeMinVersion: SemVer
   public nodeInstalledVersion: string
   public hbMinVersion: SemVer
   public hbInstalledVersion: string
 
-  constructor() {}
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.nodeMinVersion = minVersion(this.plugin.updateEngines?.node)
     this.nodeInstalledVersion = this.$settings.env.nodeVersion
     this.hbMinVersion = minVersion(this.plugin.updateEngines?.homebridge)
     this.hbInstalledVersion = this.$settings.env.homebridgeVersion
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  public closeModal() {
+    this.$activeModal.close(true)
   }
 }

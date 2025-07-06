@@ -21,12 +21,11 @@ import { SettingsService } from '@/app/core/settings.service'
   ],
 })
 export class AccessoryControlListsComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $settings = inject(SettingsService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
-
   private originalBlacklist: string[] = []
   private updatedBlacklist: string[] = []
 
@@ -36,13 +35,11 @@ export class AccessoryControlListsComponent implements OnInit {
   public mainPairing: any = {}
   public pairings: any[] = []
 
-  constructor() {}
-
   get blacklistHasUpdated() {
     return this.updatedBlacklist.join(',') !== this.originalBlacklist.join(',')
   }
 
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     this.updatedBlacklist = this.existingBlacklist
       .map(x => x.trim().toUpperCase())
       .sort((a, b) => a.localeCompare(b))
@@ -61,7 +58,7 @@ export class AccessoryControlListsComponent implements OnInit {
     }
   }
 
-  toggleList(username: string) {
+  public toggleList(username: string) {
     if (this.updatedBlacklist.includes(username)) {
       this.updatedBlacklist = this.updatedBlacklist.filter(x => x !== username)
     } else {
@@ -70,11 +67,11 @@ export class AccessoryControlListsComponent implements OnInit {
     }
   }
 
-  isInList(username: string) {
+  public isInList(username: string) {
     return this.updatedBlacklist.includes(username)
   }
 
-  async updateBlacklist() {
+  public async updateBlacklist() {
     this.clicked = true
     try {
       await firstValueFrom(this.$api.put('/config-editor/ui/accessory-control/instance-blacklist', {
@@ -87,5 +84,9 @@ export class AccessoryControlListsComponent implements OnInit {
       console.error(error)
       this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
     }
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

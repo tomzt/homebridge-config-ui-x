@@ -13,15 +13,13 @@ import { TranslatePipe } from '@ngx-translate/core'
   ],
 })
 export class DonateComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() plugin: any
 
   public fundingOptions: { type: string, url: string }[]
 
-  constructor() {}
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (!this.plugin.funding) {
       this.$activeModal.close()
     }
@@ -64,7 +62,7 @@ export class DonateComponent implements OnInit {
     }
   }
 
-  getIconClass(type: string) {
+  public getIconClass(type: string) {
     switch (type.toLowerCase()) {
       case 'paypal':
         return 'fab fa-fw fa-paypal'
@@ -78,5 +76,9 @@ export class DonateComponent implements OnInit {
       default:
         return 'fas fa-fw fa-link'
     }
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

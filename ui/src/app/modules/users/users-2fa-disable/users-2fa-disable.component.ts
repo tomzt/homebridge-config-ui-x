@@ -17,20 +17,17 @@ import { ApiService } from '@/app/core/api.service'
   ],
 })
 export class Users2faDisableComponent {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
+  public invalidCredentials = false
   public formGroup = new FormGroup({
     password: new FormControl('', [Validators.required]),
   })
 
-  public invalidCredentials = false
-
-  constructor() {}
-
-  disable2fa() {
+  public disable2fa() {
     this.invalidCredentials = false
     this.$api.post('/users/otp/deactivate', this.formGroup.value).subscribe({
       next: () => {
@@ -42,5 +39,9 @@ export class Users2faDisableComponent {
         this.invalidCredentials = true
       },
     })
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

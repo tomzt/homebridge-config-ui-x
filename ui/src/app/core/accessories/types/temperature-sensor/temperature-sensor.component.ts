@@ -13,9 +13,9 @@ import { SettingsService } from '@/app/core/settings.service'
   imports: [DecimalPipe, ConvertTempPipe, UpperCasePipe],
 })
 export class TemperatureSensorComponent {
-  $settings = inject(SettingsService)
+  private $settings = inject(SettingsService)
 
   @Input() public service: ServiceTypeX
 
-  constructor() {}
+  public temperatureUnits = this.$settings.env.temperatureUnits
 }

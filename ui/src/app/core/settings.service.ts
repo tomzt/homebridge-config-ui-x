@@ -17,6 +17,9 @@ export class SettingsService {
   private $title = inject(Title)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
+  private settingsLoadedSubject = new Subject()
+  private readonly defaultTheme = 'deep-purple'
+  private forbiddenKeys = ['__proto__', 'constructor', 'prototype']
 
   public env: EnvInterface = {} as EnvInterface
   public formAuth = true
@@ -30,7 +33,9 @@ export class SettingsService {
   public menuMode: 'default' | 'freeze'
   public wallpaper: string
   public serverTimeOffset = 0
-  private readonly defaultTheme = 'deep-purple'
+  public rtl = false // set true if current translation is RLT
+  public onSettingsLoaded = this.settingsLoadedSubject.pipe(first())
+  public settingsLoaded = false
   public readonly themeList = [
     'orange',
     'red',
@@ -47,21 +52,11 @@ export class SettingsService {
     'brown',
   ]
 
-  // Set true if current translation is RLT
-  public rtl = false
-
-  // Track to see if settings have been loaded
-  private settingsLoadedSubject = new Subject()
-  public onSettingsLoaded = this.settingsLoadedSubject.pipe(first())
-  public settingsLoaded = false
-
-  private forbiddenKeys = ['__proto__', 'constructor', 'prototype']
-
   constructor() {
     this.getAppSettings()
   }
 
-  async getAppSettings() {
+  public async getAppSettings() {
     const data = await firstValueFrom(this.$api.get('/auth/settings')) as AppSettingsInterface
     this.formAuth = data.formAuth
     this.sessionTimeout = data.sessionTimeout
@@ -79,14 +74,14 @@ export class SettingsService {
     this.settingsLoadedSubject.next(undefined)
   }
 
-  setBrowserLightingMode(lighting: 'light' | 'dark') {
+  public setBrowserLightingMode(lighting: 'light' | 'dark') {
     this.browserLightingMode = lighting
     if (this.lightingMode === 'auto') {
       this.setLightingMode(lighting, 'browser')
     }
   }
 
-  setLightingMode(lightingMode: 'auto' | 'light' | 'dark', source: 'user' | 'browser') {
+  public setLightingMode(lightingMode: 'auto' | 'light' | 'dark', source: 'user' | 'browser') {
     if (source === 'user') {
       this.lightingMode = lightingMode
     }
@@ -97,7 +92,7 @@ export class SettingsService {
     }
   }
 
-  setTheme(theme: string) {
+  public setTheme(theme: string) {
     // Default theme is deep-purple
     if (!theme || !this.themeList.includes(theme)) {
       theme = this.defaultTheme
@@ -129,21 +124,11 @@ export class SettingsService {
     }
   }
 
-  setMenuMode(value: 'default' | 'freeze') {
+  public setMenuMode(value: 'default' | 'freeze') {
     this.menuMode = value
   }
 
-  setTitle(title: string) {
-    this.$title.setTitle(title || 'Homebridge')
-  }
-
-  setUiVersion(version: string) {
-    if (!this.uiVersion) {
-      this.uiVersion = version
-    }
-  }
-
-  setLang(lang: string) {
+  public setLang(lang: string) {
     if (lang) {
       this.$translate.use(lang)
     } else {
@@ -152,11 +137,11 @@ export class SettingsService {
     this.env.lang = lang
   }
 
-  setItem(key: string, value: any) {
+  public setItem(key: string, value: any) {
     this[key] = value
   }
 
-  setEnvItem(key: string, value: any) {
+  public setEnvItem(key: string, value: any) {
     // If the key contains a dot, we assume it's a nested property
     if (key.includes('.')) {
       const keys = key.split('.')
@@ -184,7 +169,7 @@ export class SettingsService {
    *
    * @param timestamp
    */
-  checkServerTime(timestamp: string) {
+  private checkServerTime(timestamp: string) {
     const serverTime = dayjs(timestamp)
     const diff = serverTime.diff(dayjs(), 'hour')
     this.serverTimeOffset = diff * 60 * 60
@@ -201,5 +186,15 @@ export class SettingsService {
         window.open('https://homebridge.io/w/JqTFs', '_blank')
       })
     }
+  }
+
+  private setUiVersion(version: string) {
+    if (!this.uiVersion) {
+      this.uiVersion = version
+    }
+  }
+
+  private setTitle(title: string) {
+    this.$title.setTitle(title || 'Homebridge')
   }
 }

@@ -8,7 +8,7 @@ import { TranslatePipe } from '@ngx-translate/core'
   imports: [TranslatePipe],
 })
 export class ConfirmComponent {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() title: string
   @Input() message: string
@@ -16,5 +16,11 @@ export class ConfirmComponent {
   @Input() confirmButtonClass: string
   @Input() faIconClass: string
 
-  constructor() {}
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  public closeModal() {
+    this.$activeModal.close()
+  }
 }

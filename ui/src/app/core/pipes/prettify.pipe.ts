@@ -1,6 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core'
 
-@Pipe({ name: 'prettify' })
+@Pipe({
+  name: 'prettify',
+  standalone: true,
+})
 export class PrettifyPipe implements PipeTransform {
   transform(value: string): string {
     if (typeof value !== 'string') {

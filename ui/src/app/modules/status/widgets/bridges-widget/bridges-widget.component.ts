@@ -23,6 +23,8 @@ export class BridgesWidgetComponent implements OnInit, OnDestroy {
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
   private $ws = inject(WsService)
+  private ioMain: IoNamespace
+  private ioChild: IoNamespace
 
   @Input() widget: any
 
@@ -30,12 +32,7 @@ export class BridgesWidgetComponent implements OnInit, OnDestroy {
   public childBridges = []
   public isRestarting = false
 
-  private ioMain: IoNamespace
-  private ioChild: IoNamespace
-
-  constructor() {}
-
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     this.ioMain = this.$ws.getExistingNamespace('status')
     this.ioMain.socket.on('homebridge-status', (data) => {
       this.homebridgeStatus = data
@@ -72,18 +69,7 @@ export class BridgesWidgetComponent implements OnInit, OnDestroy {
     })
   }
 
-  async getHomebridgeStatus() {
-    this.homebridgeStatus = await firstValueFrom(this.ioMain.request('get-homebridge-status'))
-  }
-
-  getChildBridgeMetadata() {
-    this.ioChild.request('get-homebridge-child-bridge-status').subscribe((data) => {
-      this.childBridges = data
-      this.childBridges = data.sort((a, b) => a.name.localeCompare(b.name))
-    })
-  }
-
-  async restartChildBridge(bridge: any) {
+  public async restartChildBridge(bridge: any) {
     try {
       bridge.restarting = true
       await firstValueFrom(this.ioChild.request('restart-child-bridge', bridge.username))
@@ -97,7 +83,7 @@ export class BridgesWidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  restartHomebridge() {
+  public restartHomebridge() {
     this.isRestarting = true
     this.$api.put('/server/restart', {}).subscribe({
       error: (error: any) => {
@@ -110,8 +96,19 @@ export class BridgesWidgetComponent implements OnInit, OnDestroy {
     }, 15000)
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.ioMain.end()
     this.ioChild.end()
+  }
+
+  private async getHomebridgeStatus() {
+    this.homebridgeStatus = await firstValueFrom(this.ioMain.request('get-homebridge-status'))
+  }
+
+  private getChildBridgeMetadata() {
+    this.ioChild.request('get-homebridge-child-bridge-status').subscribe((data) => {
+      this.childBridges = data
+      this.childBridges = data.sort((a, b) => a.name.localeCompare(b.name))
+    })
   }
 }

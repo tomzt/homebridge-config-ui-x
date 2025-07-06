@@ -15,9 +15,7 @@ export class HomebridgeDeconzComponent {
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
-  constructor() {}
-
-  downloadDumpFile() {
+  public downloadDumpFile() {
     this.$api.get('/plugins/custom-plugins/homebridge-deconz/dump-file', { observe: 'response', responseType: 'blob' }).subscribe({
       next: (res) => {
         saveAs(res.body, 'homebridge-deconz.json.gz')

@@ -6,7 +6,7 @@
       class="btn-close"
       data-bs-dismiss="modal"
       [attr.aria-label]="'form.button_close' | translate"
-      (click)="$activeModal.dismiss('Dismiss')"
+      (click)="dismissModal()"
     ></button>
   </div>
   <div class="modal-body text-center px-5">
@@ -18,7 +18,7 @@
       role="group"
       aria-label="Fan Mode Control"
     >
-      <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="resetFilterLife(); $event.target.blur()">
+      <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="resetFilterLife($event)">
         {{ 'form.button_reset' | translate }}
       </button>
     </div>

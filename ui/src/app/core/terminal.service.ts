@@ -12,18 +12,15 @@ import { IoNamespace, WsService } from '@/app/core/ws.service'
 })
 export class TerminalService {
   private $ws = inject(WsService)
-
-  public term: Terminal
-
   private io: IoNamespace
   private fitAddon: FitAddon
   private webLinksAddon: WebLinksAddon
   private resize: Subject<any>
   private elementResize: Subject<any> | undefined
 
-  constructor() {}
+  public term: Terminal
 
-  destroyTerminal() {
+  public destroyTerminal() {
     this.io.end()
     this.term.dispose()
     this.resize.complete()
@@ -32,7 +29,7 @@ export class TerminalService {
     }
   }
 
-  startTerminal(
+  public startTerminal(
     targetElement: ElementRef,
     termOpts: ITerminalOptions = {},
     elementResize?: Subject<any>,

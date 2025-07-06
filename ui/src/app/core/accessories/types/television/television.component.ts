@@ -6,7 +6,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { TelevisionManageComponent } from '@/app/core/accessories/types/television/television.manage.component'
-import { LongClickDirective } from '@/app/core/directives/longclick.directive'
+import { LongClickDirective } from '@/app/core/directives/long-click.directive'
 
 @Component({
   selector: 'app-television',
@@ -23,12 +23,10 @@ export class TelevisionComponent implements OnInit {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
+
   public channelList: Record<number, string> = {}
 
-  constructor() {}
-
-  ngOnInit() {
-    // Build inputService list
+  public ngOnInit() {
     for (const [, inputService] of Object.entries(this.service.linkedServices)) {
       if (inputService.type === 'InputSource') {
         this.channelList[inputService.values.Identifier] = inputService.values.ConfiguredName || `Input ${inputService.values.Identifier}`
@@ -36,11 +34,11 @@ export class TelevisionComponent implements OnInit {
     }
   }
 
-  onClick() {
+  public onClick() {
     this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
   }
 
-  onLongClick() {
+  public onLongClick() {
     if ('Active' in this.service.values || Object.keys(this.channelList).length) {
       const ref = this.$modal.open(TelevisionManageComponent, {
         size: 'md',

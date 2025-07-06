@@ -21,19 +21,16 @@ export class ContainerRestartComponent implements OnInit, OnDestroy {
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
   private $ws = inject(WsService)
-
-  checkTimeout: NodeJS.Timeout
-  checkDelay: NodeJS.Timeout
-  resp: any = {}
-  timeout = false
-  error: any = false
-  public readonly command = '<span class="font-monospace">--restart=always</span>'
-
+  private checkTimeout: NodeJS.Timeout
+  private checkDelay: NodeJS.Timeout
   private io: IoNamespace
 
-  constructor() {}
+  public resp: any = {}
+  public timeout = false
+  public error: any = false
+  public readonly command = '<span class="font-monospace">--restart=always</span>'
 
-  ngOnInit() {
+  public ngOnInit() {
     this.io = this.$ws.connectToNamespace('status')
     this.io.connected.subscribe(() => {
       this.io.socket.emit('monitor-server-status')
@@ -53,7 +50,14 @@ export class ContainerRestartComponent implements OnInit, OnDestroy {
     })
   }
 
-  checkIfServerUp() {
+  public ngOnDestroy() {
+    this.io.end()
+
+    clearTimeout(this.checkDelay)
+    clearTimeout(this.checkTimeout)
+  }
+
+  private checkIfServerUp() {
     this.checkDelay = setTimeout(() => {
       // Listen to homebridge-status events to see when it's back online
       this.io.socket.on('homebridge-status', (data) => {
@@ -77,12 +81,5 @@ export class ContainerRestartComponent implements OnInit, OnDestroy {
       )
       this.timeout = true
     }, 60000)
-  }
-
-  ngOnDestroy() {
-    this.io.end()
-
-    clearTimeout(this.checkDelay)
-    clearTimeout(this.checkTimeout)
   }
 }

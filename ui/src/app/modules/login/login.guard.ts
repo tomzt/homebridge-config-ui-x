@@ -13,9 +13,7 @@ export class LoginGuard implements CanActivate {
   private $router = inject(Router)
   private $settings = inject(SettingsService)
 
-  constructor() {}
-
-  async canActivate(): Promise<boolean> {
+  public async canActivate(): Promise<boolean> {
     // Ensure app settings are loaded
     if (!this.$settings.settingsLoaded) {
       await firstValueFrom(this.$settings.onSettingsLoaded)

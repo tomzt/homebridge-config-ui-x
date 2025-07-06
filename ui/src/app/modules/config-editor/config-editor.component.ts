@@ -36,6 +36,9 @@ export class ConfigEditorComponent implements OnInit, OnDestroy {
   private $settings = inject(SettingsService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
+  private editorDecorations = []
+  private lastHeight: number
+  private visualViewPortEventCallback: () => void
 
   public homebridgeConfig: string
   public originalConfig: string
@@ -43,18 +46,13 @@ export class ConfigEditorComponent implements OnInit, OnDestroy {
   public isMobile: any = false
   public monacoEditor: any
   public editorOptions: any
-
   public monacoEditorModel: NgxEditorModel
-
-  private editorDecorations = []
-  private lastHeight: number
-  private visualViewPortEventCallback: () => void
 
   constructor() {
     this.isMobile = this.$md.detect.mobile()
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.editorOptions = {
       language: 'json',
       theme: this.$settings.actualLightingMode === 'dark' ? 'vs-dark' : 'vs-light',
@@ -108,14 +106,14 @@ export class ConfigEditorComponent implements OnInit, OnDestroy {
   /**
    * Called when the monaco editor is ready
    */
-  onEditorInit(editor: any) {
+  public onEditorInit(editor: any) {
     // @ts-expect-error - TS2339: Property editor does not exist on type Window & typeof globalThis
     window.editor = editor
     this.monacoEditor = editor
     this.monacoEditor.getModel().setValue(this.homebridgeConfig)
   }
 
-  onInitDiffEditor(editor: any) {
+  public onInitDiffEditor(editor: any) {
     this.monacoEditor = editor.modifiedEditor
 
     editor.getModel().original.setValue(this.originalConfig)
@@ -125,7 +123,7 @@ export class ConfigEditorComponent implements OnInit, OnDestroy {
     window.editor = editor
   }
 
-  async onSave() {
+  public async onSave() {
     if (this.saveInProgress) {
       return
     }
@@ -196,34 +194,7 @@ export class ConfigEditorComponent implements OnInit, OnDestroy {
     this.saveInProgress = false
   }
 
-  parseConfigFromEditor() {
-    try {
-      return JSON.parse(this.homebridgeConfig)
-    } catch (e) {
-      const config = json5.parse(this.homebridgeConfig)
-      this.homebridgeConfig = JSON.stringify(config, null, 4)
-      if (this.monacoEditor) {
-        this.monacoEditor.getModel().setValue(this.homebridgeConfig)
-      }
-      return config
-    }
-  }
-
-  async saveConfig(config: any) {
-    try {
-      const data = await firstValueFrom(this.$api.post('/config-editor', config))
-      this.homebridgeConfig = JSON.stringify(data, null, 4)
-      this.$modal.open(RestartHomebridgeComponent, {
-        size: 'lg',
-        backdrop: 'static',
-      })
-    } catch (error) {
-      console.error(error)
-      this.$toastr.error(this.$translate.instant('config.failed_to_save_config'), this.$translate.instant('toast.title_error'))
-    }
-  }
-
-  onRestore() {
+  public onRestore() {
     this.$modal
       .open(ConfigRestoreComponent, {
         size: 'lg',
@@ -284,7 +255,7 @@ export class ConfigEditorComponent implements OnInit, OnDestroy {
       .catch(() => { /* modal dismissed */ })
   }
 
-  onExportConfig() {
+  public onExportConfig() {
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(this.homebridgeConfig)}`
     const downloadAnchorNode = document.createElement('a')
     downloadAnchorNode.setAttribute('href', dataStr)
@@ -294,12 +265,26 @@ export class ConfigEditorComponent implements OnInit, OnDestroy {
     downloadAnchorNode.remove()
   }
 
-  onCancelRestore() {
+  public onCancelRestore() {
     this.homebridgeConfig = this.originalConfig
     this.originalConfig = ''
   }
 
-  validateSection(sections: any[], type: 'accessory' | 'platform') {
+  public ngOnDestroy() {
+    const content = document.querySelector('.content')
+    this.$renderer.removeStyle(content, 'height')
+
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', this.visualViewPortEventCallback, true)
+      this.$md.enableTouchMove()
+    }
+
+    if (this.monacoEditor) {
+      this.monacoEditor.dispose()
+    }
+  }
+
+  private validateSection(sections: any[], type: 'accessory' | 'platform') {
     for (const section of sections) {
       // Check section is an object
       if (typeof section !== 'object' || Array.isArray(section)) {
@@ -327,7 +312,7 @@ export class ConfigEditorComponent implements OnInit, OnDestroy {
     return true
   }
 
-  validatePlugins(plugins: any[], key: string) {
+  private validatePlugins(plugins: any[], key: string) {
     for (const item of plugins) {
       if (typeof item !== 'string') {
         this.$toastr.error(this.$translate.instant('config.error_string_array', { key }), this.$translate.instant('toast.title_error'))
@@ -340,7 +325,7 @@ export class ConfigEditorComponent implements OnInit, OnDestroy {
   /**
    * Highlight the problematic rows in the editor
    */
-  highlightOffendingArrayItem(block: string) {
+  private highlightOffendingArrayItem(block: string) {
     if (!this.monacoEditor) {
       return
     }
@@ -373,7 +358,7 @@ export class ConfigEditorComponent implements OnInit, OnDestroy {
   /**
    * Set up a json schema object used to check the config against
    */
-  setMonacoEditorModel() {
+  private setMonacoEditorModel() {
     if ((window as any).monaco.languages.json.jsonDefaults.diagnosticsOptions.schemas.some((x: any) => x.uri === 'http://homebridge/config.json')) {
       return
     }
@@ -577,7 +562,7 @@ export class ConfigEditorComponent implements OnInit, OnDestroy {
     this.monacoEditorModel.uri = monaco.Uri.parse('a://homebridge/config.json')
   }
 
-  visualViewPortChanged() {
+  private visualViewPortChanged() {
     if (this.lastHeight < window.visualViewport.height) {
       (document.activeElement as HTMLElement).blur()
     }
@@ -593,17 +578,30 @@ export class ConfigEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
-    const content = document.querySelector('.content')
-    this.$renderer.removeStyle(content, 'height')
-
-    if (window.visualViewport) {
-      window.visualViewport.removeEventListener('resize', this.visualViewPortEventCallback, true)
-      this.$md.enableTouchMove()
+  private async saveConfig(config: any) {
+    try {
+      const data = await firstValueFrom(this.$api.post('/config-editor', config))
+      this.homebridgeConfig = JSON.stringify(data, null, 4)
+      this.$modal.open(RestartHomebridgeComponent, {
+        size: 'lg',
+        backdrop: 'static',
+      })
+    } catch (error) {
+      console.error(error)
+      this.$toastr.error(this.$translate.instant('config.failed_to_save_config'), this.$translate.instant('toast.title_error'))
     }
+  }
 
-    if (this.monacoEditor) {
-      this.monacoEditor.dispose()
+  private parseConfigFromEditor() {
+    try {
+      return JSON.parse(this.homebridgeConfig)
+    } catch (e) {
+      const config = json5.parse(this.homebridgeConfig)
+      this.homebridgeConfig = JSON.stringify(config, null, 4)
+      if (this.monacoEditor) {
+        this.monacoEditor.getModel().setValue(this.homebridgeConfig)
+      }
+      return config
     }
   }
 }

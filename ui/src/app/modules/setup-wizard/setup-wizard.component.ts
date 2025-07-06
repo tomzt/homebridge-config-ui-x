@@ -1,5 +1,5 @@
 import { NgClass, NgOptimizedImage, NgStyle } from '@angular/common'
-import { Component } from '@angular/core'
+import { Component, inject } from '@angular/core'
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Title } from '@angular/platform-browser'
 import { TranslatePipe, TranslateService } from '@ngx-translate/core'
@@ -25,6 +25,13 @@ import { environment } from '@/environments/environment'
   ],
 })
 export class SetupWizardComponent {
+  private $api = inject(ApiService)
+  private $auth = inject(AuthService)
+  private $settings = inject(SettingsService)
+  private $title = inject(Title)
+  private $toastr = inject(ToastrService)
+  private $translate = inject(TranslateService)
+  private $ws = inject(WsService)
   private io: IoNamespace
 
   public step: 'welcome' | 'create-account' | 'setup-complete' | 'restore-backup' | 'restoring' | 'restarting' | 'restore-complete' = 'welcome'
@@ -42,59 +49,28 @@ export class SetupWizardComponent {
     passwordConfirm: new FormControl('', [Validators.required]),
   }, this.matchPassword)
 
-  constructor(
-    private $api: ApiService,
-    private $auth: AuthService,
-    private $settings: SettingsService,
-    private $title: Title,
-    private $toastr: ToastrService,
-    private $translate: TranslateService,
-    private $ws: WsService,
-  ) {}
-
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     this.$title.setTitle(this.$translate.instant('setup_wizard_page_title'))
     await this.setBackground()
   }
 
-  async setBackground() {
-    if (!this.$settings.settingsLoaded) {
-      await firstValueFrom(this.$settings.onSettingsLoaded)
-    }
-
-    if (this.$settings.env.customWallpaperHash) {
-      const backgroundImageUrl = `${environment.api.base}/auth/wallpaper/${this.$settings.env.customWallpaperHash}`
-      this.backgroundStyle = `url('${backgroundImageUrl}') center/cover`
-    }
-  }
-
-  matchPassword(AC: AbstractControl) {
-    const password = AC.get('password').value
-    const passwordConfirm = AC.get('passwordConfirm').value
-    if (password !== passwordConfirm) {
-      AC.get('passwordConfirm').setErrors({ matchPassword: true })
-    } else {
-      return null
-    }
-  }
-
-  onClickGettingStarted() {
+  public onClickGettingStarted() {
     this.step = 'create-account'
     this.progress = 50
   }
 
-  onClickRestoreBackup() {
+  public onClickRestoreBackup() {
     this.step = 'restore-backup'
     this.progress = 20
   }
 
-  onClickCancelRestore() {
+  public onClickCancelRestore() {
     this.selectedFile = null
     this.step = 'welcome'
     this.progress = 1
   }
 
-  async createFirstUser() {
+  public async createFirstUser() {
     this.loading = true
     this.progress = 75
 
@@ -119,7 +95,7 @@ export class SetupWizardComponent {
     }
   }
 
-  handleRestoreFileInput(files: FileList) {
+  public handleRestoreFileInput(files: FileList) {
     if (files.length) {
       this.selectedFile = files[0]
       this.progress = 40
@@ -129,7 +105,7 @@ export class SetupWizardComponent {
     }
   }
 
-  async onRestoreBackupClick() {
+  public async onRestoreBackupClick() {
     this.restoreUploading = true
     this.step = 'restoring'
     this.progress = 60
@@ -225,6 +201,27 @@ export class SetupWizardComponent {
       if (this.io) {
         this.io.end()
       }
+    }
+  }
+
+  private async setBackground() {
+    if (!this.$settings.settingsLoaded) {
+      await firstValueFrom(this.$settings.onSettingsLoaded)
+    }
+
+    if (this.$settings.env.customWallpaperHash) {
+      const backgroundImageUrl = `${environment.api.base}/auth/wallpaper/${this.$settings.env.customWallpaperHash}`
+      this.backgroundStyle = `url('${backgroundImageUrl}') center/cover`
+    }
+  }
+
+  private matchPassword(AC: AbstractControl) {
+    const password = AC.get('password').value
+    const passwordConfirm = AC.get('passwordConfirm').value
+    if (password !== passwordConfirm) {
+      AC.get('passwordConfirm').setErrors({ matchPassword: true })
+    } else {
+      return null
     }
   }
 }

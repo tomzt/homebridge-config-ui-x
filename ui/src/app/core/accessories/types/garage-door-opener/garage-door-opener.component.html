@@ -1,12 +1,15 @@
 <div
   class="accessory-box"
   [ngClass]="{ 'switch-on': service.values.CurrentDoorState === 0 || service.values.CurrentDoorState === 2 }"
-  appLongclick
-  (shortclick)="onClick()"
+  (shortClick)="onClick()"
   tabindex="0"
 >
   <div class="d-flex flex-column h-100">
-    <div [inlineSVG]="'/assets/hap-icons/garage-door.svg'" [attr.aria-label]="'Garage Door'" class="accessory-svg"></div>
+    <div
+      [inlineSVG]="'/assets/hap-icons/garage-door.svg'"
+      [attr.aria-label]="'Garage Door'"
+      class="accessory-svg"
+    ></div>
     <div class="accessory-label mt-auto">{{ service.customName || service.serviceName }}</div>
 
     @if (service.values.CurrentDoorState < 2 ) {
@@ -15,11 +18,11 @@
       [innerText]="(service.values.CurrentDoorState ? 'accessories.control.closed' : 'accessories.control.open') | translate"
       [ngClass]="{ 'red-text': !service.values.CurrentDoorState, 'grey-text': service.values.CurrentDoorState }"
     ></div>
-    } @if (service.values.CurrentDoorState === 2) {
+    } @else if (service.values.CurrentDoorState === 2) {
     <div class="accessory-label red-text">{{ 'accessories.control.opening' | translate }}...</div>
-    } @if (service.values.CurrentDoorState === 3) {
+    } @else if (service.values.CurrentDoorState === 3) {
     <div class="accessory-label red-text">{{ 'accessories.control.closing' | translate }}...</div>
-    } @if (service.values.CurrentDoorState === 4) {
+    } @else if (service.values.CurrentDoorState === 4) {
     <div class="accessory-label red-text">{{ 'accessories.control.stopped' | translate }}</div>
     }
   </div>

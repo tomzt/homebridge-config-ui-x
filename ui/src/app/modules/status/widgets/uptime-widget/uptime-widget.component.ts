@@ -12,18 +12,15 @@ import { IoNamespace, WsService } from '@/app/core/ws.service'
 })
 export class UptimeWidgetComponent implements OnInit, OnDestroy {
   private $ws = inject(WsService)
+  private io: IoNamespace
+  private intervalSubscription: Subscription
 
   @Input() widget: any
 
   public serverUptime: string
   public processUptime: string
 
-  private io: IoNamespace
-  private intervalSubscription: Subscription
-
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.io = this.$ws.getExistingNamespace('status')
     this.io.connected.subscribe(async () => {
       this.getServerUptimeInfo()
@@ -40,14 +37,18 @@ export class UptimeWidgetComponent implements OnInit, OnDestroy {
     })
   }
 
-  getServerUptimeInfo() {
+  public ngOnDestroy() {
+    this.intervalSubscription.unsubscribe()
+  }
+
+  private getServerUptimeInfo() {
     this.io.request('get-server-uptime-info').subscribe((data) => {
       this.serverUptime = this.humaniseDuration(data.time.uptime)
       this.processUptime = this.humaniseDuration(data.processUptime)
     })
   }
 
-  humaniseDuration(seconds: number) {
+  private humaniseDuration(seconds: number) {
     if (seconds < 50) {
       return '< 1m'
     }
@@ -58,9 +59,5 @@ export class UptimeWidgetComponent implements OnInit, OnDestroy {
       return `${Math.round((seconds / 60 / 60))}h`
     }
     return `${Math.floor((seconds / 60 / 60 / 24))}d`
-  }
-
-  ngOnDestroy() {
-    this.intervalSubscription.unsubscribe()
   }
 }

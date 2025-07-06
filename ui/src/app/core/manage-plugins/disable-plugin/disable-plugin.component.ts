@@ -11,11 +11,17 @@ import { TranslatePipe } from '@ngx-translate/core'
   ],
 })
 export class DisablePluginComponent {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() pluginName: string
   @Input() isConfigured = false
   @Input() isConfiguredDynamicPlatform = false
 
-  constructor() {}
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  public closeModal() {
+    this.$activeModal.close()
+  }
 }

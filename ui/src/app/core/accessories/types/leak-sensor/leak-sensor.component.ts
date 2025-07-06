@@ -18,6 +18,4 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 })
 export class LeakSensorComponent {
   @Input() public service: ServiceTypeX
-
-  constructor() {}
 }

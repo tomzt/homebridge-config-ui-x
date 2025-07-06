@@ -11,9 +11,7 @@ export class SetupWizardGuard implements CanActivate {
   private $router = inject(Router)
   private $settings = inject(SettingsService)
 
-  constructor() {}
-
-  async canActivate(): Promise<boolean> {
+  public async canActivate(): Promise<boolean> {
     if (!this.$settings.settingsLoaded) {
       await firstValueFrom(this.$settings.onSettingsLoaded)
     }

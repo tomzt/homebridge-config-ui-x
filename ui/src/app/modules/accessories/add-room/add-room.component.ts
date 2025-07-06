@@ -9,9 +9,15 @@ import { TranslatePipe } from '@ngx-translate/core'
   imports: [FormsModule, TranslatePipe],
 })
 export class AddRoomComponent {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() public roomName: string
 
-  constructor() {}
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  public closeModal(roomName: string) {
+    this.$activeModal.close(roomName)
+  }
 }

@@ -23,16 +23,15 @@ export class AccessoriesWidgetComponent implements OnInit, OnDestroy {
   private $accessories = inject(AccessoriesService)
   private $dragula = inject(DragulaService)
   private $md = inject(MobileDetectService)
+  private accessoryDataSubscription: Subscription
+  private layoutSubscription: Subscription
+  private orderSubscription: Subscription
 
   @Input() widget: any
 
   public isMobile: any = false
-
   public dashboardAccessories: ServiceTypeX[] = []
   public loaded = false
-  private accessoryDataSubscription: Subscription
-  private layoutSubscription: Subscription
-  private orderSubscription: Subscription
 
   constructor() {
     const $dragula = this.$dragula
@@ -53,7 +52,7 @@ export class AccessoriesWidgetComponent implements OnInit, OnDestroy {
     })
   }
 
-  async ngOnInit() {
+  public async ngOnInit() {
     // Subscribe to accessory data events
     this.accessoryDataSubscription = this.$accessories.accessoryData.subscribe(() => {
       this.getDashboardAccessories()
@@ -70,7 +69,15 @@ export class AccessoriesWidgetComponent implements OnInit, OnDestroy {
     })
   }
 
-  getDashboardAccessories() {
+  public ngOnDestroy() {
+    this.$accessories.stop()
+    this.layoutSubscription.unsubscribe()
+    this.orderSubscription.unsubscribe()
+    this.accessoryDataSubscription.unsubscribe()
+    this.$dragula.destroy('widget-accessories-bag')
+  }
+
+  private getDashboardAccessories() {
     const dashboardAccessories = []
 
     for (const room of this.$accessories.rooms) {
@@ -96,13 +103,5 @@ export class AccessoriesWidgetComponent implements OnInit, OnDestroy {
 
     this.dashboardAccessories = dashboardAccessories
     this.loaded = true
-  }
-
-  ngOnDestroy() {
-    this.$accessories.stop()
-    this.layoutSubscription.unsubscribe()
-    this.orderSubscription.unsubscribe()
-    this.accessoryDataSubscription.unsubscribe()
-    this.$dragula.destroy('widget-accessories-bag')
   }
 }

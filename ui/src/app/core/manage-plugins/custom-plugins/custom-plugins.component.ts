@@ -29,7 +29,7 @@ import { environment } from '@/environments/environment'
   ],
 })
 export class CustomPluginsComponent implements OnInit, OnDestroy {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $modal = inject(NgbModal)
   private $plugin = inject(ManagePluginsService)
@@ -39,6 +39,7 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
   private $ws = inject(WsService)
 
   readonly customPluginUiElementTarget = viewChild<ElementRef>('custompluginui')
+
   @Input() plugin: any
   @Input() schema: PluginSchema
   @Input() pluginConfig: Record<string, any>[]
@@ -64,7 +65,6 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
   public isFirstSave = false
   public formIsValid = true
   public strictValidation = false
-
   private io: IoNamespace
   private basePath: string
   private iframe: HTMLIFrameElement
@@ -72,9 +72,7 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
   private schemaFormRecentlyRefreshed = false
   private schemaFormRefreshSubject = new Subject()
 
-  constructor() {}
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.io = this.$ws.connectToNamespace('plugins/settings-ui')
     this.pluginAlias = this.schema.pluginAlias
     this.pluginType = this.schema.pluginType
@@ -134,13 +132,80 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
     window.addEventListener('message', this.handleMessage, false)
   }
 
-  loadUi() {
+  public onIsValid($event: boolean) {
+    this.formIsValid = $event
+  }
+
+  /**
+   * Fired when the form changes with a boolean indicating if the form is valid
+   */
+  public formValidEvent(isValid: boolean) {
+    this.formValid = isValid
+  }
+
+  public async savePluginConfig(exit = false): Promise<void> {
+    this.saveInProgress = true
+    try {
+      const newConfig = await firstValueFrom(this.$api.post(`/config-editor/plugin/${encodeURIComponent(this.plugin.name)}`, this.pluginConfig))
+      this.saveInProgress = false
+      if (exit) {
+        // Possible child bridge setup recommendation if the plugin is not Homebridge UI
+        // If it is the first time configuring the plugin, then offer to set up a child bridge straight away
+        if (this.isFirstSave && this.$settings.env.recommendChildBridges && this.$settings.env.serviceMode && newConfig[0]?.platform) {
+          // Close the modal and open the child bridge setup modal
+          this.$activeModal.close()
+          this.$plugin.bridgeSettings(this.plugin, true)
+          return
+        }
+
+        if (!['homebridge', 'homebridge-config-ui-x'].includes(this.plugin.name) && this.$settings.env.serviceMode) {
+          await this.getChildBridges()
+          if (this.childBridges.length > 0) {
+            this.$activeModal.close()
+            const ref = this.$modal.open(RestartChildBridgesComponent, {
+              size: 'lg',
+              backdrop: 'static',
+            })
+            ref.componentInstance.bridges = this.childBridges.map(childBridge => ({
+              name: childBridge.name,
+              username: childBridge.username,
+            }))
+            return
+          }
+        }
+
+        this.$activeModal.close()
+        this.$modal.open(RestartHomebridgeComponent, {
+          size: 'lg',
+          backdrop: 'static',
+        })
+      }
+    } catch (error) {
+      this.saveInProgress = false
+      console.error(error)
+      this.$toastr.error(this.$translate.instant('config.failed_to_save_config'), this.$translate.instant('toast.title_error'))
+    }
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  public ngOnDestroy() {
+    window.removeEventListener('message', this.handleMessage)
+    this.io.end()
+    this.schemaFormRefreshSubject.complete()
+    this.schemaFormUpdatedSubject.complete()
+    this.formUpdatedSubject.complete()
+  }
+
+  private loadUi() {
     this.iframe = this.customPluginUiElementTarget().nativeElement as HTMLIFrameElement
     this.iframe.src = `${environment.api.base + this.basePath
     }/index.html?origin=${encodeURIComponent(location.origin)}&v=${encodeURIComponent(this.plugin.installedVersion)}`
   }
 
-  handleMessage = (e: MessageEvent) => {
+  private handleMessage = (e: MessageEvent) => {
     if (e.origin === environment.api.origin || e.origin === window.origin) {
       switch (e.data.action) {
         case 'loaded':
@@ -239,19 +304,19 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
     }
   }
 
-  confirmReady(event) {
+  private confirmReady(event) {
     event.source.postMessage({ action: 'ready' }, event.origin)
   }
 
-  setiFrameHeight(event: MessageEvent) {
+  private setiFrameHeight(event: MessageEvent) {
     this.iframe.style.height = `${(event.data.scrollHeight) + 10}px`
   }
 
-  handleRequest(event: MessageEvent) {
+  private handleRequest(event: MessageEvent) {
     this.io.socket.emit('request', event.data)
   }
 
-  handleUpdateConfig(event: MessageEvent, pluginConfig: Array<any>) {
+  private handleUpdateConfig(event: MessageEvent, pluginConfig: Array<any>) {
     // Refresh the schema form
     this.schemaFormRefreshSubject.next(undefined)
 
@@ -273,7 +338,7 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
     return this.requestResponse(event, this.getConfigBlocks())
   }
 
-  requestResponse(event, data, success = true) {
+  private requestResponse(event, data, success = true) {
     event.source.postMessage({
       action: 'response',
       requestId: event.data.requestId,
@@ -282,7 +347,7 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
     }, event.origin)
   }
 
-  async injectDefaultStyles(event) {
+  private async injectDefaultStyles(event) {
     // Fetch current theme
     const currentTheme = Array.from(window.document.body.classList).find(x => x.startsWith('config-ui-x-'))
     const darkMode = window.document.body.classList.contains('dark-mode')
@@ -321,11 +386,11 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
     event.source.postMessage({ action: 'inline-style', style: customStyles }, event.origin)
   }
 
-  getConfigBlocks(): Array<any> {
+  private getConfigBlocks(): Array<any> {
     return this.pluginConfig
   }
 
-  updateConfigBlocks(pluginConfig: Record<string, any>[]) {
+  private updateConfigBlocks(pluginConfig: Record<string, any>[]) {
     for (const block of pluginConfig) {
       block[this.pluginType] = this.pluginAlias
     }
@@ -336,7 +401,7 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
    * Called when changes are made to the schema form content
    * These changes are emitted to the custom ui
    */
-  schemaFormUpdated() {
+  private schemaFormUpdated() {
     if (!this.iframe || !this.iframe.contentWindow) {
       return
     }
@@ -359,7 +424,7 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
    * Called when changes sent from the custom ui config
    * Updates the schema form with the new values
    */
-  schemaFormRefresh() {
+  private schemaFormRefresh() {
     if (this.schemaFormRecentlyUpdated) {
       this.schemaFormRecentlyUpdated = false
       return
@@ -378,7 +443,7 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
   /**
    * Create a new other-form
    */
-  async formCreate(formId: string, schema, data, submitButton?: string, cancelButton?: string) {
+  private async formCreate(formId: string, schema, data, submitButton?: string, cancelButton?: string) {
     // Need to clear out existing forms
     await this.formEnd()
 
@@ -392,7 +457,7 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
   /**
    * Removes the current other-form
    */
-  async formEnd() {
+  private async formEnd() {
     if (this.formId) {
       this.formId = undefined
       this.formSchema = undefined
@@ -406,7 +471,7 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
   /**
    * Called when an other-form type is updated
    */
-  formUpdated(data) {
+  private formUpdated(data) {
     this.iframe.contentWindow.postMessage({
       action: 'stream',
       event: this.formId,
@@ -418,18 +483,11 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Fired when the form changes with a boolean indicating if the form is valid
-   */
-  formValidEvent(isValid: boolean) {
-    this.formValid = isValid
-  }
-
-  /**
    * Fired when a custom form is cancelled or submitted
    *
    * @param formEvent
    */
-  formActionEvent(formEvent: 'cancel' | 'submit') {
+  private formActionEvent(formEvent: 'cancel' | 'submit') {
     this.iframe.contentWindow.postMessage({
       action: 'stream',
       event: this.formId,
@@ -443,56 +501,12 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
   /**
    * Handle the event to get a list of cached accessories
    */
-  async handleGetCachedAccessories(event) {
+  private async handleGetCachedAccessories(event) {
     const cachedAccessories = await firstValueFrom(this.$api.get('/server/cached-accessories'))
     return this.requestResponse(event, cachedAccessories.filter(x => x.plugin === this.plugin.name))
   }
 
-  async savePluginConfig(exit = false): Promise<void> {
-    this.saveInProgress = true
-    try {
-      const newConfig = await firstValueFrom(this.$api.post(`/config-editor/plugin/${encodeURIComponent(this.plugin.name)}`, this.pluginConfig))
-      this.saveInProgress = false
-      if (exit) {
-        // Possible child bridge setup recommendation if the plugin is not Homebridge UI
-        // If it is the first time configuring the plugin, then offer to set up a child bridge straight away
-        if (this.isFirstSave && this.$settings.env.recommendChildBridges && this.$settings.env.serviceMode && newConfig[0]?.platform) {
-          // Close the modal and open the child bridge setup modal
-          this.$activeModal.close()
-          this.$plugin.bridgeSettings(this.plugin, true)
-          return
-        }
-
-        if (!['homebridge', 'homebridge-config-ui-x'].includes(this.plugin.name) && this.$settings.env.serviceMode) {
-          await this.getChildBridges()
-          if (this.childBridges.length > 0) {
-            this.$activeModal.close()
-            const ref = this.$modal.open(RestartChildBridgesComponent, {
-              size: 'lg',
-              backdrop: 'static',
-            })
-            ref.componentInstance.bridges = this.childBridges.map(childBridge => ({
-              name: childBridge.name,
-              username: childBridge.username,
-            }))
-            return
-          }
-        }
-
-        this.$activeModal.close()
-        this.$modal.open(RestartHomebridgeComponent, {
-          size: 'lg',
-          backdrop: 'static',
-        })
-      }
-    } catch (error) {
-      this.saveInProgress = false
-      console.error(error)
-      this.$toastr.error(this.$translate.instant('config.failed_to_save_config'), this.$translate.instant('toast.title_error'))
-    }
-  }
-
-  async getChildBridges(): Promise<void> {
+  private async getChildBridges(): Promise<void> {
     try {
       const data: any[] = await firstValueFrom(this.$api.get('/status/homebridge/child-bridges'))
       data.forEach((bridge) => {
@@ -505,17 +519,5 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
       this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
       this.childBridges = []
     }
-  }
-
-  onIsValid($event: boolean) {
-    this.formIsValid = $event
-  }
-
-  ngOnDestroy() {
-    window.removeEventListener('message', this.handleMessage)
-    this.io.end()
-    this.schemaFormRefreshSubject.complete()
-    this.schemaFormUpdatedSubject.complete()
-    this.formUpdatedSubject.complete()
   }
 }

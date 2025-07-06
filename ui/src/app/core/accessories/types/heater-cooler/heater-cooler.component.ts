@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { HeaterCoolerManageComponent } from '@/app/core/accessories/types/heater-cooler/heater-cooler.manage.component'
-import { LongClickDirective } from '@/app/core/directives/longclick.directive'
+import { LongClickDirective } from '@/app/core/directives/long-click.directive'
 import { ConvertTempPipe } from '@/app/core/pipes/convert-temp.pipe'
 import { SettingsService } from '@/app/core/settings.service'
 
@@ -25,25 +25,24 @@ import { SettingsService } from '@/app/core/settings.service'
 })
 export class HeaterCoolerComponent {
   private $modal = inject(NgbModal)
-  $settings = inject(SettingsService)
+  private $settings = inject(SettingsService)
 
   @Input() public service: ServiceTypeX
-  model = 1
+
+  public temperatureUnits = this.$settings.env.temperatureUnits
   public hasHeating: boolean = false
   public hasCooling: boolean = false
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.hasHeating = !!this.service.getCharacteristic('HeatingThresholdTemperature')
     this.hasCooling = !!this.service.getCharacteristic('CoolingThresholdTemperature')
   }
 
-  onClick() {
+  public onClick() {
     this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
   }
 
-  onLongClick() {
+  public onLongClick() {
     const ref = this.$modal.open(HeaterCoolerManageComponent, {
       size: 'md',
       backdrop: 'static',

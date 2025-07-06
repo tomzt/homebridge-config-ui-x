@@ -34,8 +34,8 @@ import { TemperatureSensorComponent } from '@/app/core/accessories/types/tempera
 import { ThermostatComponent } from '@/app/core/accessories/types/thermostat/thermostat.component'
 import { UnknownComponent } from '@/app/core/accessories/types/unknown/unknown.component'
 import { ValveComponent } from '@/app/core/accessories/types/valve/valve.component'
-import { WindowComponent } from '@/app/core/accessories/types/window/window.component'
 import { WindowCoveringComponent } from '@/app/core/accessories/types/window-covering/window-covering.component'
+import { WindowComponent } from '@/app/core/accessories/types/window/window.component'
 
 @Component({
   selector: 'app-accessory-tile',
@@ -82,6 +82,4 @@ export class AccessoryTileComponent {
   $accessories = inject(AccessoriesService)
 
   @Input() public service: ServiceTypeX
-
-  constructor() {}
 }

@@ -25,19 +25,17 @@ import { environment } from '@/environments/environment'
   ],
 })
 export class LayoutComponent implements OnInit {
-  $auth = inject(AuthService)
+  private $auth = inject(AuthService)
   private $modal = inject(NgbModal)
   private $router = inject(Router)
-  $settings = inject(SettingsService)
+  private $settings = inject(SettingsService)
   private $translate = inject(TranslateService)
   private $ws = inject(WsService)
-
-  public sidebarExpanded = false
   private io: IoNamespace
 
-  constructor() {}
+  public sidebarExpanded = false
 
-  ngOnInit() {
+  public ngOnInit() {
     this.io = this.$ws.connectToNamespace('app')
     this.io.socket.on('reconnect', () => {
       this.$auth.checkToken()
@@ -46,7 +44,7 @@ export class LayoutComponent implements OnInit {
     this.compareServerUiVersion()
   }
 
-  async compareServerUiVersion() {
+  private async compareServerUiVersion() {
     if (!this.$settings.settingsLoaded) {
       await firstValueFrom(this.$settings.onSettingsLoaded)
     }

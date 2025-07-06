@@ -18,7 +18,7 @@ import { ChildBridge } from '@/app/core/manage-plugins/manage-plugins.interfaces
   ],
 })
 export class ResetAccessoriesComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $router = inject(Router)
   private $toastr = inject(ToastrService)
@@ -30,27 +30,11 @@ export class ResetAccessoriesComponent implements OnInit {
   public pairings: any[] = []
   public toDelete: string[] = []
 
-  constructor() {}
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.loadPairings()
   }
 
-  async loadPairings() {
-    try {
-      this.pairings = (await firstValueFrom(this.$api.get('/server/pairings')))
-        .filter((pairing: any) => {
-          return pairing._category === 'bridge' && !pairing._main && this.childBridges.find(childBridge => childBridge.username === pairing._username)
-        })
-        .sort((a, b) => a.name.localeCompare(b.name))
-    } catch (error) {
-      console.error(error)
-      this.$toastr.error(this.$translate.instant('settings.unpair_bridge.load_error'), this.$translate.instant('toast.title_error'))
-      this.$activeModal.close()
-    }
-  }
-
-  toggleList(id: string) {
+  public toggleList(id: string) {
     if (this.toDelete.includes(id)) {
       this.toDelete = this.toDelete.filter((item: string) => item !== id)
     } else {
@@ -58,7 +42,7 @@ export class ResetAccessoriesComponent implements OnInit {
     }
   }
 
-  cleanBridges() {
+  public cleanBridges() {
     this.clicked = true
     return this.$api.delete('/server/pairings/accessories', {
       body: this.toDelete.map((id: string) => ({
@@ -76,5 +60,23 @@ export class ResetAccessoriesComponent implements OnInit {
         this.$toastr.error(this.$translate.instant('reset.accessory_ind.fail'), this.$translate.instant('toast.title_error'))
       },
     })
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private async loadPairings() {
+    try {
+      this.pairings = (await firstValueFrom(this.$api.get('/server/pairings')))
+        .filter((pairing: any) => {
+          return pairing._category === 'bridge' && !pairing._main && this.childBridges.find(childBridge => childBridge.username === pairing._username)
+        })
+        .sort((a, b) => a.name.localeCompare(b.name))
+    } catch (error) {
+      console.error(error)
+      this.$toastr.error(this.$translate.instant('settings.unpair_bridge.load_error'), this.$translate.instant('toast.title_error'))
+      this.$activeModal.close()
+    }
   }
 }

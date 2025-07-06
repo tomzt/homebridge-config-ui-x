@@ -22,17 +22,16 @@ export class LogsComponent implements OnInit, OnDestroy {
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
-  readonly termTarget = viewChild<ElementRef>('logoutput')
-  private resizeEvent = new Subject()
+  private readonly termTarget = viewChild<ElementRef>('logoutput')
 
-  constructor() {}
+  private resizeEvent = new Subject()
 
   @HostListener('window:resize', ['$event'])
   onWindowResize() {
     this.resizeEvent.next(undefined)
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     // Set body bg color
     window.document.querySelector('body').classList.add('bg-black')
 
@@ -40,7 +39,7 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.$log.startTerminal(this.termTarget(), {}, this.resizeEvent)
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     // Unset body bg color
     window.document.querySelector('body').classList.remove('bg-black')
 
@@ -48,7 +47,7 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.$log.destroyTerminal()
   }
 
-  downloadLogFile() {
+  public downloadLogFile() {
     const ref = this.$modal.open(ConfirmComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -78,7 +77,7 @@ export class LogsComponent implements OnInit, OnDestroy {
       .catch(() => { /* do nothing */ })
   }
 
-  truncateLogFile() {
+  public truncateLogFile() {
     const ref = this.$modal.open(ConfirmComponent, {
       size: 'lg',
       backdrop: 'static',

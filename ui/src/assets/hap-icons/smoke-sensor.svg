@@ -11,7 +11,7 @@
 >
 <desc>Created with Fabric.js 4.6.0</desc>
 <defs />
-<g
+  <g
     transform="matrix(1 0 0 1 250 125)"
     id="Ly0Zljdh6uDT129kqPq2c"
     opacity="1"
@@ -27,7 +27,20 @@
       stroke-linecap="round"
     />
   </g>
-<g
+  <g transform="matrix(1 0 0 1 250 100)" fill="#ffffff" class="label-text">
+    <text
+      text-anchor="middle"
+      dominant-baseline="middle"
+      font-family="Arial"
+      font-size="100"
+      font-weight="bold"
+      x="0"
+      y="0"
+    >
+      SMOKE
+    </text>
+  </g>
+  <g
     transform="matrix(1 0 0 1 249.09 329.19)"
     id="1bkxD90ICefRta9rtUGNo"
     opacity="1"

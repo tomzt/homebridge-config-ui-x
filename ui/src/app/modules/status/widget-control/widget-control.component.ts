@@ -30,7 +30,7 @@ import { environment } from '@/environments/environment'
   ],
 })
 export class WidgetControlComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $http = inject(HttpClient)
   private $settings = inject(SettingsService)
@@ -47,7 +47,6 @@ export class WidgetControlComponent implements OnInit {
 
   // Clock
   public currentDate = new Date()
-
   public timeFormats = [
     'h:mm a',
     'h:mm:ss a',
@@ -76,29 +75,25 @@ export class WidgetControlComponent implements OnInit {
   public networkInterfaces: string[] = []
   public isLightMode: boolean
 
-  constructor() {}
-
-  public searchCountryCodes = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      tap(() => this.searching = true),
-      switchMap(term =>
-        term.length < 3
-          ? []
-          : this.findOpenWeatherMapCity(term).pipe(
-              catchError(() => {
-                this.searching = false
-                return of([])
-              }),
-            ),
-      ),
-      tap(() => this.searching = false),
-    )
+  public searchCountryCodes = (text$: Observable<string>) => text$.pipe(
+    debounceTime(300),
+    distinctUntilChanged(),
+    tap(() => this.searching = true),
+    switchMap(term => term.length < 3
+      ? []
+      : this.findOpenWeatherMapCity(term).pipe(
+          catchError(() => {
+            this.searching = false
+            return of([])
+          }),
+        ),
+    ),
+    tap(() => this.searching = false),
+  )
 
   public searchCountryCodeFormatter = (result: any) => `${result.name}, ${result.country}`
 
-  ngOnInit() {
+  public ngOnInit() {
     this.isLightMode = this.$settings.actualLightingMode === 'light'
     if (this.widget.component === 'HomebridgeLogsWidgetComponent' || this.widget.component === 'TerminalWidgetComponent') {
       if (!this.widget.fontWeight) {
@@ -119,7 +114,15 @@ export class WidgetControlComponent implements OnInit {
     }
   }
 
-  findOpenWeatherMapCity(query: string) {
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  public closeModal() {
+    this.$activeModal.close()
+  }
+
+  private findOpenWeatherMapCity(query: string) {
     return this.$http
       .get('https://api.openweathermap.org/data/2.5/find', {
         params: new HttpParams({

@@ -14,8 +14,6 @@ export class CustomPluginsService {
 
   public plugins = {}
 
-  constructor() {}
-
   async openSettings(plugin: any, schema: any) {
     const pluginConfig = await this.loadPluginConfig(plugin.name)
     const ref = this.$modal.open(this.plugins[plugin.name], {

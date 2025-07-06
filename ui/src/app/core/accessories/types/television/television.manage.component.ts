@@ -16,7 +16,7 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
   ],
 })
 export class TelevisionManageComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
   @Input() public inputList: Record<number, string>
@@ -24,10 +24,8 @@ export class TelevisionManageComponent implements OnInit {
   public hasActive: boolean = false
   public sourceList: { identifier: number, name: string }[] = []
 
-  constructor() {}
-
-  ngOnInit() {
-    if (this.service.serviceCharacteristics.find(c => c.type === 'Active')) {
+  public ngOnInit() {
+    if ('Active' in this.service.values) {
       this.hasActive = true
     }
 
@@ -41,11 +39,21 @@ export class TelevisionManageComponent implements OnInit {
     }
   }
 
-  setActive(value: number) {
+  public setActive(value: number, event: MouseEvent) {
     this.service.getCharacteristic('Active').setValue(value)
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
   }
 
-  setInput(value: number | string) {
+  public setInput(value: number | string, event: MouseEvent) {
     this.service.getCharacteristic('ActiveIdentifier').setValue(value)
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

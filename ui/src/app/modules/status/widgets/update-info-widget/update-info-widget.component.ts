@@ -28,11 +28,12 @@ import { UiV5ModalComponent } from '@/app/modules/status/widgets/update-info-wid
 export class UpdateInfoWidgetComponent implements OnInit {
   private $api = inject(ApiService)
   private $modal = inject(NgbModal)
-  $plugin = inject(ManagePluginsService)
-  $settings = inject(SettingsService)
+  private $plugin = inject(ManagePluginsService)
+  private $settings = inject(SettingsService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
   private $ws = inject(WsService)
+  private io: IoNamespace
 
   @Input() widget: any
 
@@ -43,18 +44,14 @@ export class UpdateInfoWidgetComponent implements OnInit {
   public nodejsInfo = {} as any
   public nodejsStatusDone = false as boolean
   public serverInfo: any
-
   public isRunningHbV2 = false
   public isRunningUiV5 = false
-
   public isHbV2Ready = false
   public isUiV5Ready = false
+  public packageVersion = this.$settings.env.packageVersion
+  public homebridgeVersion = this.$settings.env.homebridgeVersion
 
-  private io: IoNamespace
-
-  constructor() {}
-
-  async ngOnInit() {
+  public async ngOnInit() {
     this.io = this.$ws.getExistingNamespace('status')
 
     this.io.connected.subscribe(async () => {
@@ -90,59 +87,7 @@ export class UpdateInfoWidgetComponent implements OnInit {
     }
   }
 
-  async checkHomebridgeVersion() {
-    try {
-      const response = await firstValueFrom(this.io.request('homebridge-version-check'))
-      this.homebridgePkg = response
-      this.homebridgePkg.displayName = 'Homebridge'
-      this.$settings.env.homebridgeVersion = response.installedVersion
-      this.isRunningHbV2 = response.installedVersion.startsWith('2.')
-    } catch (error) {
-      console.error(error)
-      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
-    }
-  }
-
-  async getNodeInfo() {
-    try {
-      this.serverInfo = await firstValueFrom(this.io.request('get-homebridge-server-info'))
-      this.nodejsInfo = await firstValueFrom(this.io.request('nodejs-version-check'))
-      this.nodejsStatusDone = true
-    } catch (error) {
-      console.error(error)
-      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
-    }
-  }
-
-  async checkHomebridgeUiVersion() {
-    try {
-      const response = await firstValueFrom(this.io.request('homebridge-ui-version-check'))
-      this.homebridgeUiPkg = response
-      this.$settings.env.homebridgeUiVersion = response.installedVersion
-      this.isRunningUiV5 = response.installedVersion.startsWith('5.')
-      this.isUiV5Ready = this.homebridgeUiPkg.readyForV5.node
-        && this.homebridgeUiPkg.readyForV5.service
-        && this.homebridgeUiPkg.readyForV5.pnpm
-        && this.homebridgeUiPkg.readyForV5.arch
-    } catch (error) {
-      console.error(error)
-      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
-    }
-  }
-
-  async getOutOfDatePlugins() {
-    try {
-      const outOfDatePlugins = await firstValueFrom(this.io.request('get-out-of-date-plugins'))
-      this.homebridgePluginStatus = outOfDatePlugins
-        .filter((x: any) => x.name !== 'homebridge-config-ui-x' && !this.$settings.env.plugins?.hideUpdatesFor?.includes(x.name))
-      this.homebridgePluginStatusDone = true
-    } catch (error) {
-      console.error(error)
-      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
-    }
-  }
-
-  nodeUpdateModal() {
+  public nodeUpdateModal() {
     const ref = this.$modal.open(InformationComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -159,7 +104,7 @@ export class UpdateInfoWidgetComponent implements OnInit {
     ref.componentInstance.ctaButtonLink = 'https://github.com/homebridge/homebridge/wiki/How-To-Update-Node.js'
   }
 
-  nodeUnsupportedModal() {
+  public nodeUnsupportedModal() {
     const ref = this.$modal.open(InformationComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -172,7 +117,7 @@ export class UpdateInfoWidgetComponent implements OnInit {
     ref.componentInstance.ctaButtonLink = 'https://github.com/homebridge/homebridge/wiki/How-To-Update-Node.js'
   }
 
-  readyForV2Modal() {
+  public readyForV2Modal() {
     const ref = this.$modal.open(HbV2ModalComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -180,11 +125,71 @@ export class UpdateInfoWidgetComponent implements OnInit {
     ref.componentInstance.isUpdating = false
   }
 
-  readyForV5Modal() {
+  public readyForV5Modal() {
     const ref = this.$modal.open(UiV5ModalComponent, {
       size: 'lg',
       backdrop: 'static',
     })
     ref.componentInstance.readyForV5 = this.homebridgeUiPkg.readyForV5
+  }
+
+  public installAlternateVersion(pkg) {
+    this.$plugin.installAlternateVersion(pkg)
+  }
+
+  public updatePackage(pkg) {
+    this.$plugin.upgradeHomebridge(pkg, pkg.latestVersion)
+  }
+
+  private async checkHomebridgeVersion() {
+    try {
+      const response = await firstValueFrom(this.io.request('homebridge-version-check'))
+      this.homebridgePkg = response
+      this.homebridgePkg.displayName = 'Homebridge'
+      this.$settings.env.homebridgeVersion = response.installedVersion
+      this.isRunningHbV2 = response.installedVersion.startsWith('2.')
+    } catch (error) {
+      console.error(error)
+      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
+    }
+  }
+
+  private async getNodeInfo() {
+    try {
+      this.serverInfo = await firstValueFrom(this.io.request('get-homebridge-server-info'))
+      this.nodejsInfo = await firstValueFrom(this.io.request('nodejs-version-check'))
+      this.nodejsStatusDone = true
+    } catch (error) {
+      console.error(error)
+      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
+    }
+  }
+
+  private async checkHomebridgeUiVersion() {
+    try {
+      const response = await firstValueFrom(this.io.request('homebridge-ui-version-check'))
+      this.homebridgeUiPkg = response
+      this.$settings.env.homebridgeUiVersion = response.installedVersion
+      this.isRunningUiV5 = response.installedVersion.startsWith('5.')
+      this.isUiV5Ready = this.homebridgeUiPkg.readyForV5.node
+        && this.homebridgeUiPkg.readyForV5.service
+        && this.homebridgeUiPkg.readyForV5.pnpm
+        && this.homebridgeUiPkg.readyForV5.arch
+    } catch (error) {
+      console.error(error)
+      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
+    }
+  }
+
+  private async getOutOfDatePlugins() {
+    try {
+      const outOfDatePlugins = await firstValueFrom(this.io.request('get-out-of-date-plugins'))
+      this.homebridgePluginStatus = outOfDatePlugins
+        .filter((x: any) => x.name !== 'homebridge-config-ui-x' && !this.$settings.env.plugins?.hideUpdatesFor?.includes(x.name))
+      this.homebridgePluginStatusDone = true
+    } catch (error) {
+      console.error(error)
+      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
+    }
   }
 }

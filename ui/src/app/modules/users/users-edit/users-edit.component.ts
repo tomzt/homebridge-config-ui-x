@@ -19,7 +19,7 @@ import { AuthService } from '@/app/core/auth/auth.service'
   ],
 })
 export class UsersEditComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $auth = inject(AuthService)
   private $toastr = inject(ToastrService)
@@ -27,6 +27,7 @@ export class UsersEditComponent implements OnInit {
 
   @Input() user: any
 
+  public isCurrentUser = false
   public form = new FormGroup({
     username: new FormControl('', [Validators.required]),
     name: new FormControl('', [Validators.required]),
@@ -35,32 +36,12 @@ export class UsersEditComponent implements OnInit {
     admin: new FormControl(true),
   }, this.matchPassword)
 
-  public page = {
-    title: 'users.title_edit_user',
-    save: 'form.button_save',
-    password: 'users.label_new_password',
-  }
-
-  public isCurrentUser = false
-
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.isCurrentUser = this.$auth.user.username === this.user.username
     this.form.patchValue(this.user)
   }
 
-  matchPassword(abstractControl: AbstractControl) {
-    const password = abstractControl.get('password').value
-    const passwordConfirm = abstractControl.get('passwordConfirm').value
-    if (password !== passwordConfirm) {
-      abstractControl.get('passwordConfirm').setErrors({ matchPassword: true })
-    } else {
-      return null
-    }
-  }
-
-  onSubmit({ value }) {
+  public onSubmit({ value }) {
     this.$api.patch(`/users/${this.user.id}`, value).subscribe({
       next: () => {
         this.$activeModal.close()
@@ -75,5 +56,19 @@ export class UsersEditComponent implements OnInit {
         this.$toastr.error(error.error.message || this.$translate.instant('users.toast_failed_to_add_user'), this.$translate.instant('toast.title_error'))
       },
     })
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private matchPassword(abstractControl: AbstractControl) {
+    const password = abstractControl.get('password').value
+    const passwordConfirm = abstractControl.get('passwordConfirm').value
+    if (password !== passwordConfirm) {
+      abstractControl.get('passwordConfirm').setErrors({ matchPassword: true })
+    } else {
+      return null
+    }
   }
 }

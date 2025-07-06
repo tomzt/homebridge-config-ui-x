@@ -1,19 +1,30 @@
 <div
   class="accessory-box"
   [ngClass]="{ 'switch-on': service.values.Active, 'switch-off': !service.values.Active }"
-  appLongclick
-  (longclick)="onLongClick()"
-  (shortclick)="onClick()"
+  (longClick)="onLongClick()"
+  (shortClick)="onClick()"
   tabindex="0"
 >
   <div class="d-flex flex-column h-100">
     @if (service.values.ValveType === 0) {
-    <div [inlineSVG]="'/assets/hap-icons/valve-generic.svg'" [attr.aria-label]="'Generic Valve'" class="accessory-svg"></div>
-    } @if (service.values.ValveType === 1) {
-    <div [inlineSVG]="'/assets/hap-icons/valve-irrigation.svg'" [attr.aria-label]="'Irrigation Valve'" class="accessory-svg"></div>
-    } @if (service.values.ValveType === 2) {
-    <div [inlineSVG]="'/assets/hap-icons/valve-shower-head.svg'" [attr.aria-label]="'Shower Head Valve'" class="accessory-svg"></div>
-    } @if (service.values.ValveType === 3) {
+    <div
+      [inlineSVG]="'/assets/hap-icons/valve-generic.svg'"
+      [attr.aria-label]="'Generic Valve'"
+      class="accessory-svg"
+    ></div>
+    } @else if (service.values.ValveType === 1) {
+    <div
+      [inlineSVG]="'/assets/hap-icons/valve-irrigation.svg'"
+      [attr.aria-label]="'Irrigation Valve'"
+      class="accessory-svg"
+    ></div>
+    } @else if (service.values.ValveType === 2) {
+    <div
+      [inlineSVG]="'/assets/hap-icons/valve-shower-head.svg'"
+      [attr.aria-label]="'Shower Head Valve'"
+      class="accessory-svg"
+    ></div>
+    } @else if (service.values.ValveType === 3) {
     <div
       [inlineSVG]="'/assets/hap-icons/valve-faucet.svg'"
       [attr.aria-label]="'Faucet Valve'"
@@ -25,9 +36,9 @@
     </div>
     @if (service.values.Active && remainingDuration) {
     <div class="accessory-label grey-text">{{ remainingDuration }}</div>
-    } @if (service.values.Active && !remainingDuration) {
+    } @else if (service.values.Active && !remainingDuration) {
     <div class="accessory-label grey-text">{{ 'accessories.control.running' | translate }}</div>
-    } @if (!service.values.Active) {
+    } @else {
     <div class="accessory-label grey-text">{{ 'accessories.control.off' | translate }}</div>
     }
   </div>

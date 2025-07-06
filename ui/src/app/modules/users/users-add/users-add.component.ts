@@ -18,12 +18,12 @@ import { ApiService } from '@/app/core/api.service'
   ],
 })
 export class UsersAddComponent {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
-  form = new FormGroup({
+  public form = new FormGroup({
     username: new FormControl('', [Validators.required]),
     name: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.compose([Validators.required, Validators.minLength(4)])]),
@@ -31,25 +31,7 @@ export class UsersAddComponent {
     admin: new FormControl(true),
   }, this.matchPassword)
 
-  page = {
-    title: 'users.title_add_user',
-    save: 'users.button_add_new_user',
-    password: 'users.label_password',
-  }
-
-  constructor() {}
-
-  matchPassword(AC: AbstractControl) {
-    const password = AC.get('password').value
-    const passwordConfirm = AC.get('passwordConfirm').value
-    if (password !== passwordConfirm) {
-      AC.get('passwordConfirm').setErrors({ matchPassword: true })
-    } else {
-      return null
-    }
-  }
-
-  onSubmit({ value }) {
+  public onSubmit({ value }) {
     this.$api.post('/users', value).subscribe({
       next: () => {
         this.$activeModal.close()
@@ -62,5 +44,19 @@ export class UsersAddComponent {
         )
       },
     })
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private matchPassword(AC: AbstractControl) {
+    const password = AC.get('password').value
+    const passwordConfirm = AC.get('passwordConfirm').value
+    if (password !== passwordConfirm) {
+      AC.get('passwordConfirm').setErrors({ matchPassword: true })
+    } else {
+      return null
+    }
   }
 }

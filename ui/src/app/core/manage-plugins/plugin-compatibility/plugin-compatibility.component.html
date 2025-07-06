@@ -6,7 +6,7 @@
       class="btn-close"
       data-bs-dismiss="modal"
       [attr.aria-label]="'form.button_close' | translate"
-      (click)="$activeModal.dismiss('Dismiss')"
+      (click)="dismissModal()"
     ></button>
   </div>
   <div class="modal-body">
@@ -101,21 +101,21 @@
   <div class="modal-footer justify-content-between">
     <div class="text-start">
       @if (!['homebridge', 'homebridge-config-ui-x'].includes(plugin.name)) {
-      <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="$activeModal.dismiss('Dismiss')">
+      <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="dismissModal()">
         {{ 'form.button_close' | translate }}
       </button>
       }
     </div>
     <div class="text-center">
       @if (['homebridge', 'homebridge-config-ui-x'].includes(plugin.name)) {
-      <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="$activeModal.dismiss('Dismiss')">
+      <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="dismissModal()">
         {{ 'form.button_close' | translate }}
       </button>
       }
     </div>
     <div class="text-end">
       @if (!['homebridge', 'homebridge-config-ui-x'].includes(plugin.name)) {
-      <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="$activeModal.close(true);">
+      <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="closeModal()">
         {{ 'form.label_continue' | translate }}
       </button>
       }

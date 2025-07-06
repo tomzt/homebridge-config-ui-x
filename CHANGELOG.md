@@ -44,6 +44,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - refactor ui types into interface files
 - rename hap icon files for consistency
 - rename accessory type component files for consistency
+- angular-wide code refactoring and cleanup
 
 ### Homebridge Dependencies
 

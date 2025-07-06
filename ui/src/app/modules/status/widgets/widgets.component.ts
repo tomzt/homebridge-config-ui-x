@@ -24,9 +24,7 @@ export class WidgetsComponent implements OnInit, OnDestroy {
   private componentFactoryResolver = inject(ComponentFactoryResolver)
   private el = inject(ElementRef)
   private injector = inject(Injector)
-
-  @Input() widget: any
-
+  private componentRef: any
   private availableWidgets = {
     HapQrcodeWidgetComponent,
     HomebridgeLogsWidgetComponent,
@@ -43,17 +41,15 @@ export class WidgetsComponent implements OnInit, OnDestroy {
     BridgesWidgetComponent,
   }
 
-  private componentRef: any
+  @Input() widget: any
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     if (Object.prototype.hasOwnProperty.call(this.availableWidgets, this.widget.component)) {
       this.load(this.availableWidgets[this.widget.component])
     }
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     if (this.componentRef) {
       this.widget.$resizeEvent.complete()
       this.widget.$configureEvent.complete()
@@ -61,7 +57,7 @@ export class WidgetsComponent implements OnInit, OnDestroy {
     }
   }
 
-  load(component: any) {
+  private load(component: any) {
     // 1. Create a component reference from the component
     this.componentRef = this.componentFactoryResolver
       .resolveComponentFactory(component)

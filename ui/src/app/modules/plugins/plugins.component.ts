@@ -2,7 +2,7 @@ import { NgClass } from '@angular/common'
 import { Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { NavigationEnd, Router } from '@angular/router'
-import {NgbModal, NgbTooltip} from '@ng-bootstrap/ng-bootstrap'
+import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe, TranslateService } from '@ngx-translate/core'
 import { ToastrService } from 'ngx-toastr'
 import { firstValueFrom, Subscription } from 'rxjs'
@@ -42,6 +42,8 @@ export class PluginsComponent implements OnInit, OnDestroy {
   private $translate = inject(TranslateService)
   private $ws = inject(WsService)
   private isSearchMode = false
+  private io: IoNamespace
+  private navigationSubscription: Subscription
 
   public mainError = false
   public loading = true
@@ -54,12 +56,7 @@ export class PluginsComponent implements OnInit, OnDestroy {
     query: new FormControl(''),
   })
 
-  private io: IoNamespace
-  private navigationSubscription: Subscription
-
-  constructor() {}
-
-  async ngOnInit() {
+  public async ngOnInit() {
     this.io = this.$ws.connectToNamespace('child-bridges')
     this.io.connected.subscribe(async () => {
       this.getChildBridgeMetadata()
@@ -124,7 +121,113 @@ export class PluginsComponent implements OnInit, OnDestroy {
     })
   }
 
-  async loadInstalledPlugins() {
+  public search() {
+    this.installedPlugins = []
+    this.loading = true
+    this.showExitButton = true
+
+    this.$api.get(`/plugins/search/${encodeURIComponent(this.form.value.query)}`).subscribe({
+      next: (data) => {
+        // Some filtering in regard to the changeover to scoped plugins
+        // A plugin may have two versions, like homebridge-foo and @homebridge-plugins/homebridge-foo
+        // If the user does not have either installed, or has the scoped version installed, then hide the unscoped version
+        // If the user has the unscoped version installed, but not the scoped version, then hide the scoped version
+        const hiddenPlugins = new Set<string>()
+        this.installedPlugins = data
+          .reduce((acc: any, x: any) => {
+            if (x.name === 'homebridge-config-ui-x' || hiddenPlugins.has(x.name)) {
+              return acc
+            }
+            if (x.newHbScope) {
+              const y = x.newHbScope.to
+              const yExists = data.some((plugin: any) => plugin.name === y)
+              if (x.installedVersion || !yExists) {
+                hiddenPlugins.add(y)
+                acc.push(x)
+              }
+            } else {
+              acc.push(x)
+            }
+            return acc
+          }, [])
+        this.appendMetaInfo()
+        this.loading = false
+      },
+      error: (error) => {
+        this.loading = false
+        this.isSearchMode = false
+        console.error(error)
+        this.$toastr.error(error.error.message || error.message, this.$translate.instant('toast.title_error'))
+        this.loadInstalledPlugins()
+      },
+    })
+  }
+
+  public onClearSearch() {
+    this.loadInstalledPlugins()
+  }
+
+  public onSubmit({ value }) {
+    if (!value.query.length) {
+      if (this.isSearchMode) {
+        this.isSearchMode = false
+        this.loadInstalledPlugins()
+      }
+    } else {
+      this.isSearchMode = true
+      this.search()
+    }
+  }
+
+  public showSearch() {
+    if (this.showSearchBar) {
+      this.showSearchBar = false
+      if (this.isSearchMode) {
+        this.isSearchMode = false
+        this.form.setValue({ query: '' })
+        this.loadInstalledPlugins()
+      }
+    } else {
+      window.document.querySelector('body').classList.remove('bg-black')
+      this.tab = 'main'
+      this.showSearchBar = true
+      setTimeout(() => this.searchInput.nativeElement.focus(), 0)
+    }
+  }
+
+  public showStats() {
+    if (this.tab === 'stats') {
+      window.document.querySelector('body').classList.remove('bg-black')
+      this.tab = 'main'
+    } else {
+      // Set body bg color
+      window.document.querySelector('body').classList.add('bg-black')
+      this.tab = 'stats'
+      this.showSearchBar = false
+    }
+  }
+
+  public openSupport() {
+    this.$modal.open(PluginSupportComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    })
+  }
+
+  public ngOnDestroy() {
+    window.document.querySelector('body').classList.remove('bg-black')
+
+    if (this.navigationSubscription) {
+      this.navigationSubscription.unsubscribe()
+    }
+    this.io.end()
+  }
+
+  public getPluginChildBridges(plugin: any) {
+    return this.childBridges.filter(x => x.plugin === plugin.name)
+  }
+
+  private async loadInstalledPlugins() {
     this.form.setValue({ query: '' })
     this.showExitButton = false
     this.installedPlugins = []
@@ -184,7 +287,7 @@ export class PluginsComponent implements OnInit, OnDestroy {
     }
   }
 
-  async appendMetaInfo() {
+  private async appendMetaInfo() {
     // Also get the current configuration for each plugin
     await Promise.all(this.installedPlugins
       .filter(plugin => plugin.installedVersion)
@@ -217,115 +320,9 @@ export class PluginsComponent implements OnInit, OnDestroy {
     )
   }
 
-  search() {
-    this.installedPlugins = []
-    this.loading = true
-    this.showExitButton = true
-
-    this.$api.get(`/plugins/search/${encodeURIComponent(this.form.value.query)}`).subscribe({
-      next: (data) => {
-        // Some filtering in regard to the changeover to scoped plugins
-        // A plugin may have two versions, like homebridge-foo and @homebridge-plugins/homebridge-foo
-        // If the user does not have either installed, or has the scoped version installed, then hide the unscoped version
-        // If the user has the unscoped version installed, but not the scoped version, then hide the scoped version
-        const hiddenPlugins = new Set<string>()
-        this.installedPlugins = data
-          .reduce((acc: any, x: any) => {
-            if (x.name === 'homebridge-config-ui-x' || hiddenPlugins.has(x.name)) {
-              return acc
-            }
-            if (x.newHbScope) {
-              const y = x.newHbScope.to
-              const yExists = data.some((plugin: any) => plugin.name === y)
-              if (x.installedVersion || !yExists) {
-                hiddenPlugins.add(y)
-                acc.push(x)
-              }
-            } else {
-              acc.push(x)
-            }
-            return acc
-          }, [])
-        this.appendMetaInfo()
-        this.loading = false
-      },
-      error: (error) => {
-        this.loading = false
-        this.isSearchMode = false
-        console.error(error)
-        this.$toastr.error(error.error.message || error.message, this.$translate.instant('toast.title_error'))
-        this.loadInstalledPlugins()
-      },
-    })
-  }
-
-  onClearSearch() {
-    this.loadInstalledPlugins()
-  }
-
-  onSubmit({ value }) {
-    if (!value.query.length) {
-      if (this.isSearchMode) {
-        this.isSearchMode = false
-        this.loadInstalledPlugins()
-      }
-    } else {
-      this.isSearchMode = true
-      this.search()
-    }
-  }
-
-  getChildBridgeMetadata() {
+  private getChildBridgeMetadata() {
     this.io.request('get-homebridge-child-bridge-status').subscribe((data) => {
       this.childBridges = data
     })
-  }
-
-  getPluginChildBridges(plugin: any) {
-    return this.childBridges.filter(x => x.plugin === plugin.name)
-  }
-
-  showSearch() {
-    if (this.showSearchBar) {
-      this.showSearchBar = false
-      if (this.isSearchMode) {
-        this.isSearchMode = false
-        this.form.setValue({ query: '' })
-        this.loadInstalledPlugins()
-      }
-    } else {
-      window.document.querySelector('body').classList.remove('bg-black')
-      this.tab = 'main'
-      this.showSearchBar = true
-      setTimeout(() => this.searchInput.nativeElement.focus(), 0)
-    }
-  }
-
-  showStats() {
-    if (this.tab === 'stats') {
-      window.document.querySelector('body').classList.remove('bg-black')
-      this.tab = 'main'
-    } else {
-      // Set body bg color
-      window.document.querySelector('body').classList.add('bg-black')
-      this.tab = 'stats'
-      this.showSearchBar = false
-    }
-  }
-
-  openSupport() {
-    this.$modal.open(PluginSupportComponent, {
-      size: 'lg',
-      backdrop: 'static',
-    })
-  }
-
-  ngOnDestroy() {
-    window.document.querySelector('body').classList.remove('bg-black')
-
-    if (this.navigationSubscription) {
-      this.navigationSubscription.unsubscribe()
-    }
-    this.io.end()
   }
 }

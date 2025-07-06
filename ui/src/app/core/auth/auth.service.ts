@@ -24,7 +24,7 @@ export class AuthService {
     this.loadToken()
   }
 
-  async login(form: { username: string, password: string, ota?: string }) {
+  public async login(form: { username: string, password: string, ota?: string }) {
     const resp = await firstValueFrom(this.$api.post('/auth/login', form))
     if (!this.validateToken(resp.access_token)) {
       throw new Error('Invalid username or password.')
@@ -33,7 +33,7 @@ export class AuthService {
     await this.$settings.getAppSettings() // update settings to get full settings object
   }
 
-  async noauth() {
+  public async noauth() {
     const resp = await firstValueFrom(this.$api.post('/auth/noauth', {}))
     if (!this.validateToken(resp.access_token)) {
       throw new Error('Invalid username or password.')
@@ -43,14 +43,14 @@ export class AuthService {
     }
   }
 
-  logout() {
+  public logout() {
     this.user = null
     this.token = null
     window.localStorage.removeItem(environment.jwt.tokenKey)
     window.location.reload()
   }
 
-  async loadToken() {
+  public async loadToken() {
     if (!this.$settings.settingsLoaded) {
       await firstValueFrom(this.$settings.onSettingsLoaded)
     }
@@ -60,7 +60,27 @@ export class AuthService {
     }
   }
 
-  validateToken(token: string) {
+  public async checkToken() {
+    try {
+      return await firstValueFrom(this.$api.get('/auth/check'))
+    } catch (err) {
+      if (err.status === 401) {
+        // Token is no longer valid, do logout
+        console.error('Current token is not valid')
+        this.logout()
+      }
+    }
+  }
+
+  public isLoggedIn() {
+    if (this.$settings.env.instanceId !== this.user.instanceId) {
+      console.error('Token does not match instance')
+      return false
+    }
+    return (this.user && this.token && !this.$jwtHelper.isTokenExpired(this.token, this.$settings.serverTimeOffset))
+  }
+
+  private validateToken(token: string) {
     try {
       if (this.$jwtHelper.isTokenExpired(token, this.$settings.serverTimeOffset)) {
         this.logout()
@@ -76,19 +96,7 @@ export class AuthService {
     }
   }
 
-  async checkToken() {
-    try {
-      return await firstValueFrom(this.$api.get('/auth/check'))
-    } catch (err) {
-      if (err.status === 401) {
-        // Token is no longer valid, do logout
-        console.error('Current token is not valid')
-        this.logout()
-      }
-    }
-  }
-
-  setLogoutTimer() {
+  private setLogoutTimer() {
     clearTimeout(this.logoutTimer)
     if (!this.$jwtHelper.isTokenExpired(this.token, this.$settings.serverTimeOffset)) {
       const expires = dayjs(this.$jwtHelper.getTokenExpirationDate(this.token))
@@ -105,13 +113,5 @@ export class AuthService {
         }, timeout)
       }
     }
-  }
-
-  isLoggedIn() {
-    if (this.$settings.env.instanceId !== this.user.instanceId) {
-      console.error('Token does not match instance')
-      return false
-    }
-    return (this.user && this.token && !this.$jwtHelper.isTokenExpired(this.token, this.$settings.serverTimeOffset))
   }
 }

@@ -24,17 +24,19 @@ import { SettingsService } from '@/app/core/settings.service'
   ],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  router = inject(Router)
-  translate = inject(TranslateService)
-  $auth = inject(AuthService)
-  $settings = inject(SettingsService)
+  private $auth = inject(AuthService)
+  private $settings = inject(SettingsService)
   private $modal = inject(NgbModal)
   private $notification = inject(NotificationService)
+  private $renderer = inject(Renderer2)
+  private $router = inject(Router)
   private $translate = inject(TranslateService)
-  private renderer = inject(Renderer2)
 
   @Input() isExpanded = false
 
+  public formAuth = this.$settings.formAuth
+  public isAdmin = this.$auth.user.admin
+  public enableTerminalAccess = this.$settings.env.enableTerminalAccess
   public rPiCurrentlyUnderVoltage = false
   public rPiWasUnderVoltage = false
   public isMobile: any = false
@@ -42,7 +44,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
   public isPwa = isStandalonePWA()
 
   constructor() {
-    const router = this.router
     this.isMobile = window.innerWidth < 768
     let resizeTimeout: any
     window.addEventListener('resize', () => {
@@ -53,7 +54,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     })
 
     // Ensure the menu closes when we navigate
-    router.events.subscribe((event) => {
+    this.$router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.closeSidebar()
         this.freezeMenu = true
@@ -64,7 +65,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     })
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.$notification.raspberryPiThrottled.subscribe((throttled) => {
       if (throttled['Under Voltage']) {
         this.rPiCurrentlyUnderVoltage = true
@@ -72,6 +73,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
       if (throttled['Under-voltage has occurred']) {
         this.rPiWasUnderVoltage = true
       }
+    })
+
+    this.$notification.formAuthEnabled.subscribe((value) => {
+      this.formAuth = value
     })
 
     // Declare element for event listeners
@@ -108,41 +113,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.updateContentStyles()
   }
 
-  openSidebar() {
-    if (!this.freezeMenu) {
-      this.isExpanded = true
-      this.updateContentStyles()
-    }
-  }
-
-  closeSidebar() {
-    if (!this.freezeMenu) {
-      this.isExpanded = false
-      this.updateContentStyles()
-    }
-  }
-
-  toggleSidebar() {
+  public toggleSidebar() {
     if (!this.freezeMenu) {
       this.isExpanded = !this.isExpanded
       this.updateContentStyles()
     }
   }
 
-  updateContentStyles() {
-    const content = document.querySelector('.content')
-    if (this.isExpanded) {
-      this.renderer.setStyle(content, 'opacity', '20%')
-      this.renderer.setStyle(content, 'pointer-events', 'none')
-      this.renderer.setStyle(content, 'overflow', 'hidden')
-    } else {
-      this.renderer.removeStyle(content, 'opacity')
-      this.renderer.removeStyle(content, 'pointer-events')
-      this.renderer.removeStyle(content, 'overflow')
-    }
-  }
-
-  openUnderVoltageModal() {
+  public openUnderVoltageModal() {
     const ref = this.$modal.open(InformationComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -158,7 +136,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     ref.componentInstance.ctaButtonLink = 'https://pimylifeup.com/raspberry-pi-low-voltage-warning'
   }
 
-  handleKeydown(event: KeyboardEvent) {
+  public handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       const target = event.target as HTMLElement
       if (['menuitem', 'button'].includes(target.getAttribute('role'))) {
@@ -167,11 +145,48 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  reloadPage() {
+  public reloadPage() {
     window.location.reload()
   }
 
-  updateListeners() {
+  public ngOnDestroy() {
+    // Clean up event listeners
+    document.removeEventListener('touchstart', () => {})
+    document.removeEventListener('click', () => {})
+  }
+
+  public logout() {
+    this.$auth.logout()
+  }
+
+  private openSidebar() {
+    if (!this.freezeMenu) {
+      this.isExpanded = true
+      this.updateContentStyles()
+    }
+  }
+
+  private closeSidebar() {
+    if (!this.freezeMenu) {
+      this.isExpanded = false
+      this.updateContentStyles()
+    }
+  }
+
+  private updateContentStyles() {
+    const content = document.querySelector('.content')
+    if (this.isExpanded) {
+      this.$renderer.setStyle(content, 'opacity', '20%')
+      this.$renderer.setStyle(content, 'pointer-events', 'none')
+      this.$renderer.setStyle(content, 'overflow', 'hidden')
+    } else {
+      this.$renderer.removeStyle(content, 'opacity')
+      this.$renderer.removeStyle(content, 'pointer-events')
+      this.$renderer.removeStyle(content, 'overflow')
+    }
+  }
+
+  private updateListeners() {
     this.isMobile = window.innerWidth < 768
     const sidebar = document.querySelector('.sidebar')
     sidebar.removeAllListeners()
@@ -179,11 +194,5 @@ export class SidebarComponent implements OnInit, OnDestroy {
       sidebar.addEventListener('mouseenter', () => this.openSidebar(), { passive: false })
       sidebar.addEventListener('mouseleave', () => this.closeSidebar(), { passive: false })
     }
-  }
-
-  ngOnDestroy() {
-    // Clean up event listeners
-    document.removeEventListener('touchstart', () => {})
-    document.removeEventListener('click', () => {})
   }
 }

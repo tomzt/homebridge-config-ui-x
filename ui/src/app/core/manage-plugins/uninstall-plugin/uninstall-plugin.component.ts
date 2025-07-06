@@ -19,10 +19,10 @@ import { SettingsService } from '@/app/core/settings.service'
   ],
 })
 export class UninstallPluginComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $modal = inject(NgbModal)
-  $settings = inject(SettingsService)
+  private $settings = inject(SettingsService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
@@ -30,19 +30,17 @@ export class UninstallPluginComponent implements OnInit {
   @Input() childBridges: any[]
   @Input() action: string
 
+  public serviceMode = this.$settings.env.serviceMode
   public loading = true
   public uninstalling = false
   public removeConfig = true
   public removeChildBridges = true
   public hasChildBridges = false
   public isConfigured = false
-
   public pluginType: 'platform' | 'accessory'
   public pluginAlias: string
 
-  constructor() {}
-
-  async ngOnInit() {
+  public async ngOnInit() {
     try {
       if (this.childBridges.length) {
         this.hasChildBridges = true
@@ -61,7 +59,7 @@ export class UninstallPluginComponent implements OnInit {
     }
   }
 
-  async doUninstall() {
+  public async doUninstall() {
     this.uninstalling = true
 
     // Remove the plugin config if exists and specified by the user
@@ -96,11 +94,15 @@ export class UninstallPluginComponent implements OnInit {
     ref.componentInstance.pluginDisplayName = this.plugin.displayName
   }
 
-  async getAlias() {
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private async getAlias() {
     return firstValueFrom(this.$api.get(`/plugins/alias/${encodeURIComponent(this.plugin.name)}`))
   }
 
-  async removePluginConfig() {
+  private async removePluginConfig() {
     // Remove the config for this plugin
     await firstValueFrom(this.$api.post(`/config-editor/plugin/${encodeURIComponent(this.plugin.name)}`, []))
 
@@ -113,7 +115,7 @@ export class UninstallPluginComponent implements OnInit {
     )
   }
 
-  async removeChildBridge(id: string) {
+  private async removeChildBridge(id: string) {
     try {
       await firstValueFrom(this.$api.delete(`/server/pairings/${id}`))
     } catch (error) {

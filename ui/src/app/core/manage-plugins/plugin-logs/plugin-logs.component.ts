@@ -16,45 +16,29 @@ import { LogService } from '@/app/core/log.service'
   imports: [TranslatePipe],
 })
 export class PluginLogsComponent implements OnInit, OnDestroy {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $log = inject(LogService)
   private $modal = inject(NgbModal)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
-
-  @Input() plugin: any
-  readonly termTarget = viewChild<ElementRef>('pluginlogoutput')
   private resizeEvent = new Subject()
   private pluginAlias: string
 
-  constructor() {}
+  @Input() plugin: any
+
+  readonly termTarget = viewChild<ElementRef>('pluginlogoutput')
 
   @HostListener('window:resize', ['$event'])
   onWindowResize() {
     this.resizeEvent.next(undefined)
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.getPluginLog()
   }
 
-  getPluginLog() {
-    // Get the plugin name as configured in the config file
-    this.$api.get(`/config-editor/plugin/${encodeURIComponent(this.plugin.name)}`).subscribe({
-      next: (result) => {
-        this.pluginAlias = this.plugin.name === 'homebridge-config-ui-x' ? 'Homebridge UI' : (result[0]?.name || this.plugin.name)
-        this.$log.startTerminal(this.termTarget(), {}, this.resizeEvent, this.pluginAlias)
-      },
-      error: (error) => {
-        console.error(error)
-        this.$toastr.error(error.error.message || error.message, this.$translate.instant('toast.title_error'))
-        this.$activeModal.dismiss()
-      },
-    })
-  }
-
-  downloadLogFile() {
+  public downloadLogFile() {
     const ref = this.$modal.open(ConfirmComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -113,7 +97,26 @@ export class PluginLogsComponent implements OnInit, OnDestroy {
       .catch(() => { /* do nothing */ })
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this.$log.destroyTerminal()
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private getPluginLog() {
+    // Get the plugin name as configured in the config file
+    this.$api.get(`/config-editor/plugin/${encodeURIComponent(this.plugin.name)}`).subscribe({
+      next: (result) => {
+        this.pluginAlias = this.plugin.name === 'homebridge-config-ui-x' ? 'Homebridge UI' : (result[0]?.name || this.plugin.name)
+        this.$log.startTerminal(this.termTarget(), {}, this.resizeEvent, this.pluginAlias)
+      },
+      error: (error) => {
+        console.error(error)
+        this.$toastr.error(error.error.message || error.message, this.$translate.instant('toast.title_error'))
+        this.$activeModal.dismiss()
+      },
+    })
   }
 }

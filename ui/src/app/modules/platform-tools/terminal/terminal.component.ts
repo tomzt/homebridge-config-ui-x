@@ -11,18 +11,16 @@ import { TerminalService } from '@/app/core/terminal.service'
 })
 export class TerminalComponent implements OnInit, OnDestroy {
   private $terminal = inject(TerminalService)
-
-  readonly termTarget = viewChild<ElementRef>('terminaloutput')
   private resizeEvent = new Subject()
 
-  constructor() {}
+  readonly termTarget = viewChild<ElementRef>('terminaloutput')
 
   @HostListener('window:resize', ['$event'])
   onWindowResize() {
     this.resizeEvent.next(undefined)
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     // Set body bg color
     window.document.querySelector('body').classList.add('bg-black')
 
@@ -33,7 +31,7 @@ export class TerminalComponent implements OnInit, OnDestroy {
     this.$terminal.term.focus()
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     // Unset body bg color
     window.document.querySelector('body').classList.remove('bg-black')
 

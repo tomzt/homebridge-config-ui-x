@@ -16,15 +16,13 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
   ],
 })
 export class FilterMaintenanceManageComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
 
   public targetMode: number
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     setTimeout(() => {
       const sliderElements = document.querySelectorAll('.noUi-target')
       sliderElements.forEach((sliderElement: HTMLElement) => {
@@ -33,7 +31,14 @@ export class FilterMaintenanceManageComponent implements OnInit {
     }, 10)
   }
 
-  resetFilterLife() {
+  public resetFilterLife(event: MouseEvent) {
     this.service.getCharacteristic('ResetFilterIndication').setValue(1)
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

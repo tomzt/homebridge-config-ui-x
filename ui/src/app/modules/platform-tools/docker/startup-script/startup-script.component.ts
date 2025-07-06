@@ -25,25 +25,22 @@ export class StartupScriptComponent implements OnInit, OnDestroy {
   private $settings = inject(SettingsService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
+  private lastHeight: number
+  private visualViewPortEventCallback: () => void
 
   public startupScript: string
   public saveInProgress: boolean
   public isMobile: any = false
   public options: any = { printMargin: false }
-
   public monacoEditor: any
   public editorOptions: any
-
   public monacoEditorModel: NgxEditorModel
-
-  private lastHeight: number
-  private visualViewPortEventCallback: () => void
 
   constructor() {
     this.isMobile = this.$md.detect.mobile()
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.editorOptions = {
       language: 'shell',
       theme: this.$settings.actualLightingMode === 'dark' ? 'vs-dark' : 'vs-light',
@@ -63,7 +60,7 @@ export class StartupScriptComponent implements OnInit, OnDestroy {
       this.startupScript = data.startupScript.script
     })
 
-    // Setup the base monaco editor model
+    // Set up the base monaco editor model
     this.monacoEditorModel = {
       value: '',
       language: 'shell',
@@ -73,12 +70,12 @@ export class StartupScriptComponent implements OnInit, OnDestroy {
   /**
    * Called when the monaco editor is ready
    */
-  onEditorInit(editor: any) {
+  public onEditorInit(editor: any) {
     this.monacoEditor = editor
     this.monacoEditor.getModel().setValue(this.startupScript)
   }
 
-  async onSave() {
+  public async onSave() {
     if (this.saveInProgress) {
       return
     }
@@ -117,7 +114,18 @@ export class StartupScriptComponent implements OnInit, OnDestroy {
     this.saveInProgress = false
   }
 
-  visualViewPortChanged() {
+  public ngOnDestroy() {
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', this.visualViewPortEventCallback, true)
+      this.$md.enableTouchMove()
+    }
+
+    if (this.monacoEditor) {
+      this.monacoEditor.dispose()
+    }
+  }
+
+  private visualViewPortChanged() {
     if (this.lastHeight < window.visualViewport.height) {
       (document.activeElement as HTMLElement).blur()
     }
@@ -130,17 +138,6 @@ export class StartupScriptComponent implements OnInit, OnDestroy {
       // Keyboard is closed
       this.$md.disableTouchMove()
       this.lastHeight = window.visualViewport.height
-    }
-  }
-
-  ngOnDestroy() {
-    if (window.visualViewport) {
-      window.visualViewport.removeEventListener('resize', this.visualViewPortEventCallback, true)
-      this.$md.enableTouchMove()
-    }
-
-    if (this.monacoEditor) {
-      this.monacoEditor.dispose()
     }
   }
 }

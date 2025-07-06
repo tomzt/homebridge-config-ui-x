@@ -19,6 +19,8 @@ import { SettingsService } from '@/app/core/settings.service'
 export class HomebridgeLogsWidgetComponent implements OnInit, OnDestroy {
   private $log = inject(LogService)
   private $settings = inject(SettingsService)
+  private fontSize = 15
+  private fontWeight: ITerminalOptions['fontWeight'] = '400'
 
   readonly widgetContainerElement = viewChild<ElementRef>('widgetcontainer')
   readonly titleElement = viewChild<ElementRef>('terminaltitle')
@@ -29,14 +31,9 @@ export class HomebridgeLogsWidgetComponent implements OnInit, OnDestroy {
   @Input() configureEvent: Subject<any>
 
   public terminalHeight = 200
-
-  private fontSize = 15
-  private fontWeight: ITerminalOptions['fontWeight'] = '400'
   public theme: 'dark' | 'light' = 'dark'
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.fontSize = this.widget.fontSize || 15
     this.fontWeight = this.widget.fontWeight || 400
     if (this.$settings.actualLightingMode === 'dark') {
@@ -108,13 +105,13 @@ export class HomebridgeLogsWidgetComponent implements OnInit, OnDestroy {
     })
   }
 
-  getTerminalHeight(): number {
+  public ngOnDestroy() {
+    this.$log.destroyTerminal()
+  }
+
+  private getTerminalHeight(): number {
     const widgetContainerHeight = (this.widgetContainerElement().nativeElement as HTMLElement).offsetHeight
     const titleHeight = (this.titleElement().nativeElement as HTMLElement).offsetHeight
     return widgetContainerHeight - titleHeight
-  }
-
-  ngOnDestroy() {
-    this.$log.destroyTerminal()
   }
 }

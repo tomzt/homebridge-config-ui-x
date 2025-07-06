@@ -10,7 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core'
   imports: [TranslatePipe, NgClass, NgStyle],
 })
 export class PluginInfoComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() plugin: any
 
@@ -18,15 +18,17 @@ export class PluginInfoComponent implements OnInit {
   public readonly linkScoped = '<a href="https://github.com/homebridge/plugins/wiki/Scoped-Plugins" target="_blank"><i class="fas fa-fw fa-external-link-alt primary-text"></i></a>'
   public readonly linkVerified = '<a href="https://github.com/homebridge/plugins/wiki/Verified-Plugins" target="_blank"><i class="fas fa-fw fa-external-link-alt primary-text"></i></a>'
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     if (!this.plugin.icon) {
       this.plugin.icon = this.defaultIcon
     }
   }
 
-  handleIconError() {
+  public handleIconError() {
     this.plugin.icon = this.defaultIcon
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

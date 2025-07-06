@@ -14,7 +14,7 @@ import { SettingsService } from '@/app/core/settings.service'
   ],
 })
 export class WidgetVisibilityComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $settings = inject(SettingsService)
   private $translate = inject(TranslateService)
 
@@ -25,9 +25,7 @@ export class WidgetVisibilityComponent implements OnInit {
 
   public availableWidgets = []
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     const allWidgets = [
       {
         name: this.$translate.instant('status.services.updates'),
@@ -147,12 +145,16 @@ export class WidgetVisibilityComponent implements OnInit {
       }))
   }
 
-  selectWidget(widget: any) {
+  public selectWidget(widget: any) {
     this.$activeModal.close(widget)
   }
 
-  doResetLayout() {
+  public doResetLayout() {
     this.resetLayout()
     this.$activeModal.dismiss()
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

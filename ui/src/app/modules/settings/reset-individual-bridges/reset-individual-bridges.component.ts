@@ -18,7 +18,7 @@ import { ApiService } from '@/app/core/api.service'
   ],
 })
 export class ResetIndividualBridgesComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $router = inject(Router)
   private $toastr = inject(ToastrService)
@@ -30,29 +30,11 @@ export class ResetIndividualBridgesComponent implements OnInit {
   public pairingsChildStale: any[] = []
   public toDelete: { id: string, resetPairingInfo: boolean }[] = []
 
-  constructor() {}
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.loadPairings()
   }
 
-  async loadPairings() {
-    try {
-      const pairings = (await firstValueFrom(this.$api.get('/server/pairings')))
-        .filter((pairing: any) => !pairing._main)
-        .sort((a, b) => a.name.localeCompare(b.name))
-
-      this.pairingsChildActive = pairings.filter((pairing: any) => pairing._category === 'bridge' && !pairing._couldBeStale)
-      this.pairingsNonChild = pairings.filter((pairing: any) => pairing._category !== 'bridge')
-      this.pairingsChildStale = pairings.filter((pairing: any) => pairing._category === 'bridge' && pairing._couldBeStale)
-    } catch (error) {
-      console.error(error)
-      this.$toastr.error(this.$translate.instant('settings.unpair_bridge.load_error'), this.$translate.instant('toast.title_error'))
-      this.$activeModal.close()
-    }
-  }
-
-  toggleList(id: string, resetPairingInfo: boolean = false) {
+  public toggleList(id: string, resetPairingInfo: boolean = false) {
     if (this.toDelete.some((item: { id: string }) => item.id === id)) {
       this.toDelete = this.toDelete.filter((item: { id: string, resetPairingInfo: boolean }) => item.id !== id)
     } else {
@@ -60,11 +42,11 @@ export class ResetIndividualBridgesComponent implements OnInit {
     }
   }
 
-  isInList(id: string) {
+  public isInList(id: string) {
     return this.toDelete.some((item: { id: string }) => item.id === id)
   }
 
-  removeBridges() {
+  public removeBridges() {
     this.clicked = true
     return this.$api.delete('/server/pairings', {
       body: this.toDelete,
@@ -80,5 +62,25 @@ export class ResetIndividualBridgesComponent implements OnInit {
         this.$toastr.error(this.$translate.instant('reset.bridge_ind.fail'), this.$translate.instant('toast.title_error'))
       },
     })
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private async loadPairings() {
+    try {
+      const pairings = (await firstValueFrom(this.$api.get('/server/pairings')))
+        .filter((pairing: any) => !pairing._main)
+        .sort((a, b) => a.name.localeCompare(b.name))
+
+      this.pairingsChildActive = pairings.filter((pairing: any) => pairing._category === 'bridge' && !pairing._couldBeStale)
+      this.pairingsNonChild = pairings.filter((pairing: any) => pairing._category !== 'bridge')
+      this.pairingsChildStale = pairings.filter((pairing: any) => pairing._category === 'bridge' && pairing._couldBeStale)
+    } catch (error) {
+      console.error(error)
+      this.$toastr.error(this.$translate.instant('settings.unpair_bridge.load_error'), this.$translate.instant('toast.title_error'))
+      this.$activeModal.close()
+    }
   }
 }

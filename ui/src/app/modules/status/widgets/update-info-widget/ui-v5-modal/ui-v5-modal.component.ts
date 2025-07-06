@@ -3,8 +3,6 @@ import { Component, inject, Input } from '@angular/core'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe } from '@ngx-translate/core'
 
-import { SettingsService } from '@/app/core/settings.service'
-
 @Component({
   templateUrl: './ui-v5-modal.component.html',
   standalone: true,
@@ -14,8 +12,7 @@ import { SettingsService } from '@/app/core/settings.service'
   ],
 })
 export class UiV5ModalComponent {
-  $activeModal = inject(NgbActiveModal)
-  $settings = inject(SettingsService)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() readyForV5: {
     node: boolean
@@ -24,5 +21,7 @@ export class UiV5ModalComponent {
     arch: boolean
   }
 
-  constructor() {}
+  public closeModal() {
+    this.$activeModal.close('Dismiss')
+  }
 }

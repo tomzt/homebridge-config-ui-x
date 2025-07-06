@@ -6,7 +6,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { SecuritySystemManageComponent } from '@/app/core/accessories/types/security-system/security-system.manage.component'
-import { LongClickDirective } from '@/app/core/directives/longclick.directive'
+import { LongClickDirective } from '@/app/core/directives/long-click.directive'
 
 @Component({
   selector: 'app-security-system',
@@ -24,9 +24,7 @@ export class SecuritySystemComponent {
 
   @Input() public service: ServiceTypeX
 
-  constructor() {}
-
-  onClick() {
+  public onClick() {
     const ref = this.$modal.open(SecuritySystemManageComponent, {
       size: 'md',
       backdrop: 'static',

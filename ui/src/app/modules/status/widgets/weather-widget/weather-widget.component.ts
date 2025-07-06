@@ -24,20 +24,19 @@ import { environment } from '@/environments/environment'
 })
 export class WeatherWidgetComponent implements OnInit, OnDestroy {
   private $http = inject(HttpClient)
+  private $settings = inject(SettingsService)
   private $translate = inject(TranslateService)
   private $ws = inject(WsService)
+  private io: IoNamespace
+  private intervalSubscription: Subscription
 
   @Input() widget: any
   @Input() configureEvent: Subject<any>
 
   public currentWeather: any
-  public $settings = inject(SettingsService)
-  private io: IoNamespace
-  private intervalSubscription: Subscription
+  public temperatureUnits = this.$settings.env.temperatureUnits
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.io = this.$ws.getExistingNamespace('status')
     this.io.connected.subscribe(async () => {
       this.getCurrentWeather()
@@ -58,45 +57,14 @@ export class WeatherWidgetComponent implements OnInit, OnDestroy {
     })
   }
 
-  /**
-   * Get the current weather forecast from OpenWeatherMap
-   * Cache for 20 minutes to prevent repeat requests
-   */
-  getCurrentWeather() {
-    if (!this.widget.location || !this.widget.location.id) {
-      return
-    }
-
-    try {
-      const weatherCache = JSON.parse(localStorage.getItem(`weather-${this.widget.location.id}`))
-      if (weatherCache) {
-        if (dayjs().diff(dayjs(weatherCache.timestamp), 'minute') < 20) {
-          this.currentWeather = weatherCache
-          return
-        }
-      }
-    } catch (e) {}
-
-    this.$http.get('https://api.openweathermap.org/data/2.5/weather', {
-      params: new HttpParams({
-        fromObject: {
-          id: this.widget.location.id,
-          appid: environment.owm.appid,
-          units: 'metric',
-          lang: this.$translate.currentLang,
-        },
-      }),
-    }).subscribe((data: any) => {
-      data.timestamp = new Date().toISOString()
-      this.currentWeather = data
-      localStorage.setItem(`weather-${this.widget.location.id}`, JSON.stringify(data))
-    })
+  public ngOnDestroy() {
+    this.intervalSubscription.unsubscribe()
   }
 
   /**
    * Translate OpenWeatherMap icon codes into Font Awesome icons
    */
-  getWeatherIconClass(): string {
+  public getWeatherIconClass(): string {
     switch (this.currentWeather.weather[0].icon) {
       case '01d': // clear day
         return 'far fa-fw fa-sun'
@@ -137,7 +105,38 @@ export class WeatherWidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
-    this.intervalSubscription.unsubscribe()
+  /**
+   * Get the current weather forecast from OpenWeatherMap
+   * Cache for 20 minutes to prevent repeat requests
+   */
+  private getCurrentWeather() {
+    if (!this.widget.location || !this.widget.location.id) {
+      return
+    }
+
+    try {
+      const weatherCache = JSON.parse(localStorage.getItem(`weather-${this.widget.location.id}`))
+      if (weatherCache) {
+        if (dayjs().diff(dayjs(weatherCache.timestamp), 'minute') < 20) {
+          this.currentWeather = weatherCache
+          return
+        }
+      }
+    } catch (e) {}
+
+    this.$http.get('https://api.openweathermap.org/data/2.5/weather', {
+      params: new HttpParams({
+        fromObject: {
+          id: this.widget.location.id,
+          appid: environment.owm.appid,
+          units: 'metric',
+          lang: this.$translate.currentLang,
+        },
+      }),
+    }).subscribe((data: any) => {
+      data.timestamp = new Date().toISOString()
+      this.currentWeather = data
+      localStorage.setItem(`weather-${this.widget.location.id}`, JSON.stringify(data))
+    })
   }
 }

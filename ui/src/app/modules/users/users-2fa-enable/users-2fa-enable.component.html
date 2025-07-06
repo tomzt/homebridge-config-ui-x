@@ -6,7 +6,7 @@
       class="btn-close"
       data-bs-dismiss="modal"
       [attr.aria-label]="'form.button_close' | translate"
-      (click)="$activeModal.dismiss('Dismiss')"
+      (click)="dismissModal()"
     ></button>
   </div>
   <div class="modal-body">
@@ -35,11 +35,10 @@
         <label class="mb-2 mb-md-0 w-100 w-md-50">{{ 'users.setup_2fa_enter_code' | translate }}</label>
         <div class="text-start text-md-end w-100 w-md-50">
           <input
-            formControlName="username"
             type="text"
             class="form-control custom-input"
             placeholder="eg. 123456"
-            [formControl]="formGroup.controls['code']"
+            [formControl]="formGroup.controls.code"
             autocomplete="one-time-code"
             autocapitalize="none"
             inputmode="numeric"
@@ -57,7 +56,7 @@
         type="button"
         class="btn btn-elegant"
         data-bs-dismiss="modal"
-        (click)="$activeModal.dismiss('Dismiss')"
+        (click)="dismissModal()"
         [attr.aria-label]="'form.button_close' | translate"
       >
         {{ 'form.button_close' | translate }}
@@ -70,7 +69,7 @@
         type="button"
         class="btn btn-elegant"
         data-bs-dismiss="modal"
-        (click)="$activeModal.dismiss('Dismiss')"
+        (click)="dismissModal()"
         [attr.aria-label]="'form.button_close' | translate"
       >
         {{ 'form.button_close' | translate }}

@@ -8,16 +8,14 @@ import { interval, Subscription } from 'rxjs'
   imports: [DatePipe],
 })
 export class ClockWidgetComponent implements OnInit, OnDestroy {
+  private secondsCounter = interval(1000)
+  private secondsCounterSubscription: Subscription
+
   @Input() widget: any
 
   public currentTime: Date = new Date()
 
-  private secondsCounter = interval(1000)
-  private secondsCounterSubscription: Subscription
-
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     if (!this.widget.timeFormat) {
       this.widget.timeFormat = 'H:mm'
     }
@@ -30,7 +28,7 @@ export class ClockWidgetComponent implements OnInit, OnDestroy {
     })
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this.secondsCounterSubscription.unsubscribe()
   }
 }

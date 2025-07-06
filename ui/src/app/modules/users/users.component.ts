@@ -21,23 +21,22 @@ import { UsersEditComponent } from '@/app/modules/users/users-edit/users-edit.co
 })
 export class UsersComponent implements OnInit {
   private $api = inject(ApiService)
-  $auth = inject(AuthService)
+  private $auth = inject(AuthService)
   private $modal = inject(NgbModal)
   private $route = inject(ActivatedRoute)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
   public homebridgeUsers: Array<any>
+  public username = this.$auth.user.username
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.$route.data.subscribe((data: { homebridgeUsers: Array<any> }) => {
       this.homebridgeUsers = data.homebridgeUsers
     })
   }
 
-  reloadUsers() {
+  private reloadUsers() {
     return this.$api.get('/users').subscribe(
       (result) => {
         this.homebridgeUsers = result
@@ -45,7 +44,7 @@ export class UsersComponent implements OnInit {
     )
   }
 
-  openAddNewUser() {
+  public openAddNewUser() {
     const ref = this.$modal.open(UsersAddComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -56,7 +55,7 @@ export class UsersComponent implements OnInit {
     })
   }
 
-  openEditUser(user: any) {
+  public openEditUser(user: any) {
     const ref = this.$modal.open(UsersEditComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -68,7 +67,7 @@ export class UsersComponent implements OnInit {
     })
   }
 
-  deleteUser(id: string) {
+  public deleteUser(id: string) {
     this.$api.delete(`/users/${id}`).subscribe({
       next: () => {
         this.$toastr.success(this.$translate.instant('users.toast_user_deleted'), this.$translate.instant('toast.title_success'))
@@ -81,7 +80,7 @@ export class UsersComponent implements OnInit {
     })
   }
 
-  setup2fa(user: any) {
+  public setup2fa(user: any) {
     const ref = this.$modal.open(Users2faEnableComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -93,7 +92,7 @@ export class UsersComponent implements OnInit {
     })
   }
 
-  disable2fa(user: any) {
+  public disable2fa(user: any) {
     const ref = this.$modal.open(Users2faDisableComponent, {
       size: 'lg',
       backdrop: 'static',

@@ -45,7 +45,7 @@ import { SettingsService } from '@/app/core/settings.service'
   ],
 })
 export class ManualConfigComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $md = inject(MobileDetectService)
   private $modal = inject(NgbModal)
@@ -60,28 +60,23 @@ export class ManualConfigComponent implements OnInit {
 
   public pluginAlias: string
   public pluginType: 'platform' | 'accessory'
-
   public loading = true
   public canConfigure = false
   public show = ''
-
   public pluginConfig: Record<string, any>[]
   public currentBlock: string
   public currentBlockIndex: number | null = null
   public saveInProgress = false
   public childBridges: any[] = []
   public isFirstSave = false
-
   public monacoEditor: any
   public editorOptions: any
-
-  constructor() {}
 
   get arrayKey() {
     return this.pluginType === 'accessory' ? 'accessories' : 'platforms'
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.editorOptions = {
       language: 'json',
       theme: this.$settings.actualLightingMode === 'dark' ? 'vs-dark' : 'vs-light',
@@ -96,7 +91,7 @@ export class ManualConfigComponent implements OnInit {
     }
   }
 
-  async onEditorInit(editor: any) {
+  public async onEditorInit(editor: any) {
     // @ts-expect-error - TS2339: Property editor does not exist on type Window & typeof globalThis
     window.editor = editor
     this.monacoEditor = editor
@@ -104,7 +99,101 @@ export class ManualConfigComponent implements OnInit {
     await this.monacoEditor.getAction('editor.action.formatDocument').run()
   }
 
-  loadPluginAlias() {
+  public addBlock() {
+    if (!this.saveCurrentBlock()) {
+      this.$toastr.error(this.$translate.instant('plugins.config.please_fix'), this.$translate.instant('toast.title_error'))
+      return
+    }
+
+    this.pluginConfig.push({
+      [this.pluginType]: this.pluginAlias,
+      name: this.pluginAlias,
+    })
+
+    this.editBlock((this.pluginConfig.length - 1))
+  }
+
+  public editBlock(index: number) {
+    if (!this.saveCurrentBlock()) {
+      return
+    }
+
+    this.show = `configBlock.${index}`
+    this.currentBlockIndex = index
+    this.currentBlock = JSON.stringify(this.pluginConfig[this.currentBlockIndex], null, 4)
+  }
+
+  public removeBlock(index: number) {
+    const block = this.pluginConfig[index]
+
+    const blockIndex = this.pluginConfig.findIndex(x => x === block)
+    if (blockIndex > -1) {
+      this.pluginConfig.splice(blockIndex, 1)
+    }
+
+    this.currentBlockIndex = null
+    this.currentBlock = undefined
+    this.show = ''
+  }
+
+  public async save() {
+    this.saveInProgress = true
+    if (!this.saveCurrentBlock()) {
+      this.saveInProgress = false
+      return
+    }
+
+    try {
+      const newConfig = await firstValueFrom(this.$api.post(`/config-editor/plugin/${encodeURIComponent(this.plugin.name)}`, this.pluginConfig))
+      this.$activeModal.close()
+
+      // Possible child bridge setup recommendation if the plugin is not Homebridge UI
+      // If it is the first time configuring the plugin, then offer to set up a child bridge straight away
+      if (this.isFirstSave && this.$settings.env.recommendChildBridges && this.$settings.env.serviceMode && newConfig[0]?.platform) {
+        // Close the modal and open the child bridge setup modal
+        this.$activeModal.close()
+        this.$plugin.bridgeSettings(this.plugin, true)
+        return
+      }
+
+      if (!['homebridge', 'homebridge-config-ui-x'].includes(this.plugin.name) && this.$settings.env.serviceMode) {
+        await this.getChildBridges()
+        if (this.childBridges.length > 0) {
+          this.$activeModal.close()
+          const ref = this.$modal.open(RestartChildBridgesComponent, {
+            size: 'lg',
+            backdrop: 'static',
+          })
+          ref.componentInstance.bridges = this.childBridges.map(childBridge => ({
+            name: childBridge.name,
+            username: childBridge.username,
+          }))
+          return
+        }
+      }
+
+      this.$activeModal.close()
+      this.$modal.open(RestartHomebridgeComponent, {
+        size: 'lg',
+        backdrop: 'static',
+      })
+    } catch (error) {
+      console.error(error)
+      this.$toastr.error(this.$translate.instant('config.failed_to_save_config'), this.$translate.instant('toast.title_error'))
+      this.saveInProgress = false
+    }
+  }
+
+  public openFullConfigEditor() {
+    this.$router.navigate(['/config'])
+    this.$activeModal.close()
+  }
+
+  public closeModal() {
+    this.$activeModal.close()
+  }
+
+  private loadPluginAlias() {
     this.$api.get(`/plugins/alias/${encodeURIComponent(this.plugin.name)}`).subscribe({
       next: (result) => {
         if (result.pluginAlias && result.pluginType) {
@@ -121,7 +210,7 @@ export class ManualConfigComponent implements OnInit {
     })
   }
 
-  loadHomebridgeConfig() {
+  private loadHomebridgeConfig() {
     this.$api.get(`/config-editor/plugin/${encodeURIComponent(this.plugin.name)}`).subscribe(
       (config) => {
         this.pluginConfig = config
@@ -139,21 +228,7 @@ export class ManualConfigComponent implements OnInit {
     )
   }
 
-  addBlock() {
-    if (!this.saveCurrentBlock()) {
-      this.$toastr.error(this.$translate.instant('plugins.config.please_fix'), this.$translate.instant('toast.title_error'))
-      return
-    }
-
-    this.pluginConfig.push({
-      [this.pluginType]: this.pluginAlias,
-      name: this.pluginAlias,
-    })
-
-    this.editBlock((this.pluginConfig.length - 1))
-  }
-
-  saveCurrentBlock() {
+  private saveCurrentBlock() {
     if (this.currentBlockIndex !== null && this.monacoEditor) {
       let currentBlockString: string = this.monacoEditor.getModel().getValue().trim()
       let currentBlockNew: any
@@ -205,83 +280,7 @@ export class ManualConfigComponent implements OnInit {
     return true
   }
 
-  editBlock(index: number) {
-    if (!this.saveCurrentBlock()) {
-      return
-    }
-
-    this.show = `configBlock.${index}`
-    this.currentBlockIndex = index
-    this.currentBlock = JSON.stringify(this.pluginConfig[this.currentBlockIndex], null, 4)
-  }
-
-  removeBlock(index: number) {
-    const block = this.pluginConfig[index]
-
-    const blockIndex = this.pluginConfig.findIndex(x => x === block)
-    if (blockIndex > -1) {
-      this.pluginConfig.splice(blockIndex, 1)
-    }
-
-    this.currentBlockIndex = null
-    this.currentBlock = undefined
-    this.show = ''
-  }
-
-  async save() {
-    this.saveInProgress = true
-    if (!this.saveCurrentBlock()) {
-      this.saveInProgress = false
-      return
-    }
-
-    try {
-      const newConfig = await firstValueFrom(this.$api.post(`/config-editor/plugin/${encodeURIComponent(this.plugin.name)}`, this.pluginConfig))
-      this.$activeModal.close()
-
-      // Possible child bridge setup recommendation if the plugin is not Homebridge UI
-      // If it is the first time configuring the plugin, then offer to set up a child bridge straight away
-      if (this.isFirstSave && this.$settings.env.recommendChildBridges && this.$settings.env.serviceMode && newConfig[0]?.platform) {
-        // Close the modal and open the child bridge setup modal
-        this.$activeModal.close()
-        this.$plugin.bridgeSettings(this.plugin, true)
-        return
-      }
-
-      if (!['homebridge', 'homebridge-config-ui-x'].includes(this.plugin.name) && this.$settings.env.serviceMode) {
-        await this.getChildBridges()
-        if (this.childBridges.length > 0) {
-          this.$activeModal.close()
-          const ref = this.$modal.open(RestartChildBridgesComponent, {
-            size: 'lg',
-            backdrop: 'static',
-          })
-          ref.componentInstance.bridges = this.childBridges.map(childBridge => ({
-            name: childBridge.name,
-            username: childBridge.username,
-          }))
-          return
-        }
-      }
-
-      this.$activeModal.close()
-      this.$modal.open(RestartHomebridgeComponent, {
-        size: 'lg',
-        backdrop: 'static',
-      })
-    } catch (error) {
-      console.error(error)
-      this.$toastr.error(this.$translate.instant('config.failed_to_save_config'), this.$translate.instant('toast.title_error'))
-      this.saveInProgress = false
-    }
-  }
-
-  openFullConfigEditor() {
-    this.$router.navigate(['/config'])
-    this.$activeModal.close()
-  }
-
-  async getChildBridges(): Promise<void> {
+  private async getChildBridges(): Promise<void> {
     try {
       const data: any[] = await firstValueFrom(this.$api.get('/status/homebridge/child-bridges'))
       data.forEach((bridge) => {

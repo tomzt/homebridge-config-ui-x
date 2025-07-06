@@ -7,27 +7,32 @@ import { TranslatePipe } from '@ngx-translate/core'
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 
 @Component({
-  selector: 'app-securitysystem.manage',
   templateUrl: './security-system.manage.component.html',
   standalone: true,
   imports: [FormsModule, TranslatePipe, NgClass],
 })
 export class SecuritySystemManageComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
+
   public targetMode: any
   public targetModeValidValues: number[] = []
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.targetMode = this.service.values.SecuritySystemTargetState
     this.targetModeValidValues = this.service.getCharacteristic('SecuritySystemTargetState').validValues as number[]
   }
 
-  setTargetMode(value: number) {
+  public setTargetMode(value: number, event: MouseEvent) {
     this.targetMode = value
     this.service.getCharacteristic('SecuritySystemTargetState').setValue(this.targetMode)
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { LightBulbManageComponent } from '@/app/core/accessories/types/light-bulb/light-bulb.manage.component'
-import { LongClickDirective } from '@/app/core/directives/longclick.directive'
+import { LongClickDirective } from '@/app/core/directives/long-click.directive'
 
 @Component({
   selector: 'app-light-bulb',
@@ -30,32 +30,17 @@ export class LightBulbComponent {
   public isAdaptiveLightingEnabled: boolean = false
   public isAdaptiveLightingEnabled$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.loadAdaptiveLighting()
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     if (this.intervalId) {
       clearInterval(this.intervalId)
     }
   }
 
-  private loadAdaptiveLighting() {
-    if ('CharacteristicValueActiveTransitionCount' in this.service.values) {
-      this.hasAdaptiveLighting = true
-      this.isAdaptiveLightingEnabled$.next(!!this.service.values.CharacteristicValueActiveTransitionCount)
-      this.intervalId = setInterval(() => {
-        this.isAdaptiveLightingEnabled$.next(!!this.service.values.CharacteristicValueActiveTransitionCount)
-      }, 30000)
-      this.isAdaptiveLightingEnabled$.subscribe((value) => {
-        this.isAdaptiveLightingEnabled = value
-      })
-    }
-  }
-
-  onClick() {
+  public onClick() {
     this.service.getCharacteristic('On').setValue(!this.service.values.On)
 
     // Set the brightness to 100% if on 0% when turned on
@@ -64,7 +49,7 @@ export class LightBulbComponent {
     }
   }
 
-  onLongClick() {
+  public onLongClick() {
     if ('Brightness' in this.service.values || 'Hue' in this.service.values || 'ColorTemperature' in this.service.values) {
       const ref = this.$modal.open(LightBulbManageComponent, {
         size: 'md',
@@ -97,6 +82,19 @@ export class LightBulbComponent {
           }, 30000)
         })
       }
+    }
+  }
+
+  private loadAdaptiveLighting() {
+    if ('CharacteristicValueActiveTransitionCount' in this.service.values) {
+      this.hasAdaptiveLighting = true
+      this.isAdaptiveLightingEnabled$.next(!!this.service.values.CharacteristicValueActiveTransitionCount)
+      this.intervalId = setInterval(() => {
+        this.isAdaptiveLightingEnabled$.next(!!this.service.values.CharacteristicValueActiveTransitionCount)
+      }, 30000)
+      this.isAdaptiveLightingEnabled$.subscribe((value) => {
+        this.isAdaptiveLightingEnabled = value
+      })
     }
   }
 }

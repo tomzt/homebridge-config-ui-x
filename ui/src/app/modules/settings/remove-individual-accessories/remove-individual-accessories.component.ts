@@ -21,27 +21,69 @@ import { ApiService } from '@/app/core/api.service'
   ],
 })
 export class RemoveIndividualAccessoriesComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $router = inject(Router)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
-  public pairings: any[] = []
-
   @Input() selectedBridge: string = ''
+
+  public pairings: any[] = []
   public clicked: boolean = false
   public selectedBridgeAccessories: any[] = []
   public accessoriesExist: boolean = false
   public toDelete: { cacheFile: string, uuid: string }[] = []
 
-  constructor() {}
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.loadCachedAccessories()
   }
 
-  async loadCachedAccessories() {
+  public onBridgeChange(value: string) {
+    this.selectedBridge = value
+    this.selectedBridgeAccessories = this.pairings.find((pairing: any) => pairing._id === this.selectedBridge)?.accessories
+  }
+
+  public getCurrentlySelectedBridge() {
+    const pairing = this.pairings.find((pairing: any) => pairing._id === this.selectedBridge)
+    return `${pairing.name} - ${pairing._username}`
+  }
+
+  public toggleList(uuid: string, cacheFile: string) {
+    if (this.toDelete.some((item: { cacheFile: string, uuid: string }) => item.uuid === uuid && item.cacheFile === cacheFile)) {
+      this.toDelete = this.toDelete.filter((item: { cacheFile: string, uuid: string }) => item.uuid !== uuid || item.cacheFile !== cacheFile)
+    } else {
+      this.toDelete.push({ cacheFile, uuid })
+    }
+  }
+
+  public isInList(id: string, cacheFile: string) {
+    return this.toDelete.some((item: { cacheFile: string, uuid: string }) => item.uuid === id && item.cacheFile === cacheFile)
+  }
+
+  public removeAccessories() {
+    this.clicked = true
+    return this.$api.delete('/server/cached-accessories', {
+      body: this.toDelete,
+    }).subscribe({
+      next: () => {
+        this.$toastr.success(this.$translate.instant('reset.accessory_ind.done'), this.$translate.instant('toast.title_success'))
+        this.$activeModal.close()
+        this.$router.navigate(['/restart'], { queryParams: { restarting: true } })
+      },
+      error: (error) => {
+        this.clicked = false
+        console.error(error)
+        this.$toastr.error(this.$translate.instant('reset.accessory_ind.fail'), this.$translate.instant('toast.title_error'))
+      },
+    })
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private async loadCachedAccessories() {
     try {
       const [cachedAccessories, pairings] = await Promise.all([
         firstValueFrom(this.$api.get('/server/cached-accessories')),
@@ -89,45 +131,5 @@ export class RemoveIndividualAccessoriesComponent implements OnInit {
       this.$toastr.error(this.$translate.instant('reset.error_message'), this.$translate.instant('toast.title_error'))
       this.$activeModal.close()
     }
-  }
-
-  onBridgeChange(value: string) {
-    this.selectedBridge = value
-    this.selectedBridgeAccessories = this.pairings.find((pairing: any) => pairing._id === this.selectedBridge)?.accessories
-  }
-
-  getCurrentlySelectedBridge() {
-    const pairing = this.pairings.find((pairing: any) => pairing._id === this.selectedBridge)
-    return `${pairing.name} - ${pairing._username}`
-  }
-
-  toggleList(uuid: string, cacheFile: string) {
-    if (this.toDelete.some((item: { cacheFile: string, uuid: string }) => item.uuid === uuid && item.cacheFile === cacheFile)) {
-      this.toDelete = this.toDelete.filter((item: { cacheFile: string, uuid: string }) => item.uuid !== uuid || item.cacheFile !== cacheFile)
-    } else {
-      this.toDelete.push({ cacheFile, uuid })
-    }
-  }
-
-  isInList(id: string, cacheFile: string) {
-    return this.toDelete.some((item: { cacheFile: string, uuid: string }) => item.uuid === id && item.cacheFile === cacheFile)
-  }
-
-  removeAccessories() {
-    this.clicked = true
-    return this.$api.delete('/server/cached-accessories', {
-      body: this.toDelete,
-    }).subscribe({
-      next: () => {
-        this.$toastr.success(this.$translate.instant('reset.accessory_ind.done'), this.$translate.instant('toast.title_success'))
-        this.$activeModal.close()
-        this.$router.navigate(['/restart'], { queryParams: { restarting: true } })
-      },
-      error: (error) => {
-        this.clicked = false
-        console.error(error)
-        this.$toastr.error(this.$translate.instant('reset.accessory_ind.fail'), this.$translate.instant('toast.title_error'))
-      },
-    })
   }
 }

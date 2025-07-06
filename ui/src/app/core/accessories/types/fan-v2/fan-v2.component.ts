@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { FanV2ManageComponent } from '@/app/core/accessories/types/fan-v2/fan-v2.manage.component'
-import { LongClickDirective } from '@/app/core/directives/longclick.directive'
+import { LongClickDirective } from '@/app/core/directives/long-click.directive'
 
 @Component({
   selector: 'app-fan-v2',
@@ -21,12 +21,11 @@ export class FanV2Component implements OnInit {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
+
   public rotationSpeedUnit = ''
   public hasRotationDirection = false
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     // Find the unit for the rotation speed
     const RotationSpeed = this.service.serviceCharacteristics.find(c => c.type === 'RotationSpeed')
     if (RotationSpeed && RotationSpeed.unit === 'percentage') {
@@ -37,7 +36,7 @@ export class FanV2Component implements OnInit {
     }
   }
 
-  onClick() {
+  public onClick() {
     this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
 
     // Set the rotation speed to max if on 0% when turned on
@@ -47,7 +46,7 @@ export class FanV2Component implements OnInit {
     }
   }
 
-  onLongClick() {
+  public onLongClick() {
     const ref = this.$modal.open(FanV2ManageComponent, {
       size: 'md',
       backdrop: 'static',

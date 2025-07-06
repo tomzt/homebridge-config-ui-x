@@ -2,7 +2,7 @@
   <div class="col-6">
     <h3 class="primary-text m-0">{{ 'menu.label_status' | translate }}</h3>
   </div>
-  @if (consoleStatus === 'up' && $auth.user.admin) {
+  @if (consoleStatus === 'up' && isAdmin) {
   <div class="col-6 text-end d-none d-sm-block">
     <button
       type="button"

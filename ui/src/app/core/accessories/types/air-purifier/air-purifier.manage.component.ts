@@ -21,7 +21,7 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
   ],
 })
 export class AirPurifierManageComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
 
@@ -48,14 +48,43 @@ export class AirPurifierManageComponent implements OnInit {
       })
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.targetState = this.service.values.Active
     this.targetMode = this.service.values.TargetAirPurifierState
     this.targetModeValidValues = this.service.getCharacteristic('TargetAirPurifierState').validValues as number[]
     this.loadRotationSpeed()
   }
 
-  loadRotationSpeed() {
+  public setTargetState(value: number, event: MouseEvent) {
+    this.targetState = value
+    this.service.getCharacteristic('Active').setValue(this.targetState)
+
+    // Set the rotation speed to max if on 0% when turned on
+    if (this.targetState && this.targetRotationSpeed && !this.targetRotationSpeed.value) {
+      this.targetRotationSpeed.value = this.service.getCharacteristic('RotationSpeed').maxValue
+    }
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public setTargetMode(value: number, event: MouseEvent) {
+    this.targetMode = value
+    this.service.getCharacteristic('TargetAirPurifierState').setValue(this.targetMode)
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public onTargetRotationSpeedChange() {
+    this.targetRotationSpeedChanged.next(this.targetRotationSpeed.value)
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private loadRotationSpeed() {
     const RotationSpeed = this.service.getCharacteristic('RotationSpeed')
     if (RotationSpeed) {
       this.targetRotationSpeed = {
@@ -71,24 +100,5 @@ export class AirPurifierManageComponent implements OnInit {
         })
       }, 10)
     }
-  }
-
-  setTargetState(value: number) {
-    this.targetState = value
-    this.service.getCharacteristic('Active').setValue(this.targetState)
-
-    // Set the rotation speed to max if on 0% when turned on
-    if (this.targetState && this.targetRotationSpeed && !this.targetRotationSpeed.value) {
-      this.targetRotationSpeed.value = this.service.getCharacteristic('RotationSpeed').maxValue
-    }
-  }
-
-  setTargetMode(value: number) {
-    this.targetMode = value
-    this.service.getCharacteristic('TargetAirPurifierState').setValue(this.targetMode)
-  }
-
-  onTargetRotationSpeedChange() {
-    this.targetRotationSpeedChanged.next(this.targetRotationSpeed.value)
   }
 }

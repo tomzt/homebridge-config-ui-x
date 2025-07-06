@@ -6,7 +6,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { FilterMaintenanceManageComponent } from '@/app/core/accessories/types/filter-maintenance/filter-maintenance.manage.component'
-import { LongClickDirective } from '@/app/core/directives/longclick.directive'
+import { LongClickDirective } from '@/app/core/directives/long-click.directive'
 
 @Component({
   selector: 'app-filter-maintenance',
@@ -24,9 +24,7 @@ export class FilterMaintenanceComponent {
 
   @Input() public service: ServiceTypeX
 
-  constructor() {}
-
-  onClick() {
+  public onClick() {
     const ref = this.$modal.open(FilterMaintenanceManageComponent, {
       size: 'md',
       backdrop: 'static',

@@ -18,16 +18,4 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 })
 export class OccupancySensorComponent {
   @Input() public service: ServiceTypeX
-
-  constructor() {}
-
-  onClick() {
-    // eslint-disable-next-line no-console
-    console.log('short click')
-  }
-
-  onLongClick() {
-    // eslint-disable-next-line no-console
-    console.log('long clicked')
-  }
 }

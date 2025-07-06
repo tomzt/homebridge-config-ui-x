@@ -20,10 +20,8 @@ export class WsService {
 
   private namespaceConnectionCache = {}
 
-  constructor() {}
-
   /**
-   * Wrapper function to reuse the same connecting
+   * Wrapper function to reuse the same connection
    *
    * @param namespace
    */

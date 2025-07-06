@@ -15,9 +15,7 @@ export class AdminGuard implements CanActivate {
   private $translate = inject(TranslateService)
   private $toastr = inject(ToastrService)
 
-  constructor() {}
-
-  canActivate(): Observable<boolean> | Promise<boolean> | boolean {
+  public canActivate(): Observable<boolean> | Promise<boolean> | boolean {
     if (this.$auth.user && this.$auth.user.admin) {
       return true
     } else {

@@ -11,6 +11,4 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 })
 export class StatelessProgrammableSwitchComponent {
   @Input() public service: ServiceTypeX
-
-  constructor() {}
 }

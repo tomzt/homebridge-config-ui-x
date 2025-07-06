@@ -14,6 +14,4 @@ export class AirQualitySensorComponent {
   @Input() public service: ServiceTypeX
 
   public labels = ['Unknown', 'Excellent', 'Good', 'Fair', 'Inferior', 'Poor']
-
-  constructor() {}
 }

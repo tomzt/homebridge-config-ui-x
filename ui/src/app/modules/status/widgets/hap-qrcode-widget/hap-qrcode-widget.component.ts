@@ -18,6 +18,7 @@ import { IoNamespace, WsService } from '@/app/core/ws.service'
 })
 export class HapQrcodeWidgetComponent implements OnInit {
   private $ws = inject(WsService)
+  private io: IoNamespace
 
   readonly pincodeElement = viewChild<ElementRef>('pincode')
   readonly qrcodeContainerElement = viewChild<ElementRef>('qrcodecontainer')
@@ -30,11 +31,7 @@ export class HapQrcodeWidgetComponent implements OnInit {
   public qrCodeHeight: number
   public qrCodeWidth: number
 
-  private io: IoNamespace
-
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.io = this.$ws.getExistingNamespace('status')
 
     this.resizeQrCode()
@@ -60,7 +57,7 @@ export class HapQrcodeWidgetComponent implements OnInit {
     })
   }
 
-  resizeQrCode() {
+  private resizeQrCode() {
     const containerHeight = (this.qrcodeContainerElement().nativeElement as HTMLElement).offsetHeight
     const containerWidth = (this.qrcodeContainerElement().nativeElement as HTMLElement).offsetWidth
     const pinCodeHeight = (this.pincodeElement().nativeElement as HTMLElement).offsetHeight
@@ -69,7 +66,7 @@ export class HapQrcodeWidgetComponent implements OnInit {
     this.qrCodeWidth = containerWidth > this.qrCodeHeight ? this.qrCodeHeight : containerWidth
   }
 
-  getPairingPin() {
+  private getPairingPin() {
     this.io.request('get-homebridge-pairing-pin').subscribe((data) => {
       this.pin = data.pin
       this.setupUri = data.setupUri

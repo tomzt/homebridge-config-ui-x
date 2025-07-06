@@ -12,9 +12,6 @@ import { IoNamespace, WsService } from '@/app/core/ws.service'
 })
 export class LogService {
   private $ws = inject(WsService)
-
-  public term: Terminal
-
   private io: IoNamespace
   private fitAddon: FitAddon
   private webLinksAddon: WebLinksAddon
@@ -22,9 +19,9 @@ export class LogService {
   private elementResize: Subject<any> | undefined
   private pluginName: string
 
-  constructor() {}
+  public term: Terminal
 
-  startTerminal(
+  public startTerminal(
     targetElement: ElementRef,
     termOpts: ITerminalOptions = {},
     elementResize?: Subject<any>,
@@ -123,7 +120,7 @@ export class LogService {
     }
   }
 
-  destroyTerminal() {
+  public destroyTerminal() {
     this.io.end()
     this.term.dispose()
     this.resize.complete()

@@ -1,15 +1,14 @@
 <div
   class="accessory-box"
   [ngClass]="{ 'switch-on': service.values.Active === 1 }"
-  appLongclick
-  (longclick)="onLongClick()"
-  (shortclick)="onClick()"
+  (longClick)="onLongClick()"
+  (shortClick)="onClick()"
   tabindex="0"
 >
   <div class="d-flex flex-column h-100">
     <div
       class="temperature-circle temperature-circle-collapse"
-      [innerText]="(service.values.CurrentTemperature | convertTemp | number:'1.0-1') + '°' + ($settings.env.temperatureUnits
+      [innerText]="(service.values.CurrentTemperature | convertTemp | number: '1.0-1') + '°' + (temperatureUnits
       | uppercase)"
       [ngClass]="{
         'cooling': service.values.CurrentHeaterCoolerState === 3 && service.values.Active === 1,
@@ -21,14 +20,14 @@
     <div class="accessory-label grey-text">
       @if (service.values.Active === 0) { {{ 'accessories.control.off' | translate }} } @else if
       (service.values.TargetHeaterCoolerState === 0 && (hasHeating || hasCooling)) { @if (hasHeating && hasCooling) {
-      <i class="fa fas fa-bullseye"></i> {{ service.values.HeatingThresholdTemperature | convertTemp | number:'1.0-1'
-      }}&deg;{{ $settings.env.temperatureUnits | uppercase }} - {{ service.values.CoolingThresholdTemperature
-      |convertTemp | number:'1.0-1' }}&deg;{{ $settings.env.temperatureUnits| uppercase }} } @else if (hasHeating &&
-      !hasCooling) { <i class="fa fas fa-bullseye"></i> {{ service.values.HeatingThresholdTemperature | convertTemp |
-      number:'1.0-1' }}&deg;{{ $settings.env.temperatureUnits | uppercase }} } @else if (!hasHeating && hasCooling) {
-      <i class="fa fas fa-bullseye"></i> {{ service.values.CoolingThresholdTemperature | convertTemp | number:'1.0-1'
-      }}&deg;{{ $settings.env.temperatureUnits | uppercase }} } } @else if (service.values.TargetHeaterCoolerState ===
-      1) { {{'accessories.control.heat' | translate }} } @else if (service.values.TargetHeaterCoolerState === 2) {
+      <i class="fa fas fa-bullseye"></i> {{ service.values.HeatingThresholdTemperature | convertTemp | number: '1.0-1'
+      }}&deg;{{ temperatureUnits | uppercase }} - {{ service.values.CoolingThresholdTemperature | convertTemp | number:
+      '1.0-1' }}&deg;{{ temperatureUnits| uppercase }} } @else if (hasHeating && !hasCooling) {
+      <i class="fa fas fa-bullseye"></i> {{ service.values.HeatingThresholdTemperature | convertTemp | number: '1.0-1'
+      }}&deg;{{ temperatureUnits | uppercase }} } @else if (!hasHeating && hasCooling) {
+      <i class="fa fas fa-bullseye"></i> {{ service.values.CoolingThresholdTemperature | convertTemp | number: '1.0-1'
+      }}&deg;{{ temperatureUnits | uppercase }} } } @else if (service.values.TargetHeaterCoolerState === 1) {
+      {{'accessories.control.heat' | translate }} } @else if (service.values.TargetHeaterCoolerState === 2) {
       {{'accessories.control.cool' | translate }} } @else { {{'accessories.control.on' | translate }} }
     </div>
   </div>

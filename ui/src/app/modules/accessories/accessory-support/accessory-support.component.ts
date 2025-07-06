@@ -8,7 +8,9 @@ import { TranslatePipe } from '@ngx-translate/core'
   imports: [TranslatePipe],
 })
 export class AccessorySupportComponent {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
-  constructor() {}
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
 }

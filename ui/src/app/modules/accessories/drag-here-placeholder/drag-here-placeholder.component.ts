@@ -8,6 +8,4 @@ import { TranslatePipe } from '@ngx-translate/core'
   standalone: true,
   imports: [TranslatePipe],
 })
-export class DragHerePlaceholderComponent {
-  constructor() {}
-}
+export class DragHerePlaceholderComponent {}

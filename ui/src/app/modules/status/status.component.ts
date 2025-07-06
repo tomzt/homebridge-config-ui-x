@@ -29,12 +29,15 @@ import { WidgetsComponent } from '@/app/modules/status/widgets/widgets.component
   ],
 })
 export class StatusComponent implements OnInit, OnDestroy {
-  $auth = inject(AuthService)
+  private $auth = inject(AuthService)
   private $modal = inject(NgbModal)
   private $notification = inject(NotificationService)
   private $settings = inject(SettingsService)
   private $ws = inject(WsService)
+  private isUnlocked = false
+  private io: IoNamespace
 
+  public isAdmin = this.$auth.user.admin
   public saveWidgetsEvent = new Subject()
   public options: GridsterConfig
   public dashboard: Array<GridsterItem> = []
@@ -44,12 +47,7 @@ export class StatusComponent implements OnInit, OnDestroy {
     mobile: (window.innerWidth < 1024),
   }
 
-  private isUnlocked = false
-  private io: IoNamespace
-
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.currentYear = new Date().getFullYear()
     this.io = this.$ws.connectToNamespace('status')
     this.options = {
@@ -121,62 +119,7 @@ export class StatusComponent implements OnInit, OnDestroy {
     }
   }
 
-  getLayout() {
-    this.io.request('get-dashboard-layout').subscribe((layout) => {
-      if (!layout.length) {
-        return this.resetLayout()
-      }
-
-      let saveNeeded = false
-      this.setLayout(layout.map((item: any) => {
-        // Renamed between v4.68.0 and v4.69.0
-        if (item.component === 'HomebridgeStatusWidgetComponent') {
-          item.component = 'UpdateInfoWidgetComponent'
-          saveNeeded = true
-        } else if (item.component === 'ChildBridgeWidgetComponent') {
-          item.component = 'BridgesWidgetComponent'
-          saveNeeded = true
-        }
-        return item
-      }))
-
-      if (saveNeeded) {
-        this.gridChangedEvent()
-      }
-    })
-  }
-
-  setLayout(layout: any[]) {
-    this.dashboard = layout.map((item) => {
-      item.$resizeEvent = new Subject()
-      item.$configureEvent = new Subject()
-      item.$saveWidgetsEvent = this.saveWidgetsEvent
-      item.draggable = this.options.draggable.enabled
-      return item
-    })
-  }
-
-  resetLayout() {
-    // eslint-disable-next-line ts/no-require-imports
-    this.setLayout(require('./default-dashboard-layout.json'))
-    this.gridChangedEvent()
-  }
-
-  isIos() {
-    try {
-      if (/iPad|iPhone|iPod/.test(navigator.platform)) {
-        return true
-      } else {
-        return navigator.maxTouchPoints
-          && navigator.maxTouchPoints > 2
-          && /MacIntel/.test(navigator.platform)
-      }
-    } catch (e) {
-      return false
-    }
-  }
-
-  lockLayout() {
+  public lockLayout() {
     this.options.draggable.enabled = false
     this.options.resizable.enabled = false
     this.options.api.optionsChanged()
@@ -184,7 +127,7 @@ export class StatusComponent implements OnInit, OnDestroy {
     this.setLayout(this.dashboard)
   }
 
-  unlockLayout() {
+  public unlockLayout() {
     this.options.draggable.enabled = true
     this.options.resizable.enabled = true
     this.options.api.optionsChanged()
@@ -192,46 +135,7 @@ export class StatusComponent implements OnInit, OnDestroy {
     this.setLayout(this.dashboard)
   }
 
-  gridResizeEvent(_item: any, itemComponent: any) {
-    itemComponent.item.$resizeEvent.next('resize')
-    this.page.mobile = (window.innerWidth < 1024)
-  }
-
-  async gridChangedEvent() {
-    // Sort the array to ensure mobile displays correctly
-    this.dashboard.sort((a: any, b: any) => {
-      if (a.mobileOrder < b.mobileOrder) {
-        return -1
-      }
-
-      // eslint-disable-next-line no-self-compare
-      if (b.mobileOrder > b.mobileOrder) {
-        return 1
-      }
-      return 0
-    })
-
-    // Remove private properties
-    const layout = this.dashboard.map((item) => {
-      const resp = {}
-      for (const key of Object.keys(item)) {
-        if (!key.startsWith('$')) {
-          resp[key] = item[key]
-        }
-      }
-      return resp
-    })
-
-    // Save to server
-    try {
-      await firstValueFrom(this.io.request('set-dashboard-layout', layout))
-    } catch (e) {
-      console.error('Failed to save dashboard layout')
-      console.error(e)
-    }
-  }
-
-  addWidget() {
+  public addWidget() {
     const ref = this.$modal.open(WidgetVisibilityComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -279,7 +183,7 @@ export class StatusComponent implements OnInit, OnDestroy {
       .catch(() => { /* modal dismissed */ })
   }
 
-  manageWidget(item) {
+  public manageWidget(item) {
     const ref = this.$modal.open(WidgetControlComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -298,15 +202,95 @@ export class StatusComponent implements OnInit, OnDestroy {
       .catch(() => { /* modal dismissed */ })
   }
 
-  openCreditsModal() {
+  public openCreditsModal() {
     this.$modal.open(CreditsComponent, {
       size: 'lg',
       backdrop: 'static',
     })
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this.io.end()
     this.saveWidgetsEvent.complete()
+  }
+
+  private getLayout() {
+    this.io.request('get-dashboard-layout').subscribe((layout) => {
+      if (!layout.length) {
+        return this.resetLayout()
+      }
+
+      let saveNeeded = false
+      this.setLayout(layout.map((item: any) => {
+        // Renamed between v4.68.0 and v4.69.0
+        if (item.component === 'HomebridgeStatusWidgetComponent') {
+          item.component = 'UpdateInfoWidgetComponent'
+          saveNeeded = true
+        } else if (item.component === 'ChildBridgeWidgetComponent') {
+          item.component = 'BridgesWidgetComponent'
+          saveNeeded = true
+        }
+        return item
+      }))
+
+      if (saveNeeded) {
+        this.gridChangedEvent()
+      }
+    })
+  }
+
+  private setLayout(layout: any[]) {
+    this.dashboard = layout.map((item) => {
+      item.$resizeEvent = new Subject()
+      item.$configureEvent = new Subject()
+      item.$saveWidgetsEvent = this.saveWidgetsEvent
+      item.draggable = this.options.draggable.enabled
+      return item
+    })
+  }
+
+  private resetLayout() {
+    // eslint-disable-next-line ts/no-require-imports
+    this.setLayout(require('./default-dashboard-layout.json'))
+    this.gridChangedEvent()
+  }
+
+  private gridResizeEvent(_item: any, itemComponent: any) {
+    itemComponent.item.$resizeEvent.next('resize')
+    this.page.mobile = (window.innerWidth < 1024)
+  }
+
+  private async gridChangedEvent() {
+    // Sort the array to ensure mobile displays correctly
+    this.dashboard.sort((a: any, b: any) => {
+      if (a.mobileOrder < b.mobileOrder) {
+        return -1
+      }
+
+      // eslint-disable-next-line no-self-compare
+      if (b.mobileOrder > b.mobileOrder) {
+        return 1
+      }
+      return 0
+    })
+
+    // Remove private properties
+    const layout = this.dashboard.map((item) => {
+      const resp = {}
+      for (const key of Object.keys(item)) {
+        if (!key.startsWith('$')) {
+          resp[key] = item[key]
+        }
+      }
+      return resp
+    })
+
+    // Save to server
+    try {
+      await firstValueFrom(this.io.request('set-dashboard-layout', layout))
+    } catch (e) {
+      console.error('Failed to save dashboard layout')
+      console.error(e)
+    }
   }
 }

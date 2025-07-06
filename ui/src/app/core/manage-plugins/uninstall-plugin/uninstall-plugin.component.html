@@ -6,7 +6,7 @@
       class="btn-close"
       data-bs-dismiss="modal"
       [attr.aria-label]="'form.button_close' | translate"
-      (click)="$activeModal.dismiss('Dismiss')"
+      (click)="dismissModal()"
       [disabled]="uninstalling"
     ></button>
   </div>
@@ -27,7 +27,7 @@
           {{ 'plugins.uninstall_remove_plugin_config' | translate }}
           <span class="hb-uix-slider hb-uix-round"></span>
         </label>
-        @if ($settings.env.serviceMode && hasChildBridges) {
+        @if (serviceMode && hasChildBridges) {
         <label class="hb-uix-switch d-block" for="remove-plugin-child-bridges">
           <input id="remove-plugin-child-bridges" type="checkbox" [(ngModel)]="removeChildBridges" />
           @if (childBridges.length === 1) { {{ 'plugins.uninstall_remove_child_bridge' | translate }} } @if
@@ -60,7 +60,7 @@
         type="button"
         class="btn btn-elegant"
         data-bs-dismiss="modal"
-        (click)="$activeModal.dismiss('Dismiss')"
+        (click)="dismissModal()"
         [attr.aria-label]="'form.button_close' | translate"
         [disabled]="uninstalling"
       >

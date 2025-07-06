@@ -37,11 +37,12 @@ export class PluginCardComponent implements OnInit {
   private $api = inject(ApiService)
   private $md = inject(MobileDetectService)
   private $modal = inject(NgbModal)
-  $plugin = inject(ManagePluginsService)
-  $settings = inject(SettingsService)
+  private $plugin = inject(ManagePluginsService)
+  private $settings = inject(SettingsService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
   private $ws = inject(WsService)
+  private io: IoNamespace
 
   @Input() plugin: any
 
@@ -54,10 +55,7 @@ export class PluginCardComponent implements OnInit {
   public isMobile: string
   public setChildBridges = []
   public hb2Status = 'unknown' // 'hide' | 'supported' | 'unknown'
-
-  private io: IoNamespace
-
-  constructor() {}
+  public serviceMode = this.$settings.env.serviceMode
 
   // eslint-disable-next-line accessor-pairs
   @Input() set childBridges(childBridges: any[]) {
@@ -83,7 +81,7 @@ export class PluginCardComponent implements OnInit {
     this.hb2Status = homebridgeVersion === '2' ? 'hide' : hbEngines.some((x: string) => (x.startsWith('^2') || x.startsWith('>=2'))) ? 'supported' : this.hb2Status
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.isMobile = this.$md.detect.mobile()
     this.io = this.$ws.getExistingNamespace('child-bridges')
 
@@ -96,7 +94,7 @@ export class PluginCardComponent implements OnInit {
     }
   }
 
-  openFundingModal(plugin: any) {
+  public openFundingModal(plugin: any) {
     const ref = this.$modal.open(DonateComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -104,7 +102,7 @@ export class PluginCardComponent implements OnInit {
     ref.componentInstance.plugin = plugin
   }
 
-  pluginInfoModal(plugin: any) {
+  public pluginInfoModal(plugin: any) {
     const ref = this.$modal.open(PluginInfoComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -112,7 +110,7 @@ export class PluginCardComponent implements OnInit {
     ref.componentInstance.plugin = plugin
   }
 
-  disablePlugin(plugin: any) {
+  public disablePlugin(plugin: any) {
     const ref = this.$modal.open(DisablePluginComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -143,7 +141,7 @@ export class PluginCardComponent implements OnInit {
     })
   }
 
-  enablePlugin(plugin: any) {
+  public enablePlugin(plugin: any) {
     const ref = this.$modal.open(ConfirmComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -176,16 +174,16 @@ export class PluginCardComponent implements OnInit {
     })
   }
 
-  viewPluginLog(plugin: any) {
+  public viewPluginLog() {
     const ref = this.$modal.open(PluginLogsComponent, {
       size: 'xl',
       backdrop: 'static',
     })
 
-    ref.componentInstance.plugin = plugin
+    ref.componentInstance.plugin = this.plugin
   }
 
-  async doChildBridgeAction(action: 'stop' | 'start' | 'restart') {
+  public async doChildBridgeAction(action: 'stop' | 'start' | 'restart') {
     this.childBridgeRestartInProgress = true
     try {
       for (const bridge of this.setChildBridges) {
@@ -202,7 +200,39 @@ export class PluginCardComponent implements OnInit {
     }
   }
 
-  handleIconError() {
+  public handleIconError() {
     this.plugin.icon = this.defaultIcon
+  }
+
+  public checkAndUpdatePlugin() {
+    this.$plugin.checkAndUpdatePlugin(this.plugin, this.plugin.latestVersion)
+  }
+
+  public openSettings() {
+    this.$plugin.settings(this.plugin)
+  }
+
+  public openBridgeSettings() {
+    this.$plugin.bridgeSettings(this.plugin)
+  }
+
+  public switchToScoped() {
+    this.$plugin.switchToScoped(this.plugin)
+  }
+
+  public installAlternateVersion() {
+    this.$plugin.installAlternateVersion(this.plugin)
+  }
+
+  public openJsonEditor() {
+    this.$plugin.jsonEditor(this.plugin)
+  }
+
+  public uninstallPlugin() {
+    this.$plugin.uninstallPlugin(this.plugin, this.setChildBridges)
+  }
+
+  public resetChildBridges() {
+    this.$plugin.resetChildBridges(this.setChildBridges)
   }
 }

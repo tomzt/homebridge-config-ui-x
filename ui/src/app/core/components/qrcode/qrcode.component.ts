@@ -9,13 +9,13 @@ import { toString } from 'qrcode'
 export class QrcodeComponent implements OnChanges {
   @Input() data: string
 
-  readonly qrcodeElement = viewChild<ElementRef>('qrcode')
+  private readonly qrcodeElement = viewChild<ElementRef>('qrcode')
 
-  ngOnChanges(): void {
+  public ngOnChanges(): void {
     this.renderQrCode()
   }
 
-  async renderQrCode() {
+  private async renderQrCode() {
     if (this.data) {
       const qrcodeElement = this.qrcodeElement()
       qrcodeElement.nativeElement.innerHTML = await toString(this.data, {

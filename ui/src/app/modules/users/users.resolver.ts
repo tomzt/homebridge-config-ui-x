@@ -13,9 +13,7 @@ export class UsersResolver implements Resolve<any> {
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
-  constructor() {}
-
-  async resolve() {
+  public async resolve() {
     try {
       return await firstValueFrom(this.$api.get('/users'))
     } catch (error) {

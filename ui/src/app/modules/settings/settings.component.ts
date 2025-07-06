@@ -14,6 +14,7 @@ import { debounceTime } from 'rxjs/operators'
 import { ApiService } from '@/app/core/api.service'
 import { SpinnerComponent } from '@/app/core/components/spinner/spinner.component'
 import { ManagePluginsService } from '@/app/core/manage-plugins/manage-plugins.service'
+import { NotificationService } from '@/app/core/notification.service'
 import { SettingsService } from '@/app/core/settings.service'
 import { AccessoryControlListsComponent } from '@/app/modules/settings/accessory-control-lists/accessory-control-lists.component'
 import { BackupComponent } from '@/app/modules/settings/backup/backup.component'
@@ -52,12 +53,12 @@ import { WallpaperComponent } from '@/app/modules/settings/wallpaper/wallpaper.c
 export class SettingsComponent implements OnInit {
   private $api = inject(ApiService)
   private $modal = inject(NgbModal)
+  private $notification = inject(NotificationService)
   private $plugin = inject(ManagePluginsService)
   private $router = inject(Router)
-  $settings = inject(SettingsService)
+  private $settings = inject(SettingsService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
-
   private restartToastIsShown = false
 
   public showFields = {
@@ -77,6 +78,10 @@ export class SettingsComponent implements OnInit {
   public adaptersAvailable: NetworkAdapterAvailable[] = []
   public adaptersSelected: NetworkAdapterSelected[] = []
   public showPfxPassphrase = false
+  public runningInDocker = this.$settings.env.runningInDocker
+  public runningOnRaspberryPi = this.$settings.env.runningOnRaspberryPi
+  public serviceMode = this.$settings.env.serviceMode
+  public platform = this.$settings.env.platform
 
   public hbNameIsInvalid = false
   public hbNameIsSaving = false
@@ -186,14 +191,12 @@ export class SettingsComponent implements OnInit {
 
   public readonly linkDebug = '<a href="https://github.com/homebridge/homebridge-config-ui-x/wiki/Debug-Common-Values" target="_blank"><i class="fa fa-fw fa-external-link-alt primary-text"></i></a>'
 
-  constructor() {}
-
-  async ngOnInit() {
+  public async ngOnInit() {
     this.isHbV2 = this.$settings.env.homebridgeVersion.startsWith('2')
 
     await this.initNetworkingOptions()
 
-    if (this.$settings.env.serviceMode) {
+    if (this.serviceMode) {
       await this.initServiceModeForm()
     }
 
@@ -322,7 +325,110 @@ export class SettingsComponent implements OnInit {
     this.loading = false
   }
 
-  async initServiceModeForm() {
+  public openUiSettings() {
+    this.$plugin.settings({
+      name: 'homebridge-config-ui-x',
+      displayName: 'Homebridge UI',
+      settingsSchema: true,
+      links: {},
+    })
+  }
+
+  public openBackupModal() {
+    this.$modal.open(BackupComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    })
+  }
+
+  public openWallpaperModal() {
+    this.$modal.open(WallpaperComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    })
+  }
+
+  public resetHomebridgeState() {
+    this.$modal.open(ResetAllBridgesComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    })
+  }
+
+  public unpairAccessory() {
+    this.$modal.open(ResetIndividualBridgesComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    })
+  }
+
+  public removeAllCachedAccessories() {
+    this.$modal.open(RemoveAllAccessoriesComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    })
+  }
+
+  public async accessoryUiControl() {
+    try {
+      const ref = this.$modal.open(AccessoryControlListsComponent, {
+        size: 'lg',
+        backdrop: 'static',
+      })
+
+      ref.componentInstance.existingBlacklist = this.$settings.env.accessoryControl?.instanceBlacklist || []
+
+      await ref.result
+      this.showRestartToast()
+    } catch (error) {
+      if (error !== 'Dismiss') {
+        console.error(error)
+        this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
+      }
+    }
+  }
+
+  public removeSingleCachedAccessories() {
+    this.$modal.open(RemoveIndividualAccessoriesComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    })
+  }
+
+  public removeBridgeAccessories() {
+    this.$modal.open(RemoveBridgeAccessoriesComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    })
+  }
+
+  public async selectNetworkInterfaces() {
+    const ref = this.$modal.open(SelectNetworkInterfacesComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    })
+
+    ref.componentInstance.adaptersAvailable = this.adaptersAvailable
+    ref.componentInstance.adaptersSelected = this.adaptersSelected
+
+    try {
+      const adapters: string[] = await ref.result
+      this.buildBridgeNetworkAdapterList(adapters)
+      await firstValueFrom(this.$api.put('/server/network-interfaces/bridge', { adapters }))
+      this.showRestartToast()
+    } catch (error) {
+      if (error !== 'Dismiss') {
+        console.error(error)
+        this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
+      }
+    }
+  }
+
+  public toggleSection(section: string) {
+    this.showFields[section] = !this.showFields[section]
+  }
+
+  private async initServiceModeForm() {
     try {
       const serviceModeData = await firstValueFrom(this.$api.get('/platform-tools/hb-service/homebridge-startup-settings'))
 
@@ -356,7 +462,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async initNetworkingOptions() {
+  private async initNetworkingOptions() {
     try {
       await this.getNetworkSettings()
       const onLinux = (
@@ -375,7 +481,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async getNetworkSettings() {
+  private async getNetworkSettings() {
     return Promise.all([
       firstValueFrom(this.$api.get('/server/network-interfaces/system')),
       firstValueFrom(this.$api.get('/server/network-interfaces/bridge')),
@@ -408,7 +514,7 @@ export class SettingsComponent implements OnInit {
     })
   }
 
-  async saveUiSettingChange(key: string, value: any) {
+  private async saveUiSettingChange(key: string, value: any) {
     // Save the new property to the config file
     try {
       await firstValueFrom(this.$api.put('/config-editor/ui', { key, value }))
@@ -418,7 +524,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbNameSave(value: string) {
+  private async hbNameSave(value: string) {
     // https://github.com/homebridge/HAP-NodeJS/blob/ee41309fd9eac383cdcace39f4f6f6a3d54396f3/src/lib/util/checkName.ts#L12
     if (!value || !(/^[\p{L}\p{N}][\p{L}\p{N} ']*[\p{L}\p{N}]$/u).test(value)) {
       this.hbNameIsInvalid = true
@@ -440,7 +546,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiLangSave(value: string) {
+  private async uiLangSave(value: string) {
     try {
       this.uiLangIsSaving = true
       this.$settings.setLang(value)
@@ -455,7 +561,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiThemeSave(value: string) {
+  private async uiThemeSave(value: string) {
     try {
       this.uiThemeIsSaving = true
       this.$settings.setTheme(value)
@@ -470,7 +576,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiLightSave(value: 'auto' | 'light' | 'dark') {
+  private async uiLightSave(value: 'auto' | 'light' | 'dark') {
     try {
       this.uiLightIsSaving = true
       this.$settings.setLightingMode(value, 'user')
@@ -485,7 +591,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiMenuSave(value: 'default' | 'freeze') {
+  private async uiMenuSave(value: 'default' | 'freeze') {
     try {
       this.uiMenuIsSaving = true
       this.$settings.setMenuMode(value)
@@ -498,7 +604,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiTempSave(value: string) {
+  private async uiTempSave(value: string) {
     try {
       this.uiTempIsSaving = true
       this.$settings.setEnvItem('temperatureUnits', value)
@@ -513,7 +619,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbDebugSave(value: boolean) {
+  private async hbDebugSave(value: boolean) {
     try {
       this.hbDebugIsSaving = true
       await firstValueFrom(this.$api.put('/platform-tools/hb-service/homebridge-startup-settings', {
@@ -540,7 +646,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbInsecureSave(value: boolean) {
+  private async hbInsecureSave(value: boolean) {
     try {
       this.hbInsecureIsSaving = true
       await firstValueFrom(this.$api.put('/platform-tools/hb-service/homebridge-startup-settings', {
@@ -567,7 +673,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbKeepSave(value: boolean) {
+  private async hbKeepSave(value: boolean) {
     try {
       this.hbKeepIsSaving = true
       await firstValueFrom(this.$api.put('/platform-tools/hb-service/homebridge-startup-settings', {
@@ -594,7 +700,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbEnvDebugSave(value: string) {
+  private async hbEnvDebugSave(value: string) {
     try {
       this.hbEnvDebugIsSaving = true
       await firstValueFrom(this.$api.put('/platform-tools/hb-service/homebridge-startup-settings', {
@@ -621,7 +727,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbEnvNodeSave(value: string) {
+  private async hbEnvNodeSave(value: string) {
     try {
       this.hbEnvNodeIsSaving = true
       await firstValueFrom(this.$api.put('/platform-tools/hb-service/homebridge-startup-settings', {
@@ -648,7 +754,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbLogSizeSave(value: number) {
+  private async hbLogSizeSave(value: number) {
     if (value && (typeof value !== 'number' || value < -1 || Number.isInteger(value) === false)) {
       this.hbLogSizeIsInvalid = true
       return
@@ -676,7 +782,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbLogTruncateSave(value: number) {
+  private async hbLogTruncateSave(value: number) {
     if (value && (typeof value !== 'number' || value < 0 || Number.isInteger(value) === false)) {
       this.hbLogTruncateIsInvalid = true
       return
@@ -698,7 +804,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbMDnsSave(value: string) {
+  private async hbMDnsSave(value: string) {
     try {
       this.hbMDnsIsSaving = true
       await firstValueFrom(this.$api.put('/server/mdns-advertiser', { advertiser: value }))
@@ -713,7 +819,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbPortSave(value: number) {
+  private async hbPortSave(value: number) {
     if (value === this.uiPortFormControl.value) {
       this.hbPortIsInvalid = true
       return
@@ -734,7 +840,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbStartPortSave(value: number) {
+  private async hbStartPortSave(value: number) {
     try {
       this.hbStartPortIsSaving = true
       await firstValueFrom(this.$api.put('/server/ports', { start: value, end: this.hbEndPortFormControl.value }))
@@ -750,7 +856,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbEndPortSave(value: number) {
+  private async hbEndPortSave(value: number) {
     try {
       this.hbEndPortIsSaving = true
       await firstValueFrom(this.$api.put('/server/ports', { start: this.hbStartPortFormControl.value, end: value }))
@@ -766,7 +872,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiPortSave(value: number) {
+  private async uiPortSave(value: number) {
     if (!value || typeof value !== 'number' || value < 1025 || value > 65533 || Number.isInteger(value) === false || value === this.hbPortFormControl.value) {
       this.uiPortIsInvalid = true
       return
@@ -788,11 +894,12 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiAuthSave(value: boolean) {
+  private async uiAuthSave(value: boolean) {
     try {
       this.uiAuthIsSaving = true
       this.$settings.setItem('formAuth', value)
       await this.saveUiSettingChange('auth', value ? 'form' : 'none')
+      this.$notification.formAuthEnabled.next(value)
       setTimeout(() => {
         this.uiAuthIsSaving = false
         this.showRestartToast()
@@ -804,7 +911,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiSessionTimeoutSave(value: number) {
+  private async uiSessionTimeoutSave(value: number) {
     if (value && (typeof value !== 'number' || value < 600 || value > 86400000 || Number.isInteger(value) === false)) {
       this.uiSessionTimeoutIsInvalid = true
       return
@@ -826,7 +933,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiSslKeySave(value: string) {
+  private async uiSslKeySave(value: string) {
     try {
       this.uiSslKeyIsSaving = true
       this.$settings.setEnvItem('ssl.key', value)
@@ -842,7 +949,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiSslCertSave(value: string) {
+  private async uiSslCertSave(value: string) {
     try {
       this.uiSslCertIsSaving = true
       this.$settings.setEnvItem('ssl.cert', value)
@@ -858,7 +965,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiSslPfxSave(value: string) {
+  private async uiSslPfxSave(value: string) {
     try {
       this.uiSslPfxIsSaving = true
       this.$settings.setEnvItem('ssl.pfx', value)
@@ -874,7 +981,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiSslPassphraseSave(value: string) {
+  private async uiSslPassphraseSave(value: string) {
     try {
       this.uiSslPassphraseIsSaving = true
       this.$settings.setEnvItem('ssl.passphrase', value)
@@ -890,7 +997,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiSslTypeSave(value: string) {
+  private async uiSslTypeSave(value: string) {
     switch (value) {
       case 'keycert':
         this.uiSslPfxFormControl.patchValue('', { emitEvent: false })
@@ -918,7 +1025,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiHostSave(value: string) {
+  private async uiHostSave(value: string) {
     try {
       this.uiHostIsSaving = true
       this.$settings.setEnvItem('host', value)
@@ -934,7 +1041,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiProxyHostSave(value: string) {
+  private async uiProxyHostSave(value: string) {
     try {
       this.uiProxyHostIsSaving = true
       this.$settings.setEnvItem('proxyHost', value)
@@ -950,7 +1057,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbPackageSave(value: string) {
+  private async hbPackageSave(value: string) {
     try {
       this.hbPackageIsSaving = true
       this.$settings.setEnvItem('homebridgePackagePath', value)
@@ -966,7 +1073,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiMetricsSave(value: boolean) {
+  private async uiMetricsSave(value: boolean) {
     try {
       this.uiMetricsIsSaving = true
       this.$settings.setEnvItem('disableServerMetricsMonitoring', !value)
@@ -988,7 +1095,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiAccDebugSave(value: boolean) {
+  private async uiAccDebugSave(value: boolean) {
     try {
       this.uiAccDebugIsSaving = true
       this.$settings.setEnvItem('accessoryControl.debug', value)
@@ -1004,7 +1111,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async uiTempFileSave(value: string) {
+  private async uiTempFileSave(value: string) {
     try {
       this.uiTempFileIsSaving = true
       this.$settings.setEnvItem('temp', value)
@@ -1026,7 +1133,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbLinuxShutdownSave(value: string) {
+  private async hbLinuxShutdownSave(value: string) {
     try {
       this.hbLinuxShutdownIsSaving = true
       this.$settings.setEnvItem('linux.shutdown', value)
@@ -1048,7 +1155,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async hbLinuxRestartSave(value: string) {
+  private async hbLinuxRestartSave(value: string) {
     try {
       this.hbLinuxRestartIsSaving = true
       this.$settings.setEnvItem('linux.restart', value)
@@ -1070,106 +1177,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  openUiSettings() {
-    this.$plugin.settings({
-      name: 'homebridge-config-ui-x',
-      displayName: 'Homebridge UI',
-      settingsSchema: true,
-      links: {},
-    })
-  }
-
-  openBackupModal() {
-    this.$modal.open(BackupComponent, {
-      size: 'lg',
-      backdrop: 'static',
-    })
-  }
-
-  openWallpaperModal() {
-    this.$modal.open(WallpaperComponent, {
-      size: 'lg',
-      backdrop: 'static',
-    })
-  }
-
-  resetHomebridgeState() {
-    this.$modal.open(ResetAllBridgesComponent, {
-      size: 'lg',
-      backdrop: 'static',
-    })
-  }
-
-  unpairAccessory() {
-    this.$modal.open(ResetIndividualBridgesComponent, {
-      size: 'lg',
-      backdrop: 'static',
-    })
-  }
-
-  removeAllCachedAccessories() {
-    this.$modal.open(RemoveAllAccessoriesComponent, {
-      size: 'lg',
-      backdrop: 'static',
-    })
-  }
-
-  async accessoryUiControl() {
-    try {
-      const ref = this.$modal.open(AccessoryControlListsComponent, {
-        size: 'lg',
-        backdrop: 'static',
-      })
-
-      ref.componentInstance.existingBlacklist = this.$settings.env.accessoryControl?.instanceBlacklist || []
-
-      await ref.result
-      this.showRestartToast()
-    } catch (error) {
-      if (error !== 'Dismiss') {
-        console.error(error)
-        this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
-      }
-    }
-  }
-
-  removeSingleCachedAccessories() {
-    this.$modal.open(RemoveIndividualAccessoriesComponent, {
-      size: 'lg',
-      backdrop: 'static',
-    })
-  }
-
-  removeBridgeAccessories() {
-    this.$modal.open(RemoveBridgeAccessoriesComponent, {
-      size: 'lg',
-      backdrop: 'static',
-    })
-  }
-
-  async selectNetworkInterfaces() {
-    const ref = this.$modal.open(SelectNetworkInterfacesComponent, {
-      size: 'lg',
-      backdrop: 'static',
-    })
-
-    ref.componentInstance.adaptersAvailable = this.adaptersAvailable
-    ref.componentInstance.adaptersSelected = this.adaptersSelected
-
-    try {
-      const adapters: string[] = await ref.result
-      this.buildBridgeNetworkAdapterList(adapters)
-      await firstValueFrom(this.$api.put('/server/network-interfaces/bridge', { adapters }))
-      this.showRestartToast()
-    } catch (error) {
-      if (error !== 'Dismiss') {
-        console.error(error)
-        this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
-      }
-    }
-  }
-
-  buildBridgeNetworkAdapterList(adapters: string[]) {
+  private buildBridgeNetworkAdapterList(adapters: string[]) {
     if (!adapters.length) {
       this.adaptersSelected = []
       return
@@ -1195,11 +1203,7 @@ export class SettingsComponent implements OnInit {
     })
   }
 
-  toggleSection(section: string) {
-    this.showFields[section] = !this.showFields[section]
-  }
-
-  showRestartToast() {
+  private showRestartToast() {
     if (!this.restartToastIsShown) {
       this.restartToastIsShown = true
       const ref = this.$toastr.info(

@@ -7,7 +7,7 @@
         class="btn-close"
         data-bs-dismiss="modal"
         [attr.aria-label]="'form.button_close' | translate"
-        (click)="$activeModal.dismiss('Dismiss')"
+        (click)="dismissModal()"
       ></button>
     </div>
     <div class="modal-body">
@@ -26,7 +26,7 @@
               class="form-control custom-input"
               [(ngModel)]="roomName"
               [ngModelOptions]="{ standalone: true }"
-              (keyup.enter)="$activeModal.close(roomName)"
+              (keyup.enter)="closeModal(roomName)"
             />
           </div>
         </li>
@@ -34,7 +34,7 @@
     </div>
     <div class="modal-footer justify-content-between">
       <div class="text-start">
-        <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="$activeModal.dismiss('Dismiss')">
+        <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="dismissModal()">
           {{ 'form.button_close' | translate }}
         </button>
       </div>
@@ -44,7 +44,7 @@
           type="button"
           class="btn btn-primary"
           data-bs-dismiss="modal"
-          (click)="$activeModal.close(roomName)"
+          (click)="closeModal(roomName)"
           [disabled]="!roomName"
         >
           {{ 'form.button_save' | translate }}

@@ -6,7 +6,7 @@
       class="btn-close"
       data-bs-dismiss="modal"
       [attr.aria-label]="'form.button_close' | translate"
-      (click)="$activeModal.dismiss('Dismiss')"
+      (click)="dismissModal()"
     ></button>
   </div>
   <div class="modal-body text-center">
@@ -52,14 +52,14 @@
   <div class="modal-footer justify-content-between">
     <div class="text-start">
       @if (plugin.links.homepage || plugin.links.npm) {
-      <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="$activeModal.dismiss('Dismiss')">
+      <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="dismissModal()">
         {{ 'form.button_close' | translate }}
       </button>
       }
     </div>
     <div class="text-center">
       @if (!plugin.links.homepage && !plugin.links.npm) {
-      <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="$activeModal.dismiss('Dismiss')">
+      <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="dismissModal()">
         {{ 'form.button_close' | translate }}
       </button>
       }

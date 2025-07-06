@@ -2,22 +2,21 @@
 import { Directive, HostListener, Input, OnDestroy, output } from '@angular/core'
 
 @Directive({
-  selector: '[appLongclick]',
+  selector: '[shortClick], [longClick]',
   standalone: true,
 })
 export class LongClickDirective implements OnDestroy {
-  @Input() public duration = 350
-  public readonly longclick = output<MouseEvent | TouchEvent>()
-  public readonly shortclick = output<MouseEvent | KeyboardEvent | TouchEvent>()
-
   private downTimeout: NodeJS.Timeout
   private done = false
 
-  constructor() {}
+  @Input() public duration = 350
+
+  public readonly longClick = output<MouseEvent | TouchEvent>()
+  public readonly shortClick = output<MouseEvent | KeyboardEvent | TouchEvent>()
 
   @HostListener('keyup.enter', ['$event'])
   public onEnter(event: KeyboardEvent) {
-    this.shortclick.emit(event)
+    this.shortClick.emit(event)
   }
 
   @HostListener('mouseup', ['$event'])
@@ -25,7 +24,7 @@ export class LongClickDirective implements OnDestroy {
     clearTimeout(this.downTimeout)
     if (!this.done) {
       this.done = true
-      this.shortclick.emit(event)
+      this.shortClick.emit(event)
     }
   }
 
@@ -36,7 +35,7 @@ export class LongClickDirective implements OnDestroy {
     event.stopPropagation()
     if (!this.done) {
       this.done = true
-      this.shortclick.emit(event)
+      this.shortClick.emit(event)
     }
   }
 
@@ -57,7 +56,7 @@ export class LongClickDirective implements OnDestroy {
     this.downTimeout = setTimeout(() => {
       if (!this.done) {
         this.done = true
-        this.longclick.emit(event)
+        this.longClick.emit(event)
       }
     }, this.duration)
   }
@@ -69,7 +68,7 @@ export class LongClickDirective implements OnDestroy {
     clearTimeout(this.downTimeout)
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     clearTimeout(this.downTimeout)
   }
 }

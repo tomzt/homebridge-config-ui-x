@@ -29,17 +29,19 @@ import { DragHerePlaceholderComponent } from '@/app/modules/accessories/drag-her
   ],
 })
 export class AccessoriesComponent implements OnInit, OnDestroy {
-  $auth = inject(AuthService)
-  private dragulaService = inject(DragulaService)
-  private $modal = inject(NgbModal)
-  $settings = inject(SettingsService)
-  private $md = inject(MobileDetectService)
   protected $accessories = inject(AccessoriesService)
 
-  public isMobile: any = false
-  public hideHidden = true
+  private $auth = inject(AuthService)
+  private dragulaService = inject(DragulaService)
+  private $modal = inject(NgbModal)
+  private $settings = inject(SettingsService)
+  private $md = inject(MobileDetectService)
   private orderSubscription: Subscription
 
+  public isAdmin = this.$auth.user.admin
+  public enableAccessories = this.$settings.env.enableAccessories
+  public isMobile: any = false
+  public hideHidden = true
   public readonly linkInsecure = '<a href="https://github.com/homebridge/homebridge-config-ui-x/wiki/Enabling-Accessory-Control" target="_blank"><i class="fa fa-fw fa-external-link-alt primary-text"></i></a>'
 
   constructor() {
@@ -67,11 +69,11 @@ export class AccessoriesComponent implements OnInit, OnDestroy {
     this.isMobile = true
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.$accessories.start()
   }
 
-  addRoom() {
+  public addRoom() {
     this.$modal
       .open(AddRoomComponent, {
         size: 'lg',
@@ -101,7 +103,7 @@ export class AccessoriesComponent implements OnInit, OnDestroy {
       .catch(() => { /* modal dismissed */ })
   }
 
-  toggleLayoutLock() {
+  public toggleLayoutLock() {
     this.isMobile = !this.isMobile
 
     if (this.isMobile) {
@@ -120,14 +122,14 @@ export class AccessoriesComponent implements OnInit, OnDestroy {
     }
   }
 
-  openSupport() {
+  public openSupport() {
     this.$modal.open(AccessorySupportComponent, {
       size: 'lg',
       backdrop: 'static',
     })
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this.$accessories.stop()
 
     // Destroy drag and drop bags

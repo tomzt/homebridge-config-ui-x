@@ -6,7 +6,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { SpeakerManageComponent } from '@/app/core/accessories/types/speaker/speaker.manage.component'
-import { LongClickDirective } from '@/app/core/directives/longclick.directive'
+import { LongClickDirective } from '@/app/core/directives/long-click.directive'
 
 @Component({
   selector: 'app-speaker',
@@ -24,9 +24,7 @@ export class SpeakerComponent {
 
   @Input() public service: ServiceTypeX
 
-  constructor() {}
-
-  onClick() {
+  public onClick() {
     const active = this.service.getCharacteristic('Active')
     if (active !== undefined) {
       active.setValue(this.service.values.Active === 0 ? 1 : 0)
@@ -35,7 +33,7 @@ export class SpeakerComponent {
     }
   }
 
-  onLongClick() {
+  public onLongClick() {
     if ('Volume' in this.service.values || 'Active' in this.service.values) {
       const ref = this.$modal.open(SpeakerManageComponent, {
         size: 'md',

@@ -10,6 +10,4 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 })
 export class HumiditySensorComponent {
   @Input() public service: ServiceTypeX
-
-  constructor() {}
 }

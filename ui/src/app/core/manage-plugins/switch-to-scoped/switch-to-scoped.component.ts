@@ -22,16 +22,22 @@ import { IoNamespace, WsService } from '@/app/core/ws.service'
   ],
 })
 export class SwitchToScopedComponent implements OnInit, OnDestroy {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $router = inject(Router)
-  $settings = inject(SettingsService)
+  private $settings = inject(SettingsService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
   private $ws = inject(WsService)
+  private io: IoNamespace
+  private term: Terminal
+  private termTarget: HTMLElement
+  private fitAddon = new FitAddon()
+  private errorLog = ''
 
   @Input() plugin: any
 
+  public serviceMode = this.$settings.env.serviceMode
   public installing = false
   public installed = false
   public uninstalling = false
@@ -41,11 +47,6 @@ export class SwitchToScopedComponent implements OnInit, OnDestroy {
   public onlineUpdateOk: boolean
   public readonly moreInfo = '<a href="https://github.com/homebridge/plugins/wiki/Scoped-Plugins" target="_blank"><i class="fa fa-fw fa-external-link-alt primary-text"></i></a>'
   public readonly prefix = '<span class="font-monospace">@homebridge-plugins/</span>'
-  private io: IoNamespace
-  private term: Terminal
-  private termTarget: HTMLElement
-  private fitAddon = new FitAddon()
-  private errorLog = ''
 
   constructor() {
     this.term = new Terminal({
@@ -60,7 +61,7 @@ export class SwitchToScopedComponent implements OnInit, OnDestroy {
     this.term.loadAddon(this.fitAddon)
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.onlineUpdateOk = this.$settings.env.platform !== 'win32'
     this.io = this.$ws.connectToNamespace('plugins')
     this.termTarget = document.getElementById('plugin-output')
@@ -79,7 +80,7 @@ export class SwitchToScopedComponent implements OnInit, OnDestroy {
     })
   }
 
-  doSwitch() {
+  public doSwitch() {
     this.installing = true
 
     // 1. Install new plugin
@@ -135,13 +136,17 @@ export class SwitchToScopedComponent implements OnInit, OnDestroy {
     })
   }
 
-  downloadLogFile() {
+  public downloadLogFile() {
     const blob = new Blob([this.errorLog], { type: 'text/plain;charset=utf-8' })
     saveAs(blob, `${this.plugin.name}-error.log`)
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this.io.end()
     this.term.dispose()
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

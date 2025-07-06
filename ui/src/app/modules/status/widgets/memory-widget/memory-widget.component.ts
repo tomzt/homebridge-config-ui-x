@@ -20,6 +20,8 @@ import { IoNamespace, WsService } from '@/app/core/ws.service'
 })
 export class MemoryWidgetComponent implements OnInit, OnDestroy {
   private $ws = inject(WsService)
+  private io: IoNamespace
+  private intervalSubscription: Subscription
 
   @Input() public widget: any
 
@@ -30,14 +32,11 @@ export class MemoryWidgetComponent implements OnInit, OnDestroy {
   public freeMemory: number
   public refreshInterval: number
   public historyItems: number
-
+  public lineChartLabels = []
   public lineChartType: ChartConfiguration['type'] = 'line'
-
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [{ data: [] }],
   }
-
-  public lineChartLabels = []
 
   public lineChartOptions: ChartConfiguration['options'] = {
     responsive: true,
@@ -73,12 +72,7 @@ export class MemoryWidgetComponent implements OnInit, OnDestroy {
     },
   }
 
-  private io: IoNamespace
-  private intervalSubscription: Subscription
-
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.io = this.$ws.getExistingNamespace('status')
 
     // Lookup the chart color based on the current theme
@@ -113,14 +107,18 @@ export class MemoryWidgetComponent implements OnInit, OnDestroy {
     })
   }
 
-  getServerMemoryInfo() {
+  public ngOnDestroy() {
+    this.intervalSubscription.unsubscribe()
+  }
+
+  private getServerMemoryInfo() {
     this.io.request('get-server-memory-info').subscribe((data) => {
       this.updateData(data)
       this.chart().update()
     })
   }
 
-  updateData(data: any) {
+  private updateData(data: any) {
     this.totalMemory = data.mem.total / 1024 / 1024 / 1024
     this.freeMemory = data.mem.available / 1024 / 1024 / 1024
 
@@ -132,13 +130,13 @@ export class MemoryWidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  initializeChartData(data: any) {
+  private initializeChartData(data: any) {
     const items = data.memoryUsageHistory.slice(-this.historyItems)
     this.lineChartData.datasets[0].data = { ...items }
     this.lineChartLabels = items.map(() => 'point')
   }
 
-  updateChartData(data: any, dataLength: number) {
+  private updateChartData(data: any, dataLength: number) {
     this.lineChartData.datasets[0].data[dataLength] = data.memoryUsageHistory.slice(-1)[0]
     this.lineChartLabels.push('point')
 
@@ -147,7 +145,7 @@ export class MemoryWidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  shiftChartData() {
+  private shiftChartData() {
     const newItems = {}
     Object.keys(this.lineChartData.datasets[0].data).forEach((key, index, array) => {
       if (index + 1 < array.length) {
@@ -158,9 +156,5 @@ export class MemoryWidgetComponent implements OnInit, OnDestroy {
     // @ts-expect-error - TS2740: Type {} is missing the following properties from type...
     this.lineChartData.datasets[0].data = newItems
     this.lineChartLabels = this.lineChartLabels.slice(1)
-  }
-
-  ngOnDestroy() {
-    this.intervalSubscription.unsubscribe()
   }
 }

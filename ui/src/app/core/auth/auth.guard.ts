@@ -13,12 +13,7 @@ export class AuthGuard implements CanActivate {
   private $router = inject(Router)
   private $settings = inject(SettingsService)
 
-  constructor() {}
-
-  async canActivate(
-    _next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot,
-  ): Promise<boolean> {
+  public async canActivate(_next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     // Ensure app settings are loaded
     if (!this.$settings.settingsLoaded) {
       await firstValueFrom(this.$settings.onSettingsLoaded)

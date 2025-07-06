@@ -15,7 +15,7 @@ import { ApiService } from '@/app/core/api.service'
   ],
 })
 export class ResetAllBridgesComponent {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $route = inject(Router)
   private $toastr = inject(ToastrService)
@@ -23,9 +23,7 @@ export class ResetAllBridgesComponent {
 
   public clicked: boolean
 
-  constructor() {}
-
-  onResetHomebridgeAccessoryClick() {
+  public onResetHomebridgeAccessoryClick() {
     this.clicked = true
     return this.$api.put('/server/reset-homebridge-accessory', {}).subscribe({
       next: () => {
@@ -38,5 +36,9 @@ export class ResetAllBridgesComponent {
         this.$toastr.error(this.$translate.instant('reset.failed_to_reset'), this.$translate.instant('toast.title_error'))
       },
     })
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

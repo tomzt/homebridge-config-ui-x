@@ -15,7 +15,7 @@
               <a
                 href="javascript:void(0)"
                 class="card-link"
-                (click)="$plugin.checkAndUpdatePlugin(plugin, plugin.latestVersion)"
+                (click)="checkAndUpdatePlugin()"
                 container="body"
                 openDelay="150"
                 triggers="hover"
@@ -35,7 +35,7 @@
               <a
                 href="javascript:void(0)"
                 class="card-link"
-                (click)="$plugin.switchToScoped(plugin)"
+                (click)="switchToScoped()"
                 container="body"
                 openDelay="150"
                 triggers="hover"
@@ -56,7 +56,7 @@
               <a
                 href="javascript:void(0)"
                 class="card-link"
-                (click)="$plugin.settings(plugin)"
+                (click)="openSettings()"
                 [ngbTooltip]="'plugins.button_set_up' | translate"
                 container="body"
                 openDelay="150"
@@ -74,7 +74,7 @@
               <a
                 href="javascript:void(0)"
                 class="card-link"
-                (click)="$plugin.bridgeSettings(plugin)"
+                (click)="openBridgeSettings()"
                 [ngbTooltip]="'child_bridge.setup' | translate"
                 container="body"
                 openDelay="150"
@@ -96,7 +96,7 @@
               <a
                 href="javascript:void(0)"
                 class="card-link"
-                (click)="$plugin.bridgeSettings(plugin)"
+                (click)="openBridgeSettings()"
                 [ngbTooltip]="'child_bridge.bridge_connect' | translate"
                 container="body"
                 openDelay="150"
@@ -213,7 +213,7 @@
               <!-- // -->
               <!-- icon for plugin not installed, to download -->
               @if (plugin.publicPackage && !plugin.installedVersion) {
-              <a href="javascript:void(0)" (click)="$plugin.installAlternateVersion(plugin)">
+              <a href="javascript:void(0)" (click)="installAlternateVersion()">
                 <i class="far fa-fw fa-arrow-alt-circle-down fa-lg"></i>
               </a>
               }
@@ -233,21 +233,21 @@
                 <!-- // -->
                 <div ngbDropdownMenu aria-labelledby="Plugin Actions Dropdown">
                   <!-- plugin config -->
-                  <button ngbDropdownItem (click)="$plugin.settings(plugin)">
+                  <button ngbDropdownItem (click)="openSettings()">
                     <i class="fas fa-fw fa-sliders"></i>
                     {{ 'plugins.button_settings' | translate }}
                   </button>
                   <!-- // -->
                   <!-- plugin logs -->
                   @if (plugin.isConfigured && !plugin.disabled) {
-                  <button ngbDropdownItem (click)="viewPluginLog(plugin)">
+                  <button ngbDropdownItem (click)="viewPluginLog()">
                     <i class="fas fa-fw fa-wave-square"></i> {{ 'plugins.manage.plugin_logs' | translate }}
                   </button>
                   }
                   <!-- // -->
                   <!-- plugin manage version -->
                   @if (plugin.publicPackage) {
-                  <button ngbDropdownItem (click)="$plugin.installAlternateVersion(plugin)">
+                  <button ngbDropdownItem (click)="installAlternateVersion()">
                     <i class="fas fa-fw fa-code-compare"></i>
                     {{ 'plugins.manage.manage_version' | translate }}
                   </button>
@@ -255,7 +255,7 @@
                   <!-- // -->
                   <!-- plugin manage config json -->
                   @if (!isMobile && plugin.name !== 'homebridge-config-ui-x') {
-                  <button ngbDropdownItem (click)="$plugin.jsonEditor(plugin)">
+                  <button ngbDropdownItem (click)="openJsonEditor()">
                     <i class="fas fa-fw fa-code"></i> {{ 'plugins.manage.json_config' | translate }}
                   </button>
                   }
@@ -276,7 +276,7 @@
                   <!-- // -->
                   <!-- plugin uninstall -->
                   @if (plugin.name !== 'homebridge-config-ui-x') {
-                  <button ngbDropdownItem (click)="$plugin.uninstallPlugin(plugin, setChildBridges)">
+                  <button ngbDropdownItem (click)="uninstallPlugin()">
                     <i class="fas fa-fw fa-trash"></i> {{ 'plugins.button_uninstall' | translate }}
                   </button>
                   }
@@ -286,7 +286,7 @@
                   <div class="dropdown-divider"></div>
                   } @if (plugin.hasChildBridges && !plugin.disabled) {
                   <!-- child bridge settings -->
-                  <button ngbDropdownItem (click)="$plugin.bridgeSettings(plugin)">
+                  <button ngbDropdownItem (click)="openBridgeSettings()">
                     <i class="fas fa-fw fa-bridge"></i> {{ 'child_bridge.bridge_settings' | translate }}
                   </button>
                   <!-- // -->
@@ -315,8 +315,8 @@
                   }
                   <!-- // -->
                   <!-- child bridge reset -->
-                  @if ($settings.env.serviceMode) {
-                  <button ngbDropdownItem (click)="$plugin.resetChildBridges(setChildBridges)">
+                  @if (serviceMode) {
+                  <button ngbDropdownItem (click)="resetChildBridges()">
                     <i class="fas fa-fw fa-broom"></i> {{ 'child_bridge.reset_accessories' | translate }}
                   </button>
                   }
@@ -328,7 +328,7 @@
                   <!-- child bridge setup, when not recommended -->
                   @if (plugin.isConfigured && !plugin.hasChildBridges && !plugin.disabled &&
                   !plugin.recommendChildBridge) {
-                  <button ngbDropdownItem (click)="$plugin.bridgeSettings(plugin)">
+                  <button ngbDropdownItem (click)="openBridgeSettings()">
                     <i class="icon-button fas fa-fw fa-bridge"></i>
                     {{ 'child_bridge.setup' | translate }}
                   </button>
@@ -340,7 +340,7 @@
                   <div class="dropdown-divider"></div>
                   } @if (plugin.isConfigured && !plugin.hasChildBridges && !plugin.disabled &&
                   plugin.recommendChildBridge && plugin.updateAvailable) {
-                  <button ngbDropdownItem (click)="$plugin.bridgeSettings(plugin)">
+                  <button ngbDropdownItem (click)="openBridgeSettings()">
                     <i class="icon-button fas fa-fw fa-bridge"></i>
                     {{ 'child_bridge.setup' | translate }}
                   </button>

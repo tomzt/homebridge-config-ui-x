@@ -28,11 +28,12 @@ import { SettingsService } from '@/app/core/settings.service'
   ],
 })
 export class HeaterCoolerManageComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
-  $settings = inject(SettingsService)
+  private $activeModal = inject(NgbActiveModal)
+  private $settings = inject(SettingsService)
 
   @Input() public service: ServiceTypeX
 
+  public temperatureUnits = this.$settings.env.temperatureUnits
   public targetState: number
   public targetMode: number
   public targetTemperatureChanged: Subject<any> = new Subject<any>()
@@ -56,7 +57,7 @@ export class HeaterCoolerManageComponent implements OnInit {
       })
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.targetState = this.service.values.Active
     this.targetMode = this.service.values.TargetHeaterCoolerState
     this.CoolingThresholdTemperature = this.service.getCharacteristic('CoolingThresholdTemperature')
@@ -71,32 +72,42 @@ export class HeaterCoolerManageComponent implements OnInit {
     }, 10)
   }
 
-  loadTargetTemperature() {
-    this.targetCoolingTemp = this.service.getCharacteristic('CoolingThresholdTemperature')?.value as number
-    this.targetHeatingTemp = this.service.getCharacteristic('HeatingThresholdTemperature')?.value as number
-    this.autoTemp = [this.targetHeatingTemp, this.targetCoolingTemp]
-  }
-
-  setTargetState(value: number) {
+  public setTargetState(value: number, event: MouseEvent) {
     this.targetState = value
     this.service.getCharacteristic('Active').setValue(this.targetState)
     this.loadTargetTemperature()
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
   }
 
-  setTargetMode(value: number) {
+  public setTargetMode(value: number, event: MouseEvent) {
     this.targetMode = value
     this.service.getCharacteristic('TargetHeaterCoolerState').setValue(this.targetMode)
     this.loadTargetTemperature()
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
   }
 
-  onTemperatureStateChange() {
+  public onTemperatureStateChange() {
     this.autoTemp = [this.targetHeatingTemp, this.targetCoolingTemp]
     this.targetTemperatureChanged.next(undefined)
   }
 
-  onAutoTemperatureStateChange() {
+  public onAutoTemperatureStateChange() {
     this.targetHeatingTemp = this.autoTemp[0]
     this.targetCoolingTemp = this.autoTemp[1]
     this.targetTemperatureChanged.next(undefined)
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private loadTargetTemperature() {
+    this.targetCoolingTemp = this.service.getCharacteristic('CoolingThresholdTemperature')?.value as number
+    this.targetHeatingTemp = this.service.getCharacteristic('HeatingThresholdTemperature')?.value as number
+    this.autoTemp = [this.targetHeatingTemp, this.targetCoolingTemp]
   }
 }

@@ -8,7 +8,7 @@ import { filter } from 'rxjs/operators'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { ValveManageComponent } from '@/app/core/accessories/types/valve/valve.manage.component'
-import { LongClickDirective } from '@/app/core/directives/longclick.directive'
+import { LongClickDirective } from '@/app/core/directives/long-click.directive'
 
 @Component({
   selector: 'app-valve',
@@ -24,6 +24,7 @@ import { LongClickDirective } from '@/app/core/directives/longclick.directive'
 })
 export class ValveComponent implements OnInit, OnDestroy {
   private $modal = inject(NgbModal)
+
   @Input() public service: ServiceTypeX
 
   public secondsActive = 0
@@ -31,16 +32,32 @@ export class ValveComponent implements OnInit, OnDestroy {
   private remainingDurationInterval = interval(1000).pipe(filter(() => this.isActive()))
   private remainingDurationSubscription: Subscription
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     // Set up the RemainingDuration countdown handlers, if the valve has the RemainingDuration Characteristic
     if (this.service.getCharacteristic('RemainingDuration')) {
       this.setupRemainingDurationCounter()
     }
   }
 
-  isActive() {
+  public onClick() {
+    this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+  }
+
+  public onLongClick() {
+    const ref = this.$modal.open(ValveManageComponent, {
+      size: 'md',
+      backdrop: 'static',
+    })
+    ref.componentInstance.service = this.service
+  }
+
+  public ngOnDestroy() {
+    if (this.remainingDurationSubscription) {
+      this.remainingDurationSubscription.unsubscribe()
+    }
+  }
+
+  private isActive() {
     if (this.service && this.service.values) {
       if (this.service.getCharacteristic('Active').value === 1) {
         return true
@@ -53,7 +70,7 @@ export class ValveComponent implements OnInit, OnDestroy {
     }
   }
 
-  setupRemainingDurationCounter() {
+  private setupRemainingDurationCounter() {
     this.remainingDurationSubscription = this.remainingDurationInterval.subscribe(() => {
       this.secondsActive++
       const remainingSeconds = this.service.getCharacteristic('RemainingDuration').value as number - this.secondsActive
@@ -67,28 +84,10 @@ export class ValveComponent implements OnInit, OnDestroy {
     })
   }
 
-  resetRemainingDuration() {
+  private resetRemainingDuration() {
     this.secondsActive = 0
     if (this.service.getCharacteristic('RemainingDuration')) {
       this.remainingDuration = ''
-    }
-  }
-
-  onClick() {
-    this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
-  }
-
-  onLongClick() {
-    const ref = this.$modal.open(ValveManageComponent, {
-      size: 'md',
-      backdrop: 'static',
-    })
-    ref.componentInstance.service = this.service
-  }
-
-  ngOnDestroy() {
-    if (this.remainingDurationSubscription) {
-      this.remainingDurationSubscription.unsubscribe()
     }
   }
 }

@@ -1,6 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core'
 
-@Pipe({ name: 'duration' })
+@Pipe({
+  name: 'duration',
+  standalone: true,
+})
 export class DurationPipe implements PipeTransform {
   transform(value: number): string {
     if (typeof value !== 'number' || Number.isNaN(value)) {

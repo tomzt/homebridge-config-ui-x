@@ -15,17 +15,17 @@ import { SettingsService } from '@/app/core/settings.service'
 })
 export class SchemaFormComponent implements OnInit {
   private $settings = inject(SettingsService)
+  private availableLanguages = ['de', 'en', 'es', 'fr', 'it', 'pt', 'zh']
 
   @Input() configSchema: any
   @Input() data: any
+
   readonly dataChange = output()
   readonly dataChanged = output()
   readonly isValid = output()
 
   public currentData: any
   public language: string = 'en'
-  private availableLanguages = ['de', 'en', 'es', 'fr', 'it', 'pt', 'zh']
-
   public jsonFormOptions = {
     addSubmit: false,
     loadExternalAssets: false,
@@ -34,9 +34,7 @@ export class SchemaFormComponent implements OnInit {
     autocomplete: false,
   }
 
-  constructor() {}
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     // Use 'en' by default, unless the user's language is available
     const userLanguage = this.$settings.env.lang.split('-')[0]
     if (this.availableLanguages.includes(userLanguage)) {
@@ -45,16 +43,16 @@ export class SchemaFormComponent implements OnInit {
     this.currentData = this.data
   }
 
-  onChanges(data: any) {
+  public onChanges(data: any) {
     this.dataChange.emit(data)
     this.dataChanged.emit(data)
   }
 
-  validChange(data: any) {
+  public validChange(data: any) {
     this.isValid.emit(data)
   }
 
-  validationErrors(errors: any[] | null) {
+  public validationErrors(errors: any[] | null) {
     if (errors) {
       errors.forEach(error => console.error(error.instancePath, error.message))
     }

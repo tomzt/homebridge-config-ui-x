@@ -6,7 +6,7 @@
       class="btn-close"
       data-bs-dismiss="modal"
       [attr.aria-label]="'form.button_close' | translate"
-      (click)="$activeModal.dismiss('Dismiss')"
+      (click)="dismissModal()"
     ></button>
   </div>
   <div [hidden]="!onlineUpdateOk || actionComplete || releaseNotesShow" id="plugin-log-output" class="modal-body"></div>
@@ -44,11 +44,11 @@
     </div>
     <ul class="mb-3">
       <li>{{ 'plugins.manage.online_updates' | translate }}</li>
-      @if ($settings.env.serviceMode) {
+      @if (serviceMode) {
       <li>{{ 'plugins.manage.manual_update_command' | translate }}</li>
       }
     </ul>
-    @if ($settings.env.serviceMode) {
+    @if (serviceMode) {
     <pre class="p-2 mb-0">
 hb-service stop
 npm install -g {{ pluginName }}&#64;{{targetVersion}}
@@ -139,7 +139,7 @@ hb-service start</pre
         type="button"
         class="btn btn-elegant"
         data-bs-dismiss="modal"
-        (click)="$activeModal.dismiss('Dismiss')"
+        (click)="dismissModal()"
         [attr.aria-label]="'form.button_close' | translate"
       >
         {{ 'form.button_close' | translate }}
@@ -152,7 +152,7 @@ hb-service start</pre
         type="button"
         class="btn btn-elegant"
         data-bs-dismiss="modal"
-        (click)="$activeModal.dismiss('Dismiss')"
+        (click)="dismissModal()"
         [attr.aria-label]="'form.button_close' | translate"
       >
         {{ 'form.button_close' | translate }}

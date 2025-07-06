@@ -1,6 +1,6 @@
 import { Component, ElementRef, inject, ViewChild } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap'
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe, TranslateService } from '@ngx-translate/core'
 import { ToastrService } from 'ngx-toastr'
 
@@ -15,9 +15,8 @@ import { environment } from '@/environments/environment'
   imports: [ReactiveFormsModule, TranslatePipe],
 })
 export class WallpaperComponent {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
-  private $modal = inject(NgbModal)
   private $settings = inject(SettingsService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
@@ -30,16 +29,14 @@ export class WallpaperComponent {
 
   @ViewChild('wallpaperInput') wallpaperInput!: ElementRef
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     if (this.$settings.env.customWallpaperHash) {
       this.wallpaperUrl = `${environment.api.base}/auth/wallpaper/${this.$settings.env.customWallpaperHash}`
       this.originalWallpaperUrl = this.wallpaperUrl
     }
   }
 
-  onFileChange(files: FileList) {
+  public onFileChange(files: FileList) {
     if (files.length) {
       this.selectedFile = files[0]
       const reader = new FileReader()
@@ -53,7 +50,7 @@ export class WallpaperComponent {
     }
   }
 
-  saveWallpaper() {
+  public saveWallpaper() {
     this.clicked = true
     if (this.selectedFile) {
       const formData: FormData = new FormData()
@@ -84,7 +81,7 @@ export class WallpaperComponent {
     }
   }
 
-  clearWallpaper() {
+  public clearWallpaper() {
     this.selectedFile = null
     this.wallpaperUrl = this.wallpaperUrl === this.originalWallpaperUrl
       ? null
@@ -92,7 +89,7 @@ export class WallpaperComponent {
     this.wallpaperInput.nativeElement.value = ''
   }
 
-  cancel() {
-    this.$activeModal.dismiss()
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

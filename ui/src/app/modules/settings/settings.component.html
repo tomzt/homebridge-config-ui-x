@@ -229,7 +229,7 @@
 </div>
 
 <!-- STARTUP/ENV OPTIONS -->
-@if ($settings.env.serviceMode || $settings.env.runningInDocker) {
+@if (serviceMode || runningInDocker) {
 <div class="my-4">
   <div
     role="button"
@@ -249,7 +249,7 @@
   </div>
   @if (showFields.startup) {
   <ul class="list-group list-group-box mb-4 mx-0" id="fieldsStartup">
-    @if ($settings.env.serviceMode) {
+    @if (serviceMode) {
     <li class="list-group-item d-flex justify-content-between align-items-center">
       <span>
         {{ 'settings.startup.debug' | translate }} <code>-D</code><br />
@@ -369,7 +369,7 @@
         }
       </div>
     </li>
-    @if ($settings.env.platform === 'linux') {
+    @if (platform === 'linux') {
     <li class="list-group-item d-block d-md-flex justify-content-between align-items-center">
       <span>
         {{ 'settings.linux.shutdown' | translate }}<br />
@@ -412,7 +412,7 @@
         }
       </div>
     </li>
-    @if ($settings.env.runningOnRaspberryPi) {
+    @if (runningOnRaspberryPi) {
     <li class="list-group-item d-block d-md-flex justify-content-between align-items-center">
       <span>
         {{ 'settings.linux.temp' | translate }}<br />
@@ -478,7 +478,7 @@
         }
       </div>
     </li>
-    } @if ($settings.env.runningInDocker) {
+    } @if (runningInDocker) {
     <li class="list-group-item d-flex justify-content-between align-items-center">
       <span>
         {{ 'menu.docker.startup_script' | translate }}<br />
@@ -951,7 +951,7 @@
 </div>
 
 <!-- CACHE SETTINGS -->
-@if ($settings.env.serviceMode) {
+@if (serviceMode) {
 <div class="my-4">
   <div
     role="button"
@@ -1066,7 +1066,7 @@
   <p class="small grey-text mb-2 mx-0">{{ 'reset.bridges.desc' | translate }}</p>
   } @if (showFields.reset) {
   <ul class="list-group list-group-box mt-2 mx-0" id="fieldsReset">
-    @if ($settings.env.serviceMode) {
+    @if (serviceMode) {
     <li class="list-group-item d-flex justify-content-between align-items-center">
       <span class="pe-2">
         {{ 'reset.bridge_ind.title' | translate }}<br />

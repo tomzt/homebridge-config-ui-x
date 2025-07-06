@@ -20,7 +20,7 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
   ],
 })
 export class SpeakerManageComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
 
@@ -37,15 +37,38 @@ export class SpeakerManageComponent implements OnInit {
       })
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.targetMode = this.service.values.Mute
     this.loadTargetVolume()
-    if (this.service.serviceCharacteristics.find(c => c.type === 'Active')) {
+    if ('Active' in this.service.values) {
       this.hasActive = true
     }
   }
 
-  loadTargetVolume() {
+  public setTargetMode(value: boolean, event: MouseEvent) {
+    this.targetMode = value
+    this.service.getCharacteristic('Mute').setValue(this.targetMode)
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public setActive(value: number, event: MouseEvent) {
+    this.service.getCharacteristic('Active').setValue(value)
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public onVolumeStateChange() {
+    this.targetVolumeChanged.next(this.targetVolume.value)
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private loadTargetVolume() {
     const TargetVolume = this.service.getCharacteristic('Volume')
     if (TargetVolume) {
       this.targetVolume = {
@@ -61,18 +84,5 @@ export class SpeakerManageComponent implements OnInit {
         })
       }, 10)
     }
-  }
-
-  setTargetMode(value: boolean) {
-    this.targetMode = value
-    this.service.getCharacteristic('Mute').setValue(this.targetMode)
-  }
-
-  setActive(value: number) {
-    this.service.getCharacteristic('Active').setValue(value)
-  }
-
-  onVolumeStateChange() {
-    this.targetVolumeChanged.next(this.targetVolume.value)
   }
 }

@@ -12,14 +12,12 @@ import { ApiService } from '@/app/core/api.service'
   imports: [TranslatePipe],
 })
 export class RestartChildBridgesComponent {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
   @Input() bridges: { username: string, name: string }[] = []
-
-  constructor() {}
 
   public async onRestartChildBridgeClick() {
     try {
@@ -36,5 +34,9 @@ export class RestartChildBridgesComponent {
     } finally {
       this.$activeModal.close()
     }
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

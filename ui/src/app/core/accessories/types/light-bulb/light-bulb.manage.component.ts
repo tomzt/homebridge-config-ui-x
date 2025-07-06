@@ -22,7 +22,7 @@ import { ConvertMiredPipe } from '@/app/core/pipes/convert-mired.pipe'
   ],
 })
 export class LightBulbManageComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
   @Input() public isAdaptiveLightingEnabled$: BehaviorSubject<boolean>
@@ -75,7 +75,7 @@ export class LightBulbManageComponent implements OnInit {
       })
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.targetMode = this.service.values.On
     this.loadTargetBrightness()
     this.loadTargetHue()
@@ -83,7 +83,50 @@ export class LightBulbManageComponent implements OnInit {
     this.loadTargetColorTemperature()
   }
 
-  loadTargetBrightness() {
+  public setTargetMode(value: boolean, event: MouseEvent) {
+    this.targetMode = value
+    this.service.getCharacteristic('On').setValue(this.targetMode)
+
+    // Set the brightness to 100% if on 0% when turned on
+    if (this.targetMode && this.targetBrightness && !this.targetBrightness.value) {
+      this.targetBrightness.value = this.service.getCharacteristic('Brightness').maxValue
+    }
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public onBrightnessStateChange() {
+    this.targetBrightnessChanged.next(this.targetBrightness.value)
+  }
+
+  public onHueStateChange() {
+    this.targetHueChanged.next(this.targetHue.value)
+
+    const sliderElement = document.querySelectorAll('.noUi-target')[this.sliderIndex - 1] as HTMLElement
+    if (sliderElement) {
+      const hue = this.targetHue.value
+      sliderElement.style.background = `linear-gradient(to right,
+        hsl(${hue}, 0%, 50%),
+        hsl(${hue}, 100%, 50%))`
+    }
+  }
+
+  public onSaturationStateChange() {
+    this.targetSaturationChanged.next(this.targetSaturation.value)
+  }
+
+  public onColorTemperatureStateChange() {
+    const miredValue = this.kelvinToMired(this.targetColorTemperature.value)
+    this.targetColorTemperature.mired = miredValue
+    this.targetColorTemperatureChanged.next(miredValue)
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private loadTargetBrightness() {
     const TargetBrightness = this.service.getCharacteristic('Brightness')
     if (TargetBrightness) {
       this.targetBrightness = {
@@ -102,7 +145,7 @@ export class LightBulbManageComponent implements OnInit {
     }
   }
 
-  loadTargetHue() {
+  private loadTargetHue() {
     const Hue = this.service.getCharacteristic('Hue')
     if (Hue) {
       this.targetHue = {
@@ -126,7 +169,7 @@ export class LightBulbManageComponent implements OnInit {
     }
   }
 
-  loadTargetSaturation() {
+  private loadTargetSaturation() {
     const Saturation = this.service.getCharacteristic('Saturation')
     if (Saturation) {
       this.targetSaturation = {
@@ -146,7 +189,7 @@ export class LightBulbManageComponent implements OnInit {
     }
   }
 
-  loadTargetColorTemperature() {
+  private loadTargetColorTemperature() {
     const TargetColorTemperature = this.service.getCharacteristic('ColorTemperature')
     if (TargetColorTemperature) {
       // Here, the min and max are switched because mired and kelvin are inversely related
@@ -176,51 +219,15 @@ export class LightBulbManageComponent implements OnInit {
     }
   }
 
-  setTargetMode(value: boolean) {
-    this.targetMode = value
-    this.service.getCharacteristic('On').setValue(this.targetMode)
-
-    // Set the brightness to 100% if on 0% when turned on
-    if (this.targetMode && this.targetBrightness && !this.targetBrightness.value) {
-      this.targetBrightness.value = this.service.getCharacteristic('Brightness').maxValue
-    }
-  }
-
-  onBrightnessStateChange() {
-    this.targetBrightnessChanged.next(this.targetBrightness.value)
-  }
-
-  onHueStateChange() {
-    this.targetHueChanged.next(this.targetHue.value)
-
-    const sliderElement = document.querySelectorAll('.noUi-target')[this.sliderIndex - 1] as HTMLElement
-    if (sliderElement) {
-      const hue = this.targetHue.value
-      sliderElement.style.background = `linear-gradient(to right,
-        hsl(${hue}, 0%, 50%),
-        hsl(${hue}, 100%, 50%))`
-    }
-  }
-
-  onSaturationStateChange() {
-    this.targetSaturationChanged.next(this.targetSaturation.value)
-  }
-
-  onColorTemperatureStateChange() {
-    const miredValue = this.kelvinToMired(this.targetColorTemperature.value)
-    this.targetColorTemperature.mired = miredValue
-    this.targetColorTemperatureChanged.next(miredValue)
-  }
-
-  miredToKelvin(kelvin: number): number {
+  private miredToKelvin(kelvin: number): number {
     return Math.round(1000000 / kelvin)
   }
 
-  kelvinToMired(kelvin: number): number {
+  private kelvinToMired(kelvin: number): number {
     return Math.round(1000000 / kelvin)
   }
 
-  kelvinToHsl(kelvin: number): string {
+  private kelvinToHsl(kelvin: number): string {
     const temp = kelvin / 100
     let red: number, green: number, blue: number
     if (temp <= 66) {

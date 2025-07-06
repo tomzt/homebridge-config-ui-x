@@ -13,9 +13,7 @@ export class StartupScriptResolver implements Resolve<any> {
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
-  constructor() {}
-
-  async resolve() {
+  public async resolve() {
     try {
       return await firstValueFrom(this.$api.get('/platform-tools/docker/startup-script'))
     } catch (error) {

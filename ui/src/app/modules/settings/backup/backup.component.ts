@@ -25,15 +25,16 @@ import { RestoreComponent } from '@/app/modules/settings/backup/restore/restore.
   ],
 })
 export class BackupComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $modal = inject(NgbModal)
   private $router = inject(Router)
   private $settings = inject(SettingsService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
-
   private restartToastIsShown = false
+
+  protected readonly Date = Date
 
   public clicked = false
   public scheduledBackups = []
@@ -44,9 +45,7 @@ export class BackupComponent implements OnInit {
   public enabledFormControl = new FormControl(false)
   public pathFormControl = new FormControl('')
 
-  constructor() {}
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.getScheduledBackups()
     this.getNextBackup()
 
@@ -71,41 +70,7 @@ export class BackupComponent implements OnInit {
       })
   }
 
-  async saveUiSettingChange(key: string, value: any) {
-    try {
-      await firstValueFrom(this.$api.put('/config-editor/ui', { key, value }))
-
-      // Update the environment variable in the settings service
-      this.$settings.setEnvItem(key, value)
-
-      this.showRestartToast()
-    } catch (error) {
-      console.error(error)
-      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
-    }
-  }
-
-  getScheduledBackups() {
-    this.$api.get('/backup/scheduled-backups').subscribe({
-      next: (data) => {
-        this.scheduledBackups = data
-      },
-      error: err => console.error(err),
-    })
-  }
-
-  getNextBackup() {
-    this.$api.get('/backup/scheduled-backups/next').subscribe({
-      next: (data) => {
-        this.backupTime = data.next
-      },
-      error: (err) => {
-        console.error(err)
-      },
-    })
-  }
-
-  download(backup: { id: any, fileName: string }) {
+  public download(backup: { id: any, fileName: string }) {
     this.$api.get(`/backup/scheduled-backups/${backup.id}`, { observe: 'response', responseType: 'blob' }).subscribe({
       next: (res) => {
         const archiveName = backup.fileName || 'homebridge-backup.tar.gz'
@@ -126,7 +91,7 @@ export class BackupComponent implements OnInit {
     })
   }
 
-  restore(backup: { id: any, fileName: string } | null) {
+  public restore(backup: { id: any, fileName: string } | null) {
     // Close the backup modal and open the restore modal
     this.$activeModal.close()
     const ref = this.$modal.open(RestoreComponent, {
@@ -137,7 +102,7 @@ export class BackupComponent implements OnInit {
     ref.componentInstance.selectedBackup = backup
   }
 
-  delete(backup: { id: any, fileName: string }) {
+  public delete(backup: { id: any, fileName: string }) {
     this.deleting = backup.id
     this.$api.delete(`/backup/scheduled-backups/${backup.id}`).subscribe({
       next: () => {
@@ -152,7 +117,7 @@ export class BackupComponent implements OnInit {
     })
   }
 
-  async onDownloadBackupClick() {
+  public async onDownloadBackupClick() {
     this.clicked = true
     try {
       const res = await firstValueFrom(this.$api.get('/backup/download', { observe: 'response', responseType: 'blob' }))
@@ -174,7 +139,7 @@ export class BackupComponent implements OnInit {
     }
   }
 
-  async onCreateBackupClick() {
+  public async onCreateBackupClick() {
     this.clicked = true
     try {
       await firstValueFrom(this.$api.post('/backup', {}))
@@ -187,7 +152,45 @@ export class BackupComponent implements OnInit {
     }
   }
 
-  showRestartToast() {
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private async saveUiSettingChange(key: string, value: any) {
+    try {
+      await firstValueFrom(this.$api.put('/config-editor/ui', { key, value }))
+
+      // Update the environment variable in the settings service
+      this.$settings.setEnvItem(key, value)
+
+      this.showRestartToast()
+    } catch (error) {
+      console.error(error)
+      this.$toastr.error(error.message, this.$translate.instant('toast.title_error'))
+    }
+  }
+
+  private getScheduledBackups() {
+    this.$api.get('/backup/scheduled-backups').subscribe({
+      next: (data) => {
+        this.scheduledBackups = data
+      },
+      error: err => console.error(err),
+    })
+  }
+
+  private getNextBackup() {
+    this.$api.get('/backup/scheduled-backups/next').subscribe({
+      next: (data) => {
+        this.backupTime = data.next
+      },
+      error: (err) => {
+        console.error(err)
+      },
+    })
+  }
+
+  private showRestartToast() {
     if (!this.restartToastIsShown) {
       this.restartToastIsShown = true
       const ref = this.$toastr.info(
@@ -209,6 +212,4 @@ export class BackupComponent implements OnInit {
       }
     }
   }
-
-  protected readonly Date = Date
 }

@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { ToastrService } from 'ngx-toastr'
 import { firstValueFrom, Subject } from 'rxjs'
 
-import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
+import { AccessoryLayout, ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { AccessoryInfoComponent } from '@/app/core/accessories/accessory-info/accessory-info.component'
 import { ApiService } from '@/app/core/api.service'
 import { AuthService } from '@/app/core/auth/auth.service'
@@ -22,26 +22,8 @@ export class AccessoriesService {
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
   private $ws = inject(WsService)
-
-  public layoutSaved = new Subject()
-  public accessoryData = new Subject()
-  public readyForControl = false
-  public accessoryLayout: {
-    name: string
-    services: Array<{
-      aid: number
-      iid: number
-      uuid: string
-      uniqueId: string
-      customName?: string
-      customType?: string
-      hidden?: boolean
-      onDashboard?: boolean
-    }>
-  }[]
-
-  public accessories: { services: ServiceType[] } = { services: [] }
-  public rooms: Array<{ name: string, services: ServiceTypeX[] }> = []
+  private accessoryCache: any[] = []
+  private pairingCache: any[] = []
   private io: IoNamespace
   private roomsOrdered = false
   private hiddenTypes = [
@@ -51,8 +33,12 @@ export class AccessoriesService {
     'ProtocolInformation',
   ]
 
-  private accessoryCache: any[] = []
-  private pairingCache: any[] = []
+  public layoutSaved = new Subject()
+  public accessoryData = new Subject()
+  public readyForControl = false
+  public accessories: { services: ServiceType[] } = { services: [] }
+  public rooms: Array<{ name: string, services: ServiceTypeX[] }> = []
+  public accessoryLayout: AccessoryLayout
 
   constructor() {
     firstValueFrom(this.$api.get('/server/cached-accessories'))
@@ -67,10 +53,7 @@ export class AccessoriesService {
       .catch(error => console.error(error))
   }
 
-  /**
-   *
-   */
-  showAccessoryInformation(service: any) {
+  public showAccessoryInformation(service: any) {
     const ref = this.$modal.open(AccessoryInfoComponent, {
       size: 'lg',
       backdrop: 'static',

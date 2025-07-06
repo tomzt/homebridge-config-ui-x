@@ -22,19 +22,17 @@ import { DurationPipe } from '@/app/core/pipes/duration.pipe'
   ],
 })
 export class LockMechanismManageComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
+  private lockTimeout: any
 
   @Input() public service: ServiceTypeX
+
   public serviceManagement: any
   public targetMode: any
   public targetLockManagementAutoSecurityTimeout: any
   public targetLockManagementAutoSecurityTimeoutChanged: Subject<string> = new Subject<string>()
 
-  private lockTimeout: any
-
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.targetMode = this.service.values.LockTargetState
 
     if (this.service.linkedServices) {
@@ -55,7 +53,7 @@ export class LockMechanismManageComponent implements OnInit {
     }
   }
 
-  setTargetMode(value: number) {
+  public setTargetMode(value: number, event: MouseEvent) {
     this.targetMode = value
     this.service.getCharacteristic('LockTargetState').setValue(this.targetMode)
 
@@ -71,9 +69,20 @@ export class LockMechanismManageComponent implements OnInit {
         this.targetMode = 1
       }, (this.targetLockManagementAutoSecurityTimeout.value + 0.3) * 1000)
     }
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
   }
 
-  loadTargetLockManagementAutoSecurityTimeout() {
+  public onLockManagementAutoSecurityTimeoutStateChange() {
+    this.targetLockManagementAutoSecurityTimeoutChanged.next(this.targetLockManagementAutoSecurityTimeout.value)
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private loadTargetLockManagementAutoSecurityTimeout() {
     const TargetLockManagementAutoSecurityTimeout = this.serviceManagement.getCharacteristic('LockManagementAutoSecurityTimeout')
     if (TargetLockManagementAutoSecurityTimeout) {
       this.targetLockManagementAutoSecurityTimeout = {
@@ -83,9 +92,5 @@ export class LockMechanismManageComponent implements OnInit {
         step: TargetLockManagementAutoSecurityTimeout.minStep || 10,
       }
     }
-  }
-
-  onLockManagementAutoSecurityTimeoutStateChange() {
-    this.targetLockManagementAutoSecurityTimeoutChanged.next(this.targetLockManagementAutoSecurityTimeout.value)
   }
 }

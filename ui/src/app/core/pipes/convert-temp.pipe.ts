@@ -9,13 +9,7 @@ import { SettingsService } from '@/app/core/settings.service'
 export class ConvertTempPipe implements PipeTransform {
   private $settings = inject(SettingsService)
 
-  constructor() {}
-
-  transform(value: boolean | string | number, unit: 'c' | 'f' = this.$settings.env.temperatureUnits): boolean | string | number {
-    if (typeof value !== 'number') {
-      return value
-    }
-
+  transform(value: number, unit: 'c' | 'f' = this.$settings.env.temperatureUnits): number {
     if (unit === 'f') {
       return value * 1.8 + 32
     }

@@ -22,9 +22,10 @@ import { DurationPipe } from '@/app/core/pipes/duration.pipe'
   ],
 })
 export class ValveManageComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
+
   public targetMode: any
   public targetSetDuration: any
   public targetSetDurationChanged: Subject<string> = new Subject<string>()
@@ -37,13 +38,29 @@ export class ValveManageComponent implements OnInit {
       })
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.targetMode = this.service.values.Active
 
     this.loadTargetSetDuration()
   }
 
-  loadTargetSetDuration() {
+  public setTargetMode(value: boolean, event: MouseEvent) {
+    this.targetMode = value
+    this.service.getCharacteristic('Active').setValue(this.targetMode)
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public onSetDurationStateChange() {
+    this.targetSetDurationChanged.next(this.targetSetDuration.value)
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private loadTargetSetDuration() {
     const TargetSetDuration = this.service.getCharacteristic('SetDuration')
 
     if (TargetSetDuration) {
@@ -61,14 +78,5 @@ export class ValveManageComponent implements OnInit {
         }
       }, 10)
     }
-  }
-
-  setTargetMode(value: boolean) {
-    this.targetMode = value
-    this.service.getCharacteristic('Active').setValue(this.targetMode)
-  }
-
-  onSetDurationStateChange() {
-    this.targetSetDurationChanged.next(this.targetSetDuration.value)
   }
 }

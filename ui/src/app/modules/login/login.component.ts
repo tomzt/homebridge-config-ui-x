@@ -25,30 +25,27 @@ import { environment } from '@/environments/environment'
 })
 export class LoginComponent implements OnInit, AfterViewChecked {
   private $auth = inject(AuthService)
+  private $cdr = inject(ChangeDetectorRef)
   private $router = inject(Router)
   private $settings = inject(SettingsService)
+  private targetRoute: string
 
   readonly passwordInput = viewChild<ElementRef>('password')
   readonly usernameInput = viewChild<ElementRef>('username')
   readonly otpInput = viewChild<ElementRef>('otp')
-
-  public form: FormGroup<{
-    username: FormControl<string>
-    password: FormControl<string>
-    otp?: FormControl<string>
-  }>
 
   public backgroundStyle: string
   public invalidCredentials = false
   public invalid2faCode = false
   public twoFactorCodeRequired = false
   public inProgress = false
+  public form: FormGroup<{
+    username: FormControl<string>
+    password: FormControl<string>
+    otp?: FormControl<string>
+  }>
 
-  private targetRoute: string
-
-  constructor(private cdr: ChangeDetectorRef) {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.form = new FormGroup({
       username: new FormControl(''),
       password: new FormControl(''),
@@ -65,22 +62,11 @@ export class LoginComponent implements OnInit, AfterViewChecked {
     this.setBackground()
   }
 
-  ngAfterViewChecked(): void {
-    this.cdr.detectChanges()
+  public ngAfterViewChecked(): void {
+    this.$cdr.detectChanges()
   }
 
-  async setBackground() {
-    if (!this.$settings.settingsLoaded) {
-      await firstValueFrom(this.$settings.onSettingsLoaded)
-    }
-
-    if (this.$settings.env.customWallpaperHash) {
-      const backgroundImageUrl = `${environment.api.base}/auth/wallpaper/${this.$settings.env.customWallpaperHash}`
-      this.backgroundStyle = `url('${backgroundImageUrl}') center/cover`
-    }
-  }
-
-  async onSubmit() {
+  public async onSubmit() {
     this.invalidCredentials = false
     this.invalid2faCode = false
     this.inProgress = true
@@ -129,5 +115,16 @@ export class LoginComponent implements OnInit, AfterViewChecked {
       }
     }
     this.inProgress = false
+  }
+
+  private async setBackground() {
+    if (!this.$settings.settingsLoaded) {
+      await firstValueFrom(this.$settings.onSettingsLoaded)
+    }
+
+    if (this.$settings.env.customWallpaperHash) {
+      const backgroundImageUrl = `${environment.api.base}/auth/wallpaper/${this.$settings.env.customWallpaperHash}`
+      this.backgroundStyle = `url('${backgroundImageUrl}') center/cover`
+    }
   }
 }

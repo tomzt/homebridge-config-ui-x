@@ -6,7 +6,7 @@
       class="btn-close"
       data-bs-dismiss="modal"
       [attr.aria-label]="'form.button_close' | translate"
-      (click)="$activeModal.dismiss('Dismiss')"
+      (click)="dismissModal()"
     ></button>
   </div>
   <div class="modal-body text-center px-5">
@@ -25,7 +25,7 @@
       role="group"
       aria-label="Humidifier Dehumidifier State Control"
     >
-      <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="setTargetState(0); $event.target.blur()">
+      <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="setTargetState(0, $event)">
         <div class="float-start primary-text">
           <i
             class="fas fa-fw fa-xl"
@@ -35,7 +35,7 @@
         {{ 'accessories.control.off' | translate }}
         <div class="float-end"><i class="fas fa-fw fa-xl fa-blank"></i></div>
       </button>
-      <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="setTargetState(1); $event.target.blur()">
+      <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="setTargetState(1, $event)">
         <div class="float-start primary-text">
           <i
             class="fas fa-fw fa-xl"
@@ -54,7 +54,7 @@
       aria-label="Humidifier Dehumidifier Mode Control"
     >
       @if (targetStateValidValues.includes(0)) {
-      <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="setTargetMode(0); $event.target.blur()">
+      <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="setTargetMode(0, $event)">
         <div class="float-start primary-text">
           <i
             class="fas fa-fw fa-xl"
@@ -65,7 +65,7 @@
         <div class="float-end"><i class="fas fa-fw fa-xl fa-blank"></i></div>
       </button>
       } @if (targetStateValidValues.includes(1)) {
-      <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="setTargetMode(1); $event.target.blur()">
+      <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="setTargetMode(1, $event)">
         <div class="float-start primary-text">
           <i
             class="fas fa-fw fa-xl"
@@ -76,7 +76,7 @@
         <div class="float-end"><i class="fas fa-fw fa-xl fa-blank"></i></div>
       </button>
       } @if (targetStateValidValues.includes(2)) {
-      <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="setTargetMode(2); $event.target.blur()">
+      <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="setTargetMode(2, $event)">
         <div class="float-start primary-text">
           <i
             class="fas fa-fw fa-xl"

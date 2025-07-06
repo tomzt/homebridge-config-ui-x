@@ -6,7 +6,7 @@
       class="btn-close"
       data-bs-dismiss="modal"
       [attr.aria-label]="'form.button_close' | translate"
-      (click)="$activeModal.close('Dismiss')"
+      (click)="dismissModal()"
       [disabled]="saveInProgress"
     ></button>
   </div>
@@ -50,7 +50,11 @@
               </button>
               <i
                 class="fa fa-fw fa-xl"
-                [ngClass]="formBlocksValid[i] ? 'fa-circle-check green-text' : (strictValidation ? 'fa-circle-exclamation red-text' : 'fa-circle-exclamation orange-text')"
+                [ngClass]="{
+                  'fa-circle-check green-text': formBlocksValid[i],
+                  'fa-circle-exclamation red-text': strictValidation && !formBlocksValid[i],
+                  'fa-circle-exclamation orange-text': !strictValidation && !formBlocksValid[i]
+                }"
                 [ngbTooltip]="(formBlocksValid[i] ? 'form.label_valid' : (strictValidation ? 'form.label_invalid_strict' : 'form.label_invalid')) | translate"
                 container="modal"
                 placement="left"
@@ -102,7 +106,7 @@
         type="button"
         class="btn btn-elegant"
         data-bs-dismiss="modal"
-        (click)="$activeModal.close()"
+        (click)="closeModal()"
         [disabled]="saveInProgress"
       >
         {{ 'form.button_close' | translate }}
@@ -113,7 +117,11 @@
       @if (schema.singular) {
       <i
         class="fa fa-fw fa-xl me-2"
-        [ngClass]="formIsValid ? 'fa-circle-check green-text' : (strictValidation ? 'fa-circle-exclamation red-text' : 'fa-circle-exclamation orange-text')"
+        [ngClass]="{
+          'fa-circle-check green-text': formIsValid,
+          'fa-circle-exclamation red-text': strictValidation && !formIsValid,
+          'fa-circle-exclamation orange-text': !strictValidation && !formIsValid
+        }"
         [ngbTooltip]="(formIsValid ? 'form.label_valid' : (strictValidation ? 'form.label_invalid_strict' : 'form.label_invalid')) | translate"
         container="modal"
         placement="top"

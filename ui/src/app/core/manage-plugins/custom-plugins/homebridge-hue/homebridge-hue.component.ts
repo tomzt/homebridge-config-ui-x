@@ -15,9 +15,7 @@ export class HomebridgeHueComponent {
   private $translate = inject(TranslateService)
   private $toastr = inject(ToastrService)
 
-  constructor() {}
-
-  downloadDumpFile() {
+  public downloadDumpFile() {
     this.$api.get('/plugins/custom-plugins/homebridge-hue/dump-file', { observe: 'response', responseType: 'blob' }).subscribe({
       next: (res) => {
         saveAs(res.body, 'homebridge-hue.json.gz')

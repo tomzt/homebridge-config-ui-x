@@ -6,7 +6,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2'
 
 import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { WindowManageComponent } from '@/app/core/accessories/types/window/window.manage.component'
-import { LongClickDirective } from '@/app/core/directives/longclick.directive'
+import { LongClickDirective } from '@/app/core/directives/long-click.directive'
 
 @Component({
   selector: 'app-window',
@@ -24,9 +24,7 @@ export class WindowComponent {
 
   @Input() public service: ServiceTypeX
 
-  constructor() {}
-
-  onClick() {
+  public onClick() {
     if (this.service.values.TargetPosition) {
       this.service.getCharacteristic('TargetPosition').setValue(0)
     } else {
@@ -34,7 +32,7 @@ export class WindowComponent {
     }
   }
 
-  onLongClick() {
+  public onLongClick() {
     const ref = this.$modal.open(WindowManageComponent, {
       size: 'md',
       backdrop: 'static',

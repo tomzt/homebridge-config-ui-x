@@ -6,7 +6,7 @@
       class="btn-close"
       data-bs-dismiss="modal"
       [attr.aria-label]="'form.button_close' | translate"
-      (click)="$activeModal.dismiss('Dismiss')"
+      (click)="dismissModal()"
       [disabled]="clicked"
     ></button>
   </div>
@@ -68,7 +68,7 @@
         type="button"
         class="btn btn-elegant"
         data-bs-dismiss="modal"
-        (click)="$activeModal.dismiss('Dismiss')"
+        (click)="dismissModal()"
         [disabled]="clicked"
       >
         {{ 'form.button_close' | translate }}
@@ -77,7 +77,7 @@
     </div>
     <div class="text-center">
       @if (pairings.length === 0) {
-      <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="$activeModal.dismiss('Dismiss')">
+      <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="dismissModal()">
         {{ 'form.button_close' | translate }}
       </button>
       }

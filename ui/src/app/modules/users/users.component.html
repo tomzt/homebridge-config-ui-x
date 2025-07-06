@@ -24,9 +24,9 @@
           </span>
         </div>
         <div class="d-flex flex-row justify-content-between">
-          @if ($auth.user.username === user.username && !user.otpActive) {
+          @if (username === user.username && !user.otpActive) {
           <button class="btn btn-primary m-0" (click)="setup2fa(user)">{{ 'users.setup_2fa' | translate }}</button>
-          } @if ($auth.user.username === user.username && user.otpActive) {
+          } @if (username === user.username && user.otpActive) {
           <button class="btn btn-elegant m-0" (click)="disable2fa(user)">
             {{ 'users.setup_2fa_disable' | translate }}
           </button>
@@ -43,7 +43,7 @@
               class="btn btn-danger m-0 ms-2"
               (click)="deleteUser(user.id)"
               [attr.aria-label]="'form.button_delete' | translate"
-              [disabled]="$auth.user.username === user.username"
+              [disabled]="username === user.username"
             >
               <i class="fas fa-fw fa-trash"></i>
             </button>

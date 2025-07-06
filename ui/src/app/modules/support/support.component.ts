@@ -16,9 +16,7 @@ export class SupportComponent {
     dev: true,
   }
 
-  constructor() {}
-
-  toggleSection(section: string) {
+  public toggleSection(section: string) {
     this.showFields[section] = !this.showFields[section]
   }
 }

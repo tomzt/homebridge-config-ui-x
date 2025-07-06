@@ -20,17 +20,14 @@ export class SystemInfoWidgetComponent implements OnInit {
   private $modal = inject(NgbModal)
   private $translate = inject(TranslateService)
   private $ws = inject(WsService)
+  private io: IoNamespace
 
   @Input() widget: any
 
   public serverInfo: any
   public nodejsInfo = {} as any
 
-  private io: IoNamespace
-
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.io = this.$ws.getExistingNamespace('status')
     this.io.connected.subscribe(async () => {
       this.getSystemInfo()
@@ -41,17 +38,7 @@ export class SystemInfoWidgetComponent implements OnInit {
     }
   }
 
-  getSystemInfo() {
-    this.io.request('get-homebridge-server-info').subscribe((data) => {
-      this.serverInfo = data
-    })
-
-    this.io.request('nodejs-version-check').subscribe((data) => {
-      this.nodejsInfo = data
-    })
-  }
-
-  glibcVersionModal() {
+  public glibcVersionModal() {
     const ref = this.$modal.open(InformationComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -63,7 +50,7 @@ export class SystemInfoWidgetComponent implements OnInit {
     ref.componentInstance.ctaButtonLink = 'https://github.com/homebridge/homebridge-config-ui-x/wiki/Troubleshooting/#error---update-node---your-version-of-linux-does-not-meet-the-glibc-version'
   }
 
-  serviceModeModal() {
+  public serviceModeModal() {
     const ref = this.$modal.open(InformationComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -73,5 +60,15 @@ export class SystemInfoWidgetComponent implements OnInit {
     ref.componentInstance.ctaButtonLabel = this.$translate.instant('form.button_more_info')
     ref.componentInstance.faIconClass = 'fas fa-fw fa-circle-exclamation primary-text'
     ref.componentInstance.ctaButtonLink = 'https://github.com/homebridge/homebridge-config-ui-x/wiki/How-To-Swap-From-Standalone-Mode-to-Service-Mode'
+  }
+
+  private getSystemInfo() {
+    this.io.request('get-homebridge-server-info').subscribe((data) => {
+      this.serverInfo = data
+    })
+
+    this.io.request('nodejs-version-check').subscribe((data) => {
+      this.nodejsInfo = data
+    })
   }
 }

@@ -28,8 +28,8 @@ import { SettingsService } from '@/app/core/settings.service'
   ],
 })
 export class ThermostatManageComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
-  $settings = inject(SettingsService)
+  private $activeModal = inject(NgbActiveModal)
+  private $settings = inject(SettingsService)
 
   @Input() public service: ServiceTypeX
 
@@ -44,6 +44,7 @@ export class ThermostatManageComponent implements OnInit {
   public targetHeatingTemp: number
   public autoTemp: [number, number]
   public hasHumidity: boolean = false
+  public temperatureUnits = this.$settings.env.temperatureUnits
 
   constructor() {
     this.targetTemperatureChanged
@@ -64,7 +65,7 @@ export class ThermostatManageComponent implements OnInit {
       })
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.targetMode = this.service.values.TargetHeatingCoolingState
     this.CoolingThresholdTemperature = this.service.getCharacteristic('CoolingThresholdTemperature')
     this.HeatingThresholdTemperature = this.service.getCharacteristic('HeatingThresholdTemperature')
@@ -81,7 +82,34 @@ export class ThermostatManageComponent implements OnInit {
     }, 10)
   }
 
-  loadTargetTemperature() {
+  public setTargetMode(value: number, event: MouseEvent) {
+    this.targetMode = value
+    this.service.getCharacteristic('TargetHeatingCoolingState').setValue(this.targetMode)
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public onTemperatureStateChange() {
+    this.targetTemperatureChanged.next(this.targetTemperature.value)
+  }
+
+  public onThresholdStateChange() {
+    this.autoTemp = [this.targetHeatingTemp, this.targetCoolingTemp]
+    this.targetThresholdChanged.next(undefined)
+  }
+
+  public onAutoThresholdStateChange() {
+    this.targetHeatingTemp = this.autoTemp[0]
+    this.targetCoolingTemp = this.autoTemp[1]
+    this.targetThresholdChanged.next(undefined)
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private loadTargetTemperature() {
     const TargetTemperature = this.service.getCharacteristic('TargetTemperature')
     this.targetTemperature = {
       value: TargetTemperature.value,
@@ -92,25 +120,5 @@ export class ThermostatManageComponent implements OnInit {
     this.targetCoolingTemp = this.service.getCharacteristic('CoolingThresholdTemperature')?.value as number
     this.targetHeatingTemp = this.service.getCharacteristic('HeatingThresholdTemperature')?.value as number
     this.autoTemp = [this.targetHeatingTemp, this.targetCoolingTemp]
-  }
-
-  setTargetMode(value: number) {
-    this.targetMode = value
-    this.service.getCharacteristic('TargetHeatingCoolingState').setValue(this.targetMode)
-  }
-
-  onTemperatureStateChange() {
-    this.targetTemperatureChanged.next(this.targetTemperature.value)
-  }
-
-  onThresholdStateChange() {
-    this.autoTemp = [this.targetHeatingTemp, this.targetCoolingTemp]
-    this.targetThresholdChanged.next(undefined)
-  }
-
-  onAutoThresholdStateChange() {
-    this.targetHeatingTemp = this.autoTemp[0]
-    this.targetCoolingTemp = this.autoTemp[1]
-    this.targetThresholdChanged.next(undefined)
   }
 }

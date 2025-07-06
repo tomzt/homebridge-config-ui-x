@@ -20,7 +20,7 @@ import { QrcodeComponent } from '@/app/core/components/qrcode/qrcode.component'
   ],
 })
 export class Users2faEnableComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
@@ -29,14 +29,11 @@ export class Users2faEnableComponent implements OnInit {
 
   public timeDiffError: number | null = null
   public otpString: string
-
   public formGroup = new FormGroup({
     code: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]),
   })
 
-  constructor() {}
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.$api.post('/users/otp/setup', {}).subscribe({
       next: (data) => {
         this.checkTimeDiff(data.timestamp)
@@ -52,16 +49,7 @@ export class Users2faEnableComponent implements OnInit {
     })
   }
 
-  checkTimeDiff(timestamp: string) {
-    const diffMs = dayjs(timestamp).diff(new Date(), 'millisecond')
-    if (diffMs < -5000 || diffMs > 5000) {
-      this.timeDiffError = diffMs
-    } else {
-      this.timeDiffError = null
-    }
-  }
-
-  enable2fa() {
+  public enable2fa() {
     this.$api.post('/users/otp/activate', this.formGroup.value).subscribe({
       next: () => {
         this.$toastr.success(this.$translate.instant('users.setup_2fa_enabled_success'), this.$translate.instant('toast.title_success'))
@@ -72,5 +60,18 @@ export class Users2faEnableComponent implements OnInit {
         this.$toastr.error(this.$translate.instant('users.setup_2fa_activate_error'), this.$translate.instant('toast.title_error'))
       },
     })
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private checkTimeDiff(timestamp: string) {
+    const diffMs = dayjs(timestamp).diff(new Date(), 'millisecond')
+    if (diffMs < -5000 || diffMs > 5000) {
+      this.timeDiffError = diffMs
+    } else {
+      this.timeDiffError = null
+    }
   }
 }

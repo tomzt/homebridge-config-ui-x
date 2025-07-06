@@ -24,17 +24,16 @@ import { RemoveIndividualAccessoriesComponent } from '@/app/modules/settings/rem
   ],
 })
 export class AccessoryInfoComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $modal = inject(NgbModal)
-
-  @Input() public service: ServiceTypeX
-  @Input() private accessoryCache: any[]
-  @Input() private pairingCache: any[]
-
   private allCustomTypeList: Array<Array<ServiceTypeX['type']>> = [
     ['Switch', 'Outlet', 'Fan', 'Lightbulb'],
     ['Door', 'Window', 'WindowCovering'],
   ]
+
+  @Input() private accessoryCache: any[]
+  @Input() private pairingCache: any[]
+  @Input() public service: ServiceTypeX
 
   public accessoryInformation: Array<any>
   public extraServices: ServiceTypeX[] = []
@@ -42,9 +41,7 @@ export class AccessoryInfoComponent implements OnInit {
   public enums = Enums
   public customTypeList: Array<ServiceTypeX['type']> = []
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.accessoryInformation = Object.entries(this.service.accessoryInformation).map(([key, value]) => ({ key, value }))
     this.matchedCachedAccessory = this.matchToCachedAccessory()
 
@@ -60,7 +57,20 @@ export class AccessoryInfoComponent implements OnInit {
     }
   }
 
-  matchToCachedAccessory() {
+  public removeSingleCachedAccessories() {
+    this.$activeModal.close()
+    const ref = this.$modal.open(RemoveIndividualAccessoriesComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    })
+    ref.componentInstance.selectedBridge = this.service.instance.username.replaceAll(':', '')
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private matchToCachedAccessory() {
     // Try to find a matching accessory from the cache
     // Start with the service bridge username and see if we have a pairing with this username
     const bridgeUsername = this.service.instance.username
@@ -90,14 +100,5 @@ export class AccessoryInfoComponent implements OnInit {
         }
       }
     }
-  }
-
-  removeSingleCachedAccessories() {
-    this.$activeModal.close()
-    const ref = this.$modal.open(RemoveIndividualAccessoriesComponent, {
-      size: 'lg',
-      backdrop: 'static',
-    })
-    ref.componentInstance.selectedBridge = this.service.instance.username.replaceAll(':', '')
   }
 }

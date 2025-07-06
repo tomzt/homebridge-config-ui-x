@@ -6,7 +6,7 @@
       class="btn-close"
       data-bs-dismiss="modal"
       [attr.aria-label]="'form.button_close' | translate"
-      (click)="$activeModal.dismiss('Dismiss')"
+      (click)="dismissModal()"
     ></button>
   </div>
   <div class="modal-body">
@@ -34,7 +34,7 @@
         type="button"
         class="btn btn-elegant"
         data-bs-dismiss="modal"
-        (click)="$activeModal.dismiss('Dismiss')"
+        (click)="dismissModal()"
         [attr.aria-label]="'form.button_close' | translate"
       >
         {{ 'form.button_close' | translate }}
@@ -42,7 +42,7 @@
     </div>
     <div class="text-center"></div>
     <div class="text-end">
-      <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="$activeModal.close()">
+      <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="closeModal()">
         {{ 'plugins.manage.disable' | translate }}
       </button>
     </div>

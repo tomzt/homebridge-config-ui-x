@@ -20,7 +20,7 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
   ],
 })
 export class FanManageComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
 
   @Input() public service: ServiceTypeX
 
@@ -46,7 +46,7 @@ export class FanManageComponent implements OnInit {
       })
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.targetMode = this.service.values.On
 
     this.loadRotationSpeed()
@@ -56,7 +56,35 @@ export class FanManageComponent implements OnInit {
     }
   }
 
-  loadRotationSpeed() {
+  public setTargetMode(value: boolean, event: MouseEvent) {
+    this.targetMode = value
+    this.service.getCharacteristic('On').setValue(this.targetMode)
+
+    // Set the rotation speed to max if on 0% when turned on
+    if (this.targetMode && this.targetRotationSpeed && !this.targetRotationSpeed.value) {
+      this.targetRotationSpeed.value = this.service.getCharacteristic('RotationSpeed').maxValue
+    }
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public onTargetRotationSpeedChange() {
+    this.targetRotationSpeedChanged.next(this.targetRotationSpeed.value)
+  }
+
+  public setRotationDirection(value: number, event: MouseEvent) {
+    this.service.getCharacteristic('RotationDirection').setValue(value)
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  private loadRotationSpeed() {
     const RotationSpeed = this.service.getCharacteristic('RotationSpeed')
 
     if (RotationSpeed) {
@@ -75,23 +103,5 @@ export class FanManageComponent implements OnInit {
         })
       }, 10)
     }
-  }
-
-  setTargetMode(value: boolean) {
-    this.targetMode = value
-    this.service.getCharacteristic('On').setValue(this.targetMode)
-
-    // Set the rotation speed to max if on 0% when turned on
-    if (this.targetMode && this.targetRotationSpeed && !this.targetRotationSpeed.value) {
-      this.targetRotationSpeed.value = this.service.getCharacteristic('RotationSpeed').maxValue
-    }
-  }
-
-  onTargetRotationSpeedChange() {
-    this.targetRotationSpeedChanged.next(this.targetRotationSpeed.value)
-  }
-
-  setRotationDirection(value: number) {
-    this.service.getCharacteristic('RotationDirection').setValue(value)
   }
 }

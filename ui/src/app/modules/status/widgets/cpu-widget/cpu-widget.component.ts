@@ -23,27 +23,27 @@ import { IoNamespace, WsService } from '@/app/core/ws.service'
   ],
 })
 export class CpuWidgetComponent implements OnInit, OnDestroy {
-  $settings = inject(SettingsService)
+  private $settings = inject(SettingsService)
   private $ws = inject(WsService)
-
-  @Input() public widget: any
+  private io: IoNamespace
+  private intervalSubscription: Subscription
 
   readonly chart = viewChild(BaseChartDirective)
   readonly widgetBackground = viewChild<ElementRef>('widgetbackground')
 
+  @Input() public widget: any
+
+  public temperatureUnits = this.$settings.env.temperatureUnits
   public cpu = {} as any
   public cpuTemperature = {} as any
   public currentLoad = 0
   public refreshInterval: number
   public historyItems: number
-
+  public lineChartLabels = []
   public lineChartType: ChartConfiguration['type'] = 'line'
-
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [{ data: [] }],
   }
-
-  public lineChartLabels = []
 
   public lineChartOptions: ChartConfiguration['options'] = {
     responsive: true,
@@ -78,12 +78,7 @@ export class CpuWidgetComponent implements OnInit, OnDestroy {
     },
   }
 
-  private io: IoNamespace
-  private intervalSubscription: Subscription
-
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.io = this.$ws.getExistingNamespace('status')
     // Lookup the chart color based on the current theme
     const userColor = getComputedStyle(this.widgetBackground().nativeElement).backgroundColor
@@ -117,14 +112,18 @@ export class CpuWidgetComponent implements OnInit, OnDestroy {
     })
   }
 
-  getServerCpuInfo() {
+  public ngOnDestroy() {
+    this.intervalSubscription.unsubscribe()
+  }
+
+  private getServerCpuInfo() {
     this.io.request('get-server-cpu-info').subscribe((data) => {
       this.updateData(data)
       this.chart().update()
     })
   }
 
-  updateData(data: any) {
+  private updateData(data: any) {
     this.cpuTemperature = data.cpuTemperature
     this.currentLoad = data.currentLoad
 
@@ -136,13 +135,13 @@ export class CpuWidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  initializeChartData(data: any) {
+  private initializeChartData(data: any) {
     const items = data.cpuLoadHistory.slice(-this.historyItems)
     this.lineChartData.datasets[0].data = { ...items }
     this.lineChartLabels = items.map(() => 'point')
   }
 
-  updateChartData(data: any, dataLength: number) {
+  private updateChartData(data: any, dataLength: number) {
     this.lineChartData.datasets[0].data[dataLength] = data.currentLoad
     this.lineChartLabels.push('point')
 
@@ -151,7 +150,7 @@ export class CpuWidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  shiftChartData() {
+  private shiftChartData() {
     const newItems = {}
     Object.keys(this.lineChartData.datasets[0].data).forEach((key, index, array) => {
       if (index + 1 < array.length) {
@@ -162,9 +161,5 @@ export class CpuWidgetComponent implements OnInit, OnDestroy {
     // @ts-expect-error - TS2740: Type {} is missing the following properties from type...
     this.lineChartData.datasets[0].data = newItems
     this.lineChartLabels = this.lineChartLabels.slice(1)
-  }
-
-  ngOnDestroy() {
-    this.intervalSubscription.unsubscribe()
   }
 }

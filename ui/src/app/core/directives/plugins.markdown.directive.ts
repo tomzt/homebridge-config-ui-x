@@ -8,9 +8,7 @@ import { EmojiConvertor } from 'emoji-js'
 export class PluginsMarkdownDirective implements OnInit {
   private el = inject(ElementRef)
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     // Ensure third party links open in a new window without a referrer
     const links = this.el.nativeElement.querySelectorAll('a')
     links.forEach((a: any) => {

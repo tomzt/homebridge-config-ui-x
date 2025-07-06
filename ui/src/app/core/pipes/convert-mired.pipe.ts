@@ -5,8 +5,6 @@ import { Pipe, PipeTransform } from '@angular/core'
   standalone: true,
 })
 export class ConvertMiredPipe implements PipeTransform {
-  constructor() {}
-
   transform(mired: boolean | string | number): boolean | string | number {
     if (typeof mired !== 'number') {
       return mired

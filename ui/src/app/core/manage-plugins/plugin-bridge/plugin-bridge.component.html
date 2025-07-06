@@ -7,7 +7,7 @@
       class="btn-close"
       data-bs-dismiss="modal"
       [attr.aria-label]="'form.button_close' | translate"
-      (click)="$activeModal.close('Dismiss')"
+      (click)="closeModal()"
       [disabled]="saveInProgress"
     ></button>
     }
@@ -92,7 +92,7 @@
         <div class="text-start text-md-end w-100 w-md-50">
           <select class="custom-select" id="bridgeLink" (change)="onLinkBridgeChange($event.target.value)">
             <option [value]="">{{ 'child_bridge.config.select_existing' | translate }}</option>
-            @for (bridge of bridgesAvailableForLink; track bridge; let i = $index) {
+            @for (bridge of bridgesAvailableForLink; track bridge) {
             <option [value]="bridge.username">{{ bridge.name }} ({{ bridge.username }})</option>
             }
           </select>
@@ -156,7 +156,7 @@
           {{ configBlocks[selectedBlock]._bridge.port }}
         </div>
       </li>
-      @if ($settings.env.serviceMode) {
+      @if (serviceMode) {
       <li class="list-group-item d-flex flex-column flex-md-row align-items-center">
         <label class="mb-2 mb-md-0 w-100 w-md-50">{{ 'child_bridge.config.name' | translate }}</label>
         <div class="text-start text-md-end w-100 w-md-50">
@@ -247,7 +247,7 @@
       {{ 'child_bridge.restart_homebridge' | translate }}
       <br />{{ 'child_bridge.return_to_pair' | translate }}
     </ngb-alert>
-    } } @if (deleteBridges.length && $settings.env.serviceMode) {
+    } } @if (deleteBridges.length && serviceMode) {
     <ngb-alert type="error" [dismissible]="false" class="mt-3 mb-0">
       <p>
         {{ 'child_bridge.confirm_delete_1' | translate }} @if (deletingPairedBridge) { {{
@@ -286,7 +286,7 @@
         type="button"
         class="btn btn-elegant"
         data-bs-dismiss="modal"
-        (click)="$activeModal.close('Dismiss')"
+        (click)="closeModal()"
         [disabled]="saveInProgress"
       >
         {{ 'form.button_close' | translate }}
@@ -301,7 +301,7 @@
         }
       </button>
       } @if (!canConfigure) {
-      <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="$activeModal.close('Dismiss')">
+      <button type="button" class="btn btn-elegant" data-bs-dismiss="modal" (click)="closeModal()">
         {{ 'form.button_close' | translate }}
       </button>
       }

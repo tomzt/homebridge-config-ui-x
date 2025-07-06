@@ -18,12 +18,13 @@ import { IoNamespace, WsService } from '@/app/core/ws.service'
   ],
 })
 export class HbV2ModalComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
-  $settings = inject(SettingsService)
+  private $settings = inject(SettingsService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
   private $ws = inject(WsService)
+  private io: IoNamespace
 
   @Input() isUpdating: boolean = false
 
@@ -33,11 +34,7 @@ export class HbV2ModalComponent implements OnInit {
   public homebridgeUiPkg = {} as any
   public nodeReady = false
 
-  private io: IoNamespace
-
-  constructor() {}
-
-  async ngOnInit() {
+  public async ngOnInit() {
     this.io = this.$ws.getExistingNamespace('status')
     if (this.io.socket.connected) {
       await this.checkHomebridgeUiVersion()
@@ -46,7 +43,7 @@ export class HbV2ModalComponent implements OnInit {
     this.loading = false
   }
 
-  async checkHomebridgeUiVersion() {
+  private async checkHomebridgeUiVersion() {
     try {
       this.homebridgeUiPkg = await firstValueFrom(this.io.request('homebridge-ui-version-check'))
       this.nodeReady = this.homebridgeUiPkg.readyForV5.node
@@ -56,7 +53,7 @@ export class HbV2ModalComponent implements OnInit {
     }
   }
 
-  async loadInstalledPlugins() {
+  private async loadInstalledPlugins() {
     this.installedPlugins = []
     this.loading = true
     const homebridgeVersion = this.$settings.env.homebridgeVersion.split('.')[0]
@@ -86,5 +83,9 @@ export class HbV2ModalComponent implements OnInit {
       console.error(error)
       this.$toastr.error(this.$translate.instant('plugins.toast_failed_to_load_plugins'), this.$translate.instant('toast.title_error'))
     }
+  }
+
+  public closeModal(reason: string) {
+    this.$activeModal.close(reason)
   }
 }

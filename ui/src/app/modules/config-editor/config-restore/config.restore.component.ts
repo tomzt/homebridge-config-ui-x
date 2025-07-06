@@ -15,7 +15,7 @@ import { ApiService } from '@/app/core/api.service'
   ],
 })
 export class ConfigRestoreComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
@@ -27,9 +27,7 @@ export class ConfigRestoreComponent implements OnInit {
     file: string
   }[] = []
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.$api.get('/config-editor/backups').subscribe({
       next: (data: any[]) => {
         this.loading = false
@@ -43,11 +41,11 @@ export class ConfigRestoreComponent implements OnInit {
     })
   }
 
-  restore(backupId: any) {
+  public restore(backupId: any) {
     return this.$activeModal.close(backupId)
   }
 
-  deleteAllBackups() {
+  public deleteAllBackups() {
     return this.$api.delete('/config-editor/backups').subscribe({
       next: () => {
         this.$activeModal.dismiss()
@@ -58,5 +56,9 @@ export class ConfigRestoreComponent implements OnInit {
         this.$toastr.error(error.error.message || error.message, this.$translate.instant('toast.title_error'))
       },
     })
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
   }
 }

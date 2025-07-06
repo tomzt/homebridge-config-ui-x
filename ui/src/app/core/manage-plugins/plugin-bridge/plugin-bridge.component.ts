@@ -28,12 +28,12 @@ import { SettingsService } from '@/app/core/settings.service'
   ],
 })
 export class PluginBridgeComponent implements OnInit {
-  $activeModal = inject(NgbActiveModal)
+  private $activeModal = inject(NgbActiveModal)
   private $api = inject(ApiService)
   private $modal = inject(NgbModal)
   private $plugins = inject(ManagePluginsService)
   private $router = inject(Router)
-  $settings = inject(SettingsService)
+  private $settings = inject(SettingsService)
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
@@ -41,6 +41,7 @@ export class PluginBridgeComponent implements OnInit {
   @Input() schema: PluginSchema
   @Input() justInstalled = false
 
+  public serviceMode = this.$settings.env.serviceMode
   public loading = true
   public canConfigure = true
   public configBlocks: any[] = []
@@ -61,15 +62,13 @@ export class PluginBridgeComponent implements OnInit {
   public readonly linkChildBridges = '<a href="https://github.com/homebridge/homebridge/wiki/Child-Bridges" target="_blank"><i class="fas fa-fw fa-external-link-alt primary-text"></i></a>'
   public readonly linkDebug = '<a href="https://github.com/homebridge/homebridge-config-ui-x/wiki/Debug-Common-Values" target="_blank"><i class="fa fa-fw fa-external-link-alt primary-text"></i></a>'
 
-  constructor() {}
-
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     await Promise.all([this.getPluginType(), this.loadPluginConfig()])
     this.canShowBridgeDebug = this.$settings.env.homebridgeVersion.startsWith('2')
     this.loading = false
   }
 
-  onBlockChange(index: string) {
+  public onBlockChange(index: string) {
     this.selectedBlock = index
     this.currentlySelectedLink = this.accessoryBridgeLinks.find(link => link.index === index) || null
     this.currentBridgeHasLinks = this.accessoryBridgeLinks.some(link => link.usesIndex === index)
@@ -93,7 +92,7 @@ export class PluginBridgeComponent implements OnInit {
     }
   }
 
-  onLinkBridgeChange(username: string) {
+  public onLinkBridgeChange(username: string) {
     if (username) {
       // Get the index of the first block in the config with this bridge username
       const index = this.configBlocks.findIndex(block => block._bridge?.username === username)
@@ -119,7 +118,7 @@ export class PluginBridgeComponent implements OnInit {
     }
   }
 
-  async getPluginType() {
+  private async getPluginType() {
     try {
       const alias = await firstValueFrom(this.$api.get(`/plugins/alias/${encodeURIComponent(this.plugin.name)}`))
       this.isPlatform = alias.pluginType === 'platform'
@@ -130,7 +129,7 @@ export class PluginBridgeComponent implements OnInit {
     }
   }
 
-  async loadPluginConfig() {
+  private async loadPluginConfig() {
     try {
       this.configBlocks = await firstValueFrom(this.$api.get(`/config-editor/plugin/${encodeURIComponent(this.plugin.name)}`))
       for (const [i, block] of this.configBlocks.entries()) {
@@ -182,7 +181,7 @@ export class PluginBridgeComponent implements OnInit {
     }
   }
 
-  async toggleExternalBridge(block: any, enable: boolean, index: string) {
+  public async toggleExternalBridge(block: any, enable: boolean, index: string) {
     if (enable) {
       const bridgeCache = this.bridgeCache.get(Number(index))
 
@@ -227,7 +226,7 @@ export class PluginBridgeComponent implements OnInit {
     this.deletingPairedBridge = this.deleteBridges.some(b => b.paired)
   }
 
-  async getUnusedPort() {
+  private async getUnusedPort() {
     this.saveInProgress = true
     try {
       const lookup = await firstValueFrom(this.$api.get('/server/port/new'))
@@ -239,7 +238,7 @@ export class PluginBridgeComponent implements OnInit {
     }
   }
 
-  async getDeviceInfo(username: string) {
+  private async getDeviceInfo(username: string) {
     try {
       this.deviceInfo[username] = await firstValueFrom(this.$api.get(`/server/pairings/${username.replace(/:/g, '')}`))
     } catch (error) {
@@ -248,7 +247,7 @@ export class PluginBridgeComponent implements OnInit {
     }
   }
 
-  async save() {
+  public async save() {
     this.saveInProgress = true
 
     try {
@@ -279,7 +278,7 @@ export class PluginBridgeComponent implements OnInit {
     }
   }
 
-  openPluginConfig() {
+  public openPluginConfig() {
     // Close the existing modal
     this.$activeModal.close()
 
@@ -291,10 +290,7 @@ export class PluginBridgeComponent implements OnInit {
     })
   }
 
-  /**
-   * Generates a new random username
-   */
-  public generateUsername() {
+  private generateUsername() {
     const hexDigits = '0123456789ABCDEF'
     let username = '0E:'
     for (let i = 0; i < 5; i++) {
@@ -307,8 +303,16 @@ export class PluginBridgeComponent implements OnInit {
     return username
   }
 
-  openFullConfigEditor() {
+  public openFullConfigEditor() {
     this.$router.navigate(['/config'])
     this.$activeModal.close()
+  }
+
+  public dismissModal() {
+    this.$activeModal.dismiss('Dismiss')
+  }
+
+  public closeModal() {
+    this.$activeModal.close('Dismiss')
   }
 }

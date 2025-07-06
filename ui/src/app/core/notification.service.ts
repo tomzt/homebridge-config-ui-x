@@ -6,4 +6,5 @@ import { Subject } from 'rxjs'
 })
 export class NotificationService {
   readonly raspberryPiThrottled: Subject<Record<string, boolean>> = new Subject()
+  readonly formAuthEnabled: Subject<boolean> = new Subject()
 }

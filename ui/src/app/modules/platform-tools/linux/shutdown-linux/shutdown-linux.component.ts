@@ -14,11 +14,9 @@ export class ShutdownLinuxComponent implements OnInit {
   private $toastr = inject(ToastrService)
   private $translate = inject(TranslateService)
 
-  error: any = false
+  public error: any = false
 
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.$api.put('/platform-tools/linux/shutdown-host', {}).subscribe({
       error: (error) => {
         console.error(error)

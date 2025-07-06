@@ -20,6 +20,8 @@ import { IoNamespace, WsService } from '@/app/core/ws.service'
 })
 export class NetworkWidgetComponent implements OnInit, OnDestroy {
   private $ws = inject(WsService)
+  private io: IoNamespace
+  private intervalSubscription: Subscription
 
   @Input() public widget: any
 
@@ -31,14 +33,12 @@ export class NetworkWidgetComponent implements OnInit, OnDestroy {
   public sentPerSec: number
   public refreshInterval: number
   public historyItems: number
-
+  public lineChartLabels = []
   public lineChartType: ChartConfiguration['type'] = 'line'
 
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [{ data: [] }],
   }
-
-  public lineChartLabels = []
 
   public lineChartOptions: ChartConfiguration['options'] = {
     responsive: true,
@@ -72,12 +72,7 @@ export class NetworkWidgetComponent implements OnInit, OnDestroy {
     },
   }
 
-  private io: IoNamespace
-  private intervalSubscription: Subscription
-
-  constructor() {}
-
-  ngOnInit() {
+  public ngOnInit() {
     this.io = this.$ws.getExistingNamespace('status')
     // Lookup the chart color based on the current theme
     const userColor = getComputedStyle(this.widgetBackground().nativeElement).backgroundColor
@@ -111,7 +106,11 @@ export class NetworkWidgetComponent implements OnInit, OnDestroy {
     })
   }
 
-  getServerNetworkInfo() {
+  public ngOnDestroy() {
+    this.intervalSubscription.unsubscribe()
+  }
+
+  private getServerNetworkInfo() {
     this.io.request('get-server-network-info', { netInterfaces: [this.widget.networkInterface] }).subscribe((data) => {
       // If no param given, the backend will return the default network interface
       // Clear the current chart if the network interface has changed
@@ -136,7 +135,7 @@ export class NetworkWidgetComponent implements OnInit, OnDestroy {
     })
   }
 
-  updateData(data: any) {
+  private updateData(data: any) {
     const dataLength = Object.keys(this.lineChartData.datasets[0].data).length
     if (!dataLength) {
       this.initializeChartData(data)
@@ -145,13 +144,13 @@ export class NetworkWidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  initializeChartData(data: any) {
+  private initializeChartData(data: any) {
     const items = [data.point]
     this.lineChartData.datasets[0].data = { ...items }
     this.lineChartLabels = items.map(() => 'point')
   }
 
-  updateChartData(data: any, dataLength: number) {
+  private updateChartData(data: any, dataLength: number) {
     this.lineChartData.datasets[0].data[dataLength] = data.point
     this.lineChartLabels.push('point')
 
@@ -160,7 +159,7 @@ export class NetworkWidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  shiftChartData() {
+  private shiftChartData() {
     const newItems = {}
     Object.keys(this.lineChartData.datasets[0].data).forEach((key, index, array) => {
       if (index + 1 < array.length) {
@@ -171,9 +170,5 @@ export class NetworkWidgetComponent implements OnInit, OnDestroy {
     // @ts-expect-error - TS2740: Type {} is missing the following properties from type...
     this.lineChartData.datasets[0].data = newItems
     this.lineChartLabels = this.lineChartLabels.slice(1)
-  }
-
-  ngOnDestroy() {
-    this.intervalSubscription.unsubscribe()
   }
 }
