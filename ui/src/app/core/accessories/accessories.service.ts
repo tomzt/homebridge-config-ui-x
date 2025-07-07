@@ -33,6 +33,8 @@ export class AccessoriesService {
       iid: number
       uuid: string
       uniqueId: string
+      customName?: string
+      customType?: string
       hidden?: boolean
       onDashboard?: boolean
     }>
@@ -167,6 +169,7 @@ export class AccessoriesService {
         iid: service.iid,
         uuid: service.uuid,
         customName: service.customName || undefined,
+        customType: service.customType || undefined,
         hidden: service.hidden || undefined,
         onDashboard: service.onDashboard || undefined,
       })),

@@ -5,7 +5,7 @@
   </a>
   } @if (!$accessories.readyForControl) {
   <i class="fas fa-fw fa-spin fa-sync-alt refreshing-accessory-status-icon grey-text"></i>
-  } @switch (service.type) { @case ('Switch') {
+  } @switch (service.customType || service.type) { @case ('Switch') {
   <app-switch [service]="service">Switch</app-switch>
   } @case ('Thermostat') {
   <app-thermostat [service]="service">Thermostat</app-thermostat>

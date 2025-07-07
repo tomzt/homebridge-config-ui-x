@@ -8,6 +8,7 @@ import { ServiceTypeX } from '@/app/core/accessories/accessories.interfaces'
 import { ConvertMiredPipe } from '@/app/core/pipes/convert-mired.pipe'
 import { ConvertTempPipe } from '@/app/core/pipes/convert-temp.pipe'
 import { PrettifyPipe } from '@/app/core/pipes/prettify.pipe'
+import { SpaceBeforeCapsPipe } from '@/app/core/pipes/space-before-caps'
 import { RemoveIndividualAccessoriesComponent } from '@/app/modules/settings/remove-individual-accessories/remove-individual-accessories.component'
 
 @Component({
@@ -19,6 +20,7 @@ import { RemoveIndividualAccessoriesComponent } from '@/app/modules/settings/rem
     ConvertTempPipe,
     PrettifyPipe,
     ConvertMiredPipe,
+    SpaceBeforeCapsPipe,
   ],
 })
 export class AccessoryInfoComponent implements OnInit {
@@ -29,10 +31,16 @@ export class AccessoryInfoComponent implements OnInit {
   @Input() private accessoryCache: any[]
   @Input() private pairingCache: any[]
 
+  private allCustomTypeList: Array<Array<ServiceTypeX['type']>> = [
+    ['Switch', 'Outlet', 'Fan', 'Lightbulb'],
+    ['Door', 'Window', 'WindowCovering'],
+  ]
+
   public accessoryInformation: Array<any>
   public extraServices: ServiceTypeX[] = []
   public matchedCachedAccessory: any = null
   public enums = Enums
+  public customTypeList: Array<ServiceTypeX['type']> = []
 
   constructor() {}
 
@@ -44,6 +52,11 @@ export class AccessoryInfoComponent implements OnInit {
       Object.values(this.service.linkedServices)
         .filter(service => service.type === 'LockManagement')
         .forEach(service => this.extraServices.push(service))
+    }
+
+    this.customTypeList = this.allCustomTypeList.find(types => types.includes(this.service.type)) || []
+    if (!this.service.customType) {
+      this.service.customType = this.service.type
     }
   }
 
