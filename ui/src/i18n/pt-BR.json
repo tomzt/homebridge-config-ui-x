@@ -544,6 +544,7 @@
   "status.widget.font_size": "Tamanho da Fonte",
   "status.widget.font_weight": "Espessura da Fonte",
   "status.widget.hide_node_info": "Hide Node.js Updates",
+  "status.widget.hide_npm": "Show npm Version",
   "status.widget.hide_on_mobile": "Esconder em modo mobile",
   "status.widget.homebridge_logs": "Logs do Homebridge",
   "status.widget.info": "Informações do Sistema",

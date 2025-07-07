@@ -544,6 +544,7 @@
   "status.widget.font_size": "Taille de Police",
   "status.widget.font_weight": "Epaisseur de Police",
   "status.widget.hide_node_info": "Hide Node.js Updates",
+  "status.widget.hide_npm": "Show npm Version",
   "status.widget.hide_on_mobile": "Cacher en vue compacte (affichage pour mobile)",
   "status.widget.homebridge_logs": "Journaux d'Homebridge",
   "status.widget.info": "Informations Système",

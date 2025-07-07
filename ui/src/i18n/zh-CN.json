@@ -544,6 +544,7 @@
   "status.widget.font_size": "字体大小",
   "status.widget.font_weight": "字体宽度",
   "status.widget.hide_node_info": "Hide Node.js Updates",
+  "status.widget.hide_npm": "Show npm Version",
   "status.widget.hide_on_mobile": "在紧凑模式下隐藏 (移动设备)",
   "status.widget.homebridge_logs": "Homebridge 日志",
   "status.widget.info": "系统信息",

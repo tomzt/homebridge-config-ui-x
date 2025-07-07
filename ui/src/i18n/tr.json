@@ -544,6 +544,7 @@
   "status.widget.font_size": "Yazı Boyutu",
   "status.widget.font_weight": "Yazı Kalınlığı",
   "status.widget.hide_node_info": "Hide Node.js Updates",
+  "status.widget.hide_npm": "Show npm Version",
   "status.widget.hide_on_mobile": "Küçük Gösterimde Gizle (Mobil Ekranlar)",
   "status.widget.homebridge_logs": "Homebridge Günlükleri",
   "status.widget.info": "Sistem Bilgisi",

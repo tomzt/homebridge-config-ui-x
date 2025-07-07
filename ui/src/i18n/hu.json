@@ -544,6 +544,7 @@
   "status.widget.font_size": "Font Size",
   "status.widget.font_weight": "Font Weight",
   "status.widget.hide_node_info": "Hide Node.js Updates",
+  "status.widget.hide_npm": "Show npm Version",
   "status.widget.hide_on_mobile": "Hide in compact view (mobile displays)",
   "status.widget.homebridge_logs": "Homebridge Logs",
   "status.widget.info": "System Information",

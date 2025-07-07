@@ -544,6 +544,7 @@
   "status.widget.font_size": "Mida de la lletra",
   "status.widget.font_weight": "Gruix de le lletra",
   "status.widget.hide_node_info": "Hide Node.js Updates",
+  "status.widget.hide_npm": "Show npm Version",
   "status.widget.hide_on_mobile": "Amaga en vista compacta (vista de mòbils)",
   "status.widget.homebridge_logs": "Logs de Homebridge",
   "status.widget.info": "Informació del sistema",

@@ -546,6 +546,15 @@ export class StatusService {
         }
       }
 
+      // Also return the npm version here
+      let npmVersion = null
+      try {
+        const { stdout } = await execAsync('npm --version')
+        npmVersion = `v${stdout.trim()}`
+      } catch (e) {
+        this.logger.debug(`Could not check npm version as ${e.message}.`)
+      }
+
       const versionInformation = {
         currentVersion: process.version,
         latestVersion,
@@ -553,6 +562,7 @@ export class StatusService {
         showNodeUnsupportedWarning,
         showGlibcUnsupportedWarning,
         installPath: dirname(process.execPath),
+        npmVersion,
       }
       this.statusCache.set('nodeJsVersion', versionInformation, 86400)
       return versionInformation

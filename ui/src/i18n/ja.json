@@ -544,6 +544,7 @@
   "status.widget.font_size": "文字の大きさ",
   "status.widget.font_weight": "文字の太さ",
   "status.widget.hide_node_info": "Hide Node.js Updates",
+  "status.widget.hide_npm": "Show npm Version",
   "status.widget.hide_on_mobile": "縮小表示(モバイル画面)では非表示",
   "status.widget.homebridge_logs": "Homebridgeログ",
   "status.widget.info": "システム情報",

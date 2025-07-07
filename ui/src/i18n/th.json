@@ -544,6 +544,7 @@
   "status.widget.font_size": "ขนาดตัวอักษร",
   "status.widget.font_weight": "น้ำหนักตัวอักษร",
   "status.widget.hide_node_info": "ซ่อนการอัปเดต Node.js",
+  "status.widget.hide_npm": "Show npm Version",
   "status.widget.hide_on_mobile": "ซ่อนในมุมมองที่กะทัดรัด (จอแสดงผลมือถือ)",
   "status.widget.homebridge_logs": "Homebridge Logs",
   "status.widget.info": "ข้อมูลระบบ",

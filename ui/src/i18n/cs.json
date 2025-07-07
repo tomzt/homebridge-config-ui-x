@@ -544,6 +544,7 @@
   "status.widget.font_size": "Velikost fontu",
   "status.widget.font_weight": "Tloušťka fontu",
   "status.widget.hide_node_info": "Hide Node.js Updates",
+  "status.widget.hide_npm": "Show npm Version",
   "status.widget.hide_on_mobile": "Skrýt v kompaktním zobrazení (mobilní displeje)",
   "status.widget.homebridge_logs": "Protokoly Homebridge",
   "status.widget.info": "Systémové informace",

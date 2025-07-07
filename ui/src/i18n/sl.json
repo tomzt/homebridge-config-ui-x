@@ -544,6 +544,7 @@
   "status.widget.font_size": "Velikost pisave",
   "status.widget.font_weight": "Teža pisave",
   "status.widget.hide_node_info": "Hide Node.js Updates",
+  "status.widget.hide_npm": "Show npm Version",
   "status.widget.hide_on_mobile": "Skrij v kompaktnem pogledu (mobilni zasloni)",
   "status.widget.homebridge_logs": "Dnevnik Homebridge-a",
   "status.widget.info": "Sistemske informacije",

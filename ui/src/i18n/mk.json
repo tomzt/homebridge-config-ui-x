@@ -544,6 +544,7 @@
   "status.widget.font_size": "Големина на фонт",
   "status.widget.font_weight": "Тежина на фонт",
   "status.widget.hide_node_info": "Hide Node.js Updates",
+  "status.widget.hide_npm": "Show npm Version",
   "status.widget.hide_on_mobile": "Скриј во компактен мод (мобилни уреди)",
   "status.widget.homebridge_logs": "Логирачки фајлови за Homebridge",
   "status.widget.info": "Информации за системот",

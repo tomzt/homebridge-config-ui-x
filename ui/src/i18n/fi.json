@@ -544,6 +544,7 @@
   "status.widget.font_size": "Kirjasinkoko",
   "status.widget.font_weight": "Kirjasimen paksuus",
   "status.widget.hide_node_info": "Hide Node.js Updates",
+  "status.widget.hide_npm": "Show npm Version",
   "status.widget.hide_on_mobile": "Piilota supistetussa näkymässä (mobiilinäytöt)",
   "status.widget.homebridge_logs": "Homebridge lokitiedot",
   "status.widget.info": "Tietoja järjestelmästä",

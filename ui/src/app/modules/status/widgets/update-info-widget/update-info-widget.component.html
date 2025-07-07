@@ -150,12 +150,15 @@
           } } }
         </div>
         <div class="align-self-center px-3">
-          Node.js
+          Node.js@if (widget.showNpmVersion && nodejsInfo.npmVersion) { &middot; npm }
           <br />
           @if (!nodejsStatusDone) {
           <span class="grey-text small">{{ 'status.homebridge.checking' | translate }}</span>
           } @if (nodejsStatusDone) {
-          <span class="grey-text small">{{ serverInfo.nodeVersion }}</span>
+          <span class="grey-text small"
+            >{{ serverInfo.nodeVersion }}@if (widget.showNpmVersion && nodejsInfo.npmVersion) { &middot; {{
+            nodejsInfo.npmVersion }} }</span
+          >
           @if (!widget.hideNodeInfo) { @if (nodejsInfo.updateAvailable) { &middot;
           <a href="javascript:void(0)" (click)="nodeUpdateModal()" class="primary-text small">
             {{'plugins.button_update' | translate }}

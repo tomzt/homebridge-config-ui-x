@@ -544,6 +544,7 @@
   "status.widget.font_size": "Ukuran Huruf",
   "status.widget.font_weight": "Lebar Huruf",
   "status.widget.hide_node_info": "Hide Node.js Updates",
+  "status.widget.hide_npm": "Show npm Version",
   "status.widget.hide_on_mobile": "Sembunyikan dalam tampilan ringkas (tampilan seluler)",
   "status.widget.homebridge_logs": "Catatan Homebridge",
   "status.widget.info": "Informasi Sistem",
