@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common'
-import { Component, inject, Input } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe } from '@ngx-translate/core'
 import { InlineSVGModule } from 'ng-inline-svg-2'
@@ -20,25 +20,38 @@ import { LongClickDirective } from '@/app/core/directives/long-click.directive'
     TranslatePipe,
   ],
 })
-export class AirPurifierComponent {
+export class AirPurifierComponent implements OnInit {
   private $modal = inject(NgbModal)
+  private hasTargetValidValues = false
 
   @Input() public service: ServiceTypeX
 
-  public onClick() {
-    this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+  public ngOnInit() {
+    if ('TargetAirPurifierState' in this.service.values) {
+      this.hasTargetValidValues = this.service.getCharacteristic('TargetAirPurifierState').validValues.length > 0
+    }
+  }
 
-    // Set the brightness to 100% if on 0% when turned on
-    if (!this.service.values.On && 'RotationSpeed' in this.service.values && !this.service.values.RotationSpeed) {
-      this.service.getCharacteristic('RotationSpeed').setValue(100)
+  public onClick() {
+    if ('Active' in this.service.values) {
+      this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+    } else if ('On' in this.service.values) {
+      this.service.getCharacteristic('On').setValue(!this.service.values.On)
+    }
+
+    // Set the rotation speed to max if on 0% when turned on
+    if ('RotationSpeed' in this.service.values && !this.service.values.On && !this.service.values.Active && !this.service.values.RotationSpeed) {
+      this.service.values.RotationSpeed = this.service.getCharacteristic('RotationSpeed').maxValue
     }
   }
 
   public onLongClick() {
-    const ref = this.$modal.open(AirPurifierManageComponent, {
-      size: 'md',
-      backdrop: 'static',
-    })
-    ref.componentInstance.service = this.service
+    if (this.hasTargetValidValues || 'RotationSpeed' in this.service.values) {
+      const ref = this.$modal.open(AirPurifierManageComponent, {
+        size: 'md',
+        backdrop: 'static',
+      })
+      ref.componentInstance.service = this.service
+    }
   }
 }

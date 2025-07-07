@@ -27,8 +27,25 @@ export class AccessoryInfoComponent implements OnInit {
   private $activeModal = inject(NgbActiveModal)
   private $modal = inject(NgbModal)
   private allCustomTypeList: Array<Array<ServiceTypeX['type']>> = [
-    ['Switch', 'Outlet', 'Fan', 'Lightbulb'],
-    ['Door', 'Window', 'WindowCovering'],
+    // Groups of service types that can be changed from one to another
+    [
+      'AirPurifier',
+      'Switch',
+      'Outlet',
+      'Fan',
+      'Lightbulb',
+      'Heater',
+      'Cooler',
+      'Humidifier',
+      'Dehumidifier',
+      'Television',
+      'Valve',
+    ],
+    [
+      'Door',
+      'Window',
+      'WindowCovering',
+    ],
   ]
 
   @Input() private accessoryCache: any[]

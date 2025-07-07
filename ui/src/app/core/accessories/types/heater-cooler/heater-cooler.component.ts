@@ -28,25 +28,32 @@ export class HeaterCoolerComponent {
   private $settings = inject(SettingsService)
 
   @Input() public service: ServiceTypeX
+  @Input() public type: 'heater' | 'cooler'
 
   public temperatureUnits = this.$settings.env.temperatureUnits
   public hasHeating: boolean = false
   public hasCooling: boolean = false
 
   public ngOnInit() {
-    this.hasHeating = !!this.service.getCharacteristic('HeatingThresholdTemperature')
-    this.hasCooling = !!this.service.getCharacteristic('CoolingThresholdTemperature')
+    this.hasHeating = 'HeatingThresholdTemperature' in this.service.values
+    this.hasCooling = 'CoolingThresholdTemperature' in this.service.values
   }
 
   public onClick() {
-    this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+    if ('Active' in this.service.values) {
+      this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+    } else if ('On' in this.service.values) {
+      this.service.getCharacteristic('On').setValue(!this.service.values.On)
+    }
   }
 
   public onLongClick() {
-    const ref = this.$modal.open(HeaterCoolerManageComponent, {
-      size: 'md',
-      backdrop: 'static',
-    })
-    ref.componentInstance.service = this.service
+    if ('TargetHeaterCoolerState' in this.service.values) {
+      const ref = this.$modal.open(HeaterCoolerManageComponent, {
+        size: 'md',
+        backdrop: 'static',
+      })
+      ref.componentInstance.service = this.service
+    }
   }
 }

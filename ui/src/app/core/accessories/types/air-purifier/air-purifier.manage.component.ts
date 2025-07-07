@@ -49,15 +49,21 @@ export class AirPurifierManageComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.targetState = this.service.values.Active
+    this.targetState = this.service.values.Active || this.service.values.On
     this.targetMode = this.service.values.TargetAirPurifierState
-    this.targetModeValidValues = this.service.getCharacteristic('TargetAirPurifierState').validValues as number[]
+    if ('TargetAirPurifierState' in this.service.values) {
+      this.targetModeValidValues = this.service.getCharacteristic('TargetAirPurifierState').validValues as number[]
+    }
     this.loadRotationSpeed()
   }
 
   public setTargetState(value: number, event: MouseEvent) {
     this.targetState = value
-    this.service.getCharacteristic('Active').setValue(this.targetState)
+    if ('Active' in this.service.values) {
+      this.service.getCharacteristic('Active').setValue(this.targetState)
+    } else if ('On' in this.service.values) {
+      this.service.getCharacteristic('On').setValue(this.targetState === 1)
+    }
 
     // Set the rotation speed to max if on 0% when turned on
     if (this.targetState && this.targetRotationSpeed && !this.targetRotationSpeed.value) {

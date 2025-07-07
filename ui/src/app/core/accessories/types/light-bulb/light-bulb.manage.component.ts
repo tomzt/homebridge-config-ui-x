@@ -87,7 +87,7 @@ export class LightBulbManageComponent implements OnInit {
     this.targetMode = value
     this.service.getCharacteristic('On').setValue(this.targetMode)
 
-    // Set the brightness to 100% if on 0% when turned on
+    // Set the brightness to max if on 0% when turned on
     if (this.targetMode && this.targetBrightness && !this.targetBrightness.value) {
       this.targetBrightness.value = this.service.getCharacteristic('Brightness').maxValue
     }

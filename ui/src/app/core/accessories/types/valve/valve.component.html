@@ -1,12 +1,12 @@
 <div
   class="accessory-box"
-  [ngClass]="{ 'switch-on': service.values.Active, 'switch-off': !service.values.Active }"
+  [ngClass]="{ 'switch-on': service.values.Active || service.values.On, 'switch-off': !service.values.Active && !service.values.On }"
   (longClick)="onLongClick()"
   (shortClick)="onClick()"
   tabindex="0"
 >
   <div class="d-flex flex-column h-100">
-    @if (service.values.ValveType === 0) {
+    @if (service.values.ValveType === 0 || !service.values.ValveType) {
     <div
       [inlineSVG]="'/assets/hap-icons/valve-generic.svg'"
       [attr.aria-label]="'Generic Valve'"
@@ -36,7 +36,7 @@
     </div>
     @if (service.values.Active && remainingDuration) {
     <div class="accessory-label grey-text">{{ remainingDuration }}</div>
-    } @else if (service.values.Active && !remainingDuration) {
+    } @else if ((service.values.Active && !remainingDuration) || service.values.On) {
     <div class="accessory-label grey-text">{{ 'accessories.control.running' | translate }}</div>
     } @else {
     <div class="accessory-label grey-text">{{ 'accessories.control.off' | translate }}</div>

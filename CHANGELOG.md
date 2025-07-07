@@ -34,9 +34,10 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - add plugin search button, hide bar by default
 - add tab in plugins showing plugin analytics in `iframe`
 - allow applying a custom service to an accessory's service
-  - change between `Switch`, `Outlet`, `Lightbulb`, `Fan` for these accessory types
+  - change between `Switch`, `Outlet`, `Lightbulb`, `Fan`, `Television`, `Valve`, `AirPurifier`, `Heater`, `Cooler`, `Humidifier`, `Dehumidifier` for these accessory types
   - change between `Door`, `Window`, `WindowCovering` for these accessory types
   - this can be set in the accessory info modal, more options to come in the future
+- custom service changing - add more to group one
 
 ### Other Changes
 

@@ -21,6 +21,10 @@ export class OutletComponent {
   @Input() public service: ServiceTypeX
 
   public onClick() {
-    this.service.getCharacteristic('On').setValue(!this.service.values.On)
+    if ('On' in this.service.values) {
+      this.service.getCharacteristic('On').setValue(!this.service.values.On)
+    } else if ('Active' in this.service.values) {
+      this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+    }
   }
 }

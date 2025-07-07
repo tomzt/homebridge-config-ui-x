@@ -36,29 +36,44 @@ export class FanManageComponent implements OnInit {
         this.service.getCharacteristic('RotationSpeed').setValue(this.targetRotationSpeed.value)
 
         // Turn the fan on or off when rotation speed is adjusted
-        if (this.targetRotationSpeed.value && !this.service.values.On) {
+        if (this.targetRotationSpeed.value && !this.targetMode) {
           this.targetMode = true
-          this.service.getCharacteristic('On').setValue(this.targetMode)
-        } else if (!this.targetRotationSpeed.value && this.service.values.On) {
+          if ('On' in this.service.values) {
+            this.service.getCharacteristic('On').setValue(this.targetMode)
+          } else if ('Active' in this.service.values) {
+            this.service.getCharacteristic('Active').setValue(this.targetMode ? 1 : 0)
+          }
+        } else if (!this.targetRotationSpeed.value && this.targetMode) {
           this.targetMode = false
-          this.service.getCharacteristic('On').setValue(this.targetMode)
+          if ('On' in this.service.values) {
+            this.service.getCharacteristic('On').setValue(this.targetMode)
+          } else if ('Active' in this.service.values) {
+            this.service.getCharacteristic('Active').setValue(this.targetMode ? 1 : 0)
+          }
         }
       })
   }
 
   public ngOnInit() {
-    this.targetMode = this.service.values.On
+    this.targetMode = ('On' in this.service.values)
+      ? this.service.values.On
+      : this.service.values.Active === 1
 
     this.loadRotationSpeed()
 
-    if (this.service.serviceCharacteristics.find(c => c.type === 'RotationDirection')) {
+    if ('RotationDirection' in this.service.values) {
       this.hasRotationDirection = true
     }
   }
 
   public setTargetMode(value: boolean, event: MouseEvent) {
     this.targetMode = value
-    this.service.getCharacteristic('On').setValue(this.targetMode)
+
+    if ('On' in this.service.values) {
+      this.service.getCharacteristic('On').setValue(this.targetMode)
+    } else if ('Active' in this.service.values) {
+      this.service.getCharacteristic('Active').setValue(this.targetMode ? 1 : 0)
+    }
 
     // Set the rotation speed to max if on 0% when turned on
     if (this.targetMode && this.targetRotationSpeed && !this.targetRotationSpeed.value) {

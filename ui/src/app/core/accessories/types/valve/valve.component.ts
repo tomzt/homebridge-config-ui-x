@@ -34,21 +34,27 @@ export class ValveComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     // Set up the RemainingDuration countdown handlers, if the valve has the RemainingDuration Characteristic
-    if (this.service.getCharacteristic('RemainingDuration')) {
+    if ('SetDuration' in this.service.values) {
       this.setupRemainingDurationCounter()
     }
   }
 
   public onClick() {
-    this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+    if ('Active' in this.service.values) {
+      this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+    } else if ('On' in this.service.values) {
+      this.service.getCharacteristic('On').setValue(!this.service.values.On)
+    }
   }
 
   public onLongClick() {
-    const ref = this.$modal.open(ValveManageComponent, {
-      size: 'md',
-      backdrop: 'static',
-    })
-    ref.componentInstance.service = this.service
+    if ('SetDuration' in this.service.values) {
+      const ref = this.$modal.open(ValveManageComponent, {
+        size: 'md',
+        backdrop: 'static',
+      })
+      ref.componentInstance.service = this.service
+    }
   }
 
   public ngOnDestroy() {
@@ -58,14 +64,10 @@ export class ValveComponent implements OnInit, OnDestroy {
   }
 
   private isActive() {
-    if (this.service && this.service.values) {
-      if (this.service.getCharacteristic('Active').value === 1) {
-        return true
-      } else {
-        this.resetRemainingDuration()
-        return false
-      }
+    if (this.service.values.Active) {
+      return true
     } else {
+      this.resetRemainingDuration()
       return false
     }
   }

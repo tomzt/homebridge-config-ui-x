@@ -39,20 +39,25 @@ export class FanComponent implements OnInit {
   }
 
   public onClick() {
-    this.service.getCharacteristic('On').setValue(!this.service.values.On)
+    if ('On' in this.service.values) {
+      this.service.getCharacteristic('On').setValue(!this.service.values.On)
+    } else if ('Active' in this.service.values) {
+      this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+    }
 
     // Set the rotation speed to max if on 0% when turned on
-    if (!this.service.values.On && 'RotationSpeed' in this.service.values && !this.service.values.RotationSpeed) {
-      const RotationSpeed = this.service.getCharacteristic('RotationSpeed')
-      RotationSpeed.setValue(RotationSpeed.maxValue)
+    if ('RotationSpeed' in this.service.values && !this.service.values.On && !this.service.values.RotationSpeed) {
+      this.service.values.RotationSpeed = this.service.getCharacteristic('RotationSpeed').maxValue
     }
   }
 
   public onLongClick() {
-    const ref = this.$modal.open(FanManageComponent, {
-      size: 'md',
-      backdrop: 'static',
-    })
-    ref.componentInstance.service = this.service
+    if ('RotationSpeed' in this.service.values || 'RotationDirection' in this.service.values) {
+      const ref = this.$modal.open(FanManageComponent, {
+        size: 'md',
+        backdrop: 'static',
+      })
+      ref.componentInstance.service = this.service
+    }
   }
 }

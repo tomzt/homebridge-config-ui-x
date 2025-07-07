@@ -22,24 +22,31 @@ export class HumidifierDehumidifierComponent {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
+  @Input() public type: 'humidifier' | 'dehumidifier'
 
   public hasHumidifier: boolean = false
   public hasDehumidifier: boolean = false
 
   public ngOnInit() {
-    this.hasHumidifier = !!this.service.getCharacteristic('RelativeHumidityHumidifierThreshold')
-    this.hasDehumidifier = !!this.service.getCharacteristic('RelativeHumidityDehumidifierThreshold')
+    this.hasHumidifier = 'RelativeHumidityHumidifierThreshold' in this.service.values
+    this.hasDehumidifier = 'RelativeHumidityDehumidifierThreshold' in this.service.values
   }
 
   public onClick() {
-    this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+    if ('Active' in this.service.values) {
+      this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+    } else if ('On' in this.service.values) {
+      this.service.getCharacteristic('On').setValue(!this.service.values.On)
+    }
   }
 
   public onLongClick() {
-    const ref = this.$modal.open(HumidifierDehumidifierManageComponent, {
-      size: 'md',
-      backdrop: 'static',
-    })
-    ref.componentInstance.service = this.service
+    if ('TargetHumidifierDehumidifierState' in this.service.values) {
+      const ref = this.$modal.open(HumidifierDehumidifierManageComponent, {
+        size: 'md',
+        backdrop: 'static',
+      })
+      ref.componentInstance.service = this.service
+    }
   }
 }

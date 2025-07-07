@@ -1,9 +1,19 @@
 @if (enableAccessories) {
 <div class="row mb-3">
-  <div class="col-6">
+  <div class="col-9 col-sm-6">
     <h3 class="primary-text m-0">{{ 'accessories.title_accessories' | translate }}</h3>
   </div>
-  <div class="col-6 text-end d-none d-sm-inline-block">
+  <div class="col-3 col-sm-6 text-end d-inline-block d-sm-none">
+    <button
+      type="button"
+      class="btn btn-elegant my-0 me-0"
+      (click)="openSupport()"
+      [attr.aria-label]="'support.title' | translate"
+    >
+      <i class="fa fa-fw fa-question-circle-o"></i>
+    </button>
+  </div>
+  <div class="col-3 col-sm-6 text-end d-none d-sm-inline-block">
     <button
       type="button"
       class="btn btn-elegant my-0 me-2"

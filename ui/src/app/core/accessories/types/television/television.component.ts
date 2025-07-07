@@ -27,15 +27,21 @@ export class TelevisionComponent implements OnInit {
   public channelList: Record<number, string> = {}
 
   public ngOnInit() {
-    for (const [, inputService] of Object.entries(this.service.linkedServices)) {
-      if (inputService.type === 'InputSource') {
-        this.channelList[inputService.values.Identifier] = inputService.values.ConfiguredName || `Input ${inputService.values.Identifier}`
+    if (this.service.linkedServices) {
+      for (const [, inputService] of Object.entries(this.service.linkedServices)) {
+        if (inputService.type === 'InputSource') {
+          this.channelList[inputService.values.Identifier] = inputService.values.ConfiguredName || `Input ${inputService.values.Identifier}`
+        }
       }
     }
   }
 
   public onClick() {
-    this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+    if ('Active' in this.service.values) {
+      this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+    } else if ('On' in this.service.values) {
+      this.service.getCharacteristic('On').setValue(!this.service.values.On)
+    }
   }
 
   public onLongClick() {

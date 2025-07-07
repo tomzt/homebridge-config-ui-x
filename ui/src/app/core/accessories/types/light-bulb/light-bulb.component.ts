@@ -41,16 +41,20 @@ export class LightBulbComponent {
   }
 
   public onClick() {
-    this.service.getCharacteristic('On').setValue(!this.service.values.On)
+    if ('On' in this.service.values) {
+      this.service.getCharacteristic('On').setValue(!this.service.values.On)
+    } else if ('Active' in this.service.values) {
+      this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
+    }
 
-    // Set the brightness to 100% if on 0% when turned on
-    if (!this.service.values.On && 'Brightness' in this.service.values && !this.service.values.Brightness) {
-      this.service.getCharacteristic('Brightness').setValue(100)
+    // Set the brightness to max if on 0% when turned on
+    if ('Brightness' in this.service.values && !this.service.values.On && !this.service.values.Brightness) {
+      this.service.values.Brightness = this.service.getCharacteristic('Brightness').maxValue
     }
   }
 
   public onLongClick() {
-    if ('Brightness' in this.service.values || 'Hue' in this.service.values || 'ColorTemperature' in this.service.values) {
+    if ('Brightness' in this.service.values || 'Hue' in this.service.values || 'Saturation' in this.service.values || 'ColorTemperature' in this.service.values) {
       const ref = this.$modal.open(LightBulbManageComponent, {
         size: 'md',
         backdrop: 'static',

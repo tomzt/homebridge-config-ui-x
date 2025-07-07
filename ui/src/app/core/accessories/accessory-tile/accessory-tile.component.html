@@ -14,7 +14,7 @@
   } @case ('Fan') {
   <app-fan [service]="service" class="w-100">Fan</app-fan>
   } @case ('Fanv2') {
-  <app-fan-v2 [service]="service" class="w-100">Fan</app-fan-v2>
+  <app-fan [service]="service" class="w-100">Fan</app-fan>
   } @case ('AirPurifier') {
   <app-air-purifier [service]="service" class="w-100">Air Purifier</app-air-purifier>
   } @case ('Lightbulb') {
@@ -67,8 +67,20 @@
   <app-irrigation-system [service]="service">Irrigation System</app-irrigation-system>
   } @case ('HeaterCooler') {
   <app-heater-cooler [service]="service">Heater Cooler</app-heater-cooler>
+  } @case ('Heater') {
+  <app-heater-cooler [service]="service" [type]="'heater'">Heater</app-heater-cooler>
+  } @case ('Cooler') {
+  <app-heater-cooler [service]="service" [type]="'cooler'">Cooler</app-heater-cooler>
   } @case ('HumidifierDehumidifier') {
   <app-humidifier-dehumidifier [service]="service">Humidifier Dehumidifier</app-humidifier-dehumidifier>
+  } @case ('Humidifier') {
+  <app-humidifier-dehumidifier [service]="service" [type]="'humidifier'"
+    >Humidifier Dehumidifier</app-humidifier-dehumidifier
+  >
+  } @case ('Dehumidifier') {
+  <app-humidifier-dehumidifier [service]="service" [type]="'dehumidifier'"
+    >Humidifier Dehumidifier</app-humidifier-dehumidifier
+  >
   } @case ('StatelessProgrammableSwitch') {
   <app-stateless-programmable-switch [service]="service"
     >Stateless Programmable Switch</app-stateless-programmable-switch

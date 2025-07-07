@@ -1,6 +1,6 @@
 <div
   class="accessory-box"
-  [ngClass]="{ 'switch-on': service.values.Active === 1 }"
+  [ngClass]="{ 'switch-on': service.values.Active || service.values.On }"
   (longClick)="onLongClick()"
   (shortClick)="onClick()"
   tabindex="0"
@@ -9,26 +9,29 @@
     <div
       class="humidity-drop humidity-drop-collapse"
       [ngClass]="{
-        'dehumidifying': service.values.CurrentHumidifierDehumidifierState === 3 && service.values.Active === 1,
-        'humidifying': service.values.CurrentHumidifierDehumidifierState === 2 && service.values.Active === 1,
+        'dehumidifying': (service.values.CurrentHumidifierDehumidifierState === 3 && service.values.Active === 1) || (type === 'dehumidifier' && (service.values.Active || service.values.On)),
+        'humidifying': (service.values.CurrentHumidifierDehumidifierState === 2 && service.values.Active === 1) || (type === 'humidifier' && (service.values.Active || service.values.On)),
         'no-current-state': service.values.CurrentHumidifierDehumidifierState === 1 && service.values.Active === 1
       }"
     >
-      <div class="humidity-drop-text" [innerText]="(service.values.CurrentRelativeHumidity) + '%'"></div>
+      <div
+        class="humidity-drop-text"
+        [innerText]="'CurrentRelativeHumidity' in service.values ? ((service.values.CurrentRelativeHumidity) + '%') : ''"
+      ></div>
     </div>
     <div class="accessory-label mt-auto">{{ service.customName || service.serviceName }}</div>
     <div class="accessory-label grey-text">
-      @if (service.values.Active === 0) { {{ 'accessories.control.off' | translate }} } @else if
-      (service.values.TargetHumidifierDehumidifierState === 0 && (hasHumidifier || hasDehumidifier)) { @if
-      (hasHumidifier && hasDehumidifier) {
+      @if (('Active' in service.values && !service.values.Active) || ('On' in service.values && !service.values.On)) {
+      {{ 'accessories.control.off' | translate }} } @else if (service.values.TargetHumidifierDehumidifierState === 0 &&
+      (hasHumidifier || hasDehumidifier)) { @if (hasHumidifier && hasDehumidifier) {
       <i class="fa fas fa-bullseye"></i> {{service.values.RelativeHumidityHumidifierThreshold }}% -
       {{service.values.RelativeHumidityDehumidifierThreshold }}% } @else if (hasHumidifier && !hasDehumidifier) {
       <i class="fa fas fa-bullseye"></i> {{service.values.RelativeHumidityHumidifierThreshold }}% } @else if
       (!hasHumidifier && hasDehumidifier) {
       <i class="fa fas fa-bullseye"></i> {{service.values.RelativeHumidityDehumidifierThreshold }}% } } @else if
-      (service.values.TargetHumidifierDehumidifierState === 1) { {{'accessories.control.humidify' | translate }} }
-      @else if (service.values.TargetHumidifierDehumidifierState === 2) { {{'accessories.control.dehumidify' | translate }} }
-      @else { {{'accessories.control.on' | translate }} }
+      (service.values.TargetHumidifierDehumidifierState === 1) { {{'accessories.control.humidify' | translate }} } @else
+      { @if (service.values.TargetHumidifierDehumidifierState === 2) { {{'accessories.control.dehumidify' | translate }}
+      } @else { {{'accessories.control.on' | translate }} } }
     </div>
   </div>
 </div>
