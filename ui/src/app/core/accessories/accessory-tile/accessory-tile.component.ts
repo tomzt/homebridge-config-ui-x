@@ -9,6 +9,7 @@ import { CarbonDioxideSensorComponent } from '@/app/core/accessories/types/carbo
 import { CarbonMonoxideSensorComponent } from '@/app/core/accessories/types/carbon-monoxide-sensor/carbon-monoxide-sensor.component'
 import { ContactSensorComponent } from '@/app/core/accessories/types/contact-sensor/contact-sensor.component'
 import { DoorComponent } from '@/app/core/accessories/types/door/door.component'
+import { DoorbellComponent } from '@/app/core/accessories/types/doorbell/doorbell.component'
 import { FanComponent } from '@/app/core/accessories/types/fan/fan.component'
 import { FilterMaintenanceComponent } from '@/app/core/accessories/types/filter-maintenance/filter-maintenance.component'
 import { GarageDoorOpenerComponent } from '@/app/core/accessories/types/garage-door-opener/garage-door-opener.component'
@@ -73,6 +74,7 @@ import { WindowComponent } from '@/app/core/accessories/types/window/window.comp
     HumidifierDehumidifierComponent,
     StatelessProgrammableSwitchComponent,
     FilterMaintenanceComponent,
+    DoorbellComponent,
     UnknownComponent,
   ],
 })

@@ -91,6 +91,13 @@ export class LockMechanismManageComponent implements OnInit {
         max: TargetLockManagementAutoSecurityTimeout.maxValue || 3600,
         step: TargetLockManagementAutoSecurityTimeout.minStep || 10,
       }
+
+      setTimeout(() => {
+        const sliderElements = document.querySelectorAll('.noUi-target')
+        sliderElements.forEach((sliderElement: HTMLElement) => {
+          sliderElement.style.background = 'linear-gradient(to right, #ffffff, #ffd966, #ff0000)'
+        })
+      }, 10)
     }
   }
 }

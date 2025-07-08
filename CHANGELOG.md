@@ -42,6 +42,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
   - this can be enabled in the update info widget settings by clicking the spanner icon in the top right corner of the widget on hover (from a desktop, when in unlocked mode)
 - add control modal for smart speaker accessories
 - prevent accessory control modal open when loading
+- add control modal for doorbell accessories
 
 ### Other Changes
 

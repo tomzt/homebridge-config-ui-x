@@ -61,6 +61,8 @@
   <app-speaker [service]="service" [readyForControl]="$accessories.readyForControl">Speaker</app-speaker>
   } @case ('SmartSpeaker') {
   <app-speaker [service]="service" [readyForControl]="$accessories.readyForControl">Speaker</app-speaker>
+  } @case ('Doorbell') {
+  <app-doorbell [service]="service" [readyForControl]="$accessories.readyForControl">Doorbell</app-doorbell>
   } @case ('SecuritySystem') {
   <app-security-system [service]="service" [readyForControl]="$accessories.readyForControl"
     >Security System</app-security-system

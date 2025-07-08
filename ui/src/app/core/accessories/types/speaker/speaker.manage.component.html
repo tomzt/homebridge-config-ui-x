@@ -50,7 +50,7 @@
             [ngClass]="{ 'fa-check-circle': service.values.CurrentMediaState === 0, 'fa-blank': service.values.CurrentMediaState !== 0 }"
           ></i>
         </div>
-        Play
+        {{ 'accessories.control.play' | translate }}
         <div class="float-end"><i class="fas fa-fw fa-xl fa-blank"></i></div>
       </button>
       <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="setTargetState(1, $event)">
@@ -60,7 +60,7 @@
             [ngClass]="{ 'fa-check-circle': service.values.CurrentMediaState === 1, 'fa-blank': service.values.CurrentMediaState !== 1 }"
           ></i>
         </div>
-        Pause
+        {{ 'accessories.control.pause' | translate }}
         <div class="float-end"><i class="fas fa-fw fa-xl fa-blank"></i></div>
       </button>
       <button type="button" class="btn mb-0 mx-0 p-3 btn-control" (click)="setTargetState(2, $event)">
@@ -70,7 +70,7 @@
             [ngClass]="{ 'fa-check-circle': service.values.CurrentMediaState === 2, 'fa-blank': service.values.CurrentMediaState !== 2 }"
           ></i>
         </div>
-        Stop
+        {{ 'accessories.control.stop' | translate }}
         <div class="float-end"><i class="fas fa-fw fa-xl fa-blank"></i></div>
       </button>
     </div>
