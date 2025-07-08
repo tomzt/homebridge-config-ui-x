@@ -23,8 +23,13 @@ export class DoorComponent {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
+  @Input() public readyForControl = false
 
   public onClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if (this.service.values.TargetPosition) {
       this.service.getCharacteristic('TargetPosition').setValue(0)
     } else {
@@ -33,6 +38,10 @@ export class DoorComponent {
   }
 
   public onLongClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     const ref = this.$modal.open(DoorManageComponent, {
       size: 'md',
       backdrop: 'static',

@@ -24,8 +24,13 @@ export class SpeakerComponent {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
+  @Input() public readyForControl = false
 
   public onClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('Active' in this.service.values) {
       this.service.getCharacteristic('Active').setValue(this.service.values.Active === 0 ? 1 : 0)
     } else if ('TargetMediaState' in this.service.values) {
@@ -36,6 +41,10 @@ export class SpeakerComponent {
   }
 
   public onLongClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('Active' in this.service.values || 'TargetMediaState' in this.service.values || 'Volume' in this.service.values || 'Mute' in this.service.values) {
       const ref = this.$modal.open(SpeakerManageComponent, {
         size: 'md',

@@ -22,6 +22,7 @@ export class HumidifierDehumidifierComponent {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
+  @Input() public readyForControl = false
   @Input() public type: 'humidifier' | 'dehumidifier'
 
   public hasHumidifier: boolean = false
@@ -33,6 +34,10 @@ export class HumidifierDehumidifierComponent {
   }
 
   public onClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('Active' in this.service.values) {
       this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
     } else if ('On' in this.service.values) {
@@ -41,6 +46,10 @@ export class HumidifierDehumidifierComponent {
   }
 
   public onLongClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('TargetHumidifierDehumidifierState' in this.service.values) {
       const ref = this.$modal.open(HumidifierDehumidifierManageComponent, {
         size: 'md',

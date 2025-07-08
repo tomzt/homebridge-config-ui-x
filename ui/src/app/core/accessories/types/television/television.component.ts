@@ -23,6 +23,7 @@ export class TelevisionComponent implements OnInit {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
+  @Input() public readyForControl = false
 
   public channelList: Record<number, string> = {}
 
@@ -37,6 +38,10 @@ export class TelevisionComponent implements OnInit {
   }
 
   public onClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('Active' in this.service.values) {
       this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
     } else if ('On' in this.service.values) {
@@ -45,6 +50,10 @@ export class TelevisionComponent implements OnInit {
   }
 
   public onLongClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('Active' in this.service.values || Object.keys(this.channelList).length) {
       const ref = this.$modal.open(TelevisionManageComponent, {
         size: 'md',

@@ -21,6 +21,7 @@ export class FanComponent implements OnInit {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
+  @Input() public readyForControl = false
 
   public rotationSpeedUnit = ''
   public hasRotationDirection = false
@@ -39,6 +40,10 @@ export class FanComponent implements OnInit {
   }
 
   public onClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('On' in this.service.values) {
       this.service.getCharacteristic('On').setValue(!this.service.values.On)
     } else if ('Active' in this.service.values) {
@@ -52,6 +57,10 @@ export class FanComponent implements OnInit {
   }
 
   public onLongClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('RotationSpeed' in this.service.values || 'RotationDirection' in this.service.values) {
       const ref = this.$modal.open(FanManageComponent, {
         size: 'md',

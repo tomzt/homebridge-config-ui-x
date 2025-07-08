@@ -28,6 +28,7 @@ export class HeaterCoolerComponent {
   private $settings = inject(SettingsService)
 
   @Input() public service: ServiceTypeX
+  @Input() public readyForControl = false
   @Input() public type: 'heater' | 'cooler'
 
   public temperatureUnits = this.$settings.env.temperatureUnits
@@ -40,6 +41,10 @@ export class HeaterCoolerComponent {
   }
 
   public onClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('Active' in this.service.values) {
       this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
     } else if ('On' in this.service.values) {
@@ -48,6 +53,10 @@ export class HeaterCoolerComponent {
   }
 
   public onLongClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('TargetHeaterCoolerState' in this.service.values) {
       const ref = this.$modal.open(HeaterCoolerManageComponent, {
         size: 'md',

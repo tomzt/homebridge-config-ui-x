@@ -25,6 +25,7 @@ export class LightBulbComponent {
   private intervalId: any
 
   @Input() public service: ServiceTypeX
+  @Input() public readyForControl = false
 
   public hasAdaptiveLighting: boolean = false
   public isAdaptiveLightingEnabled: boolean = false
@@ -41,6 +42,10 @@ export class LightBulbComponent {
   }
 
   public onClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('On' in this.service.values) {
       this.service.getCharacteristic('On').setValue(!this.service.values.On)
     } else if ('Active' in this.service.values) {
@@ -54,6 +59,10 @@ export class LightBulbComponent {
   }
 
   public onLongClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('Brightness' in this.service.values || 'Hue' in this.service.values || 'Saturation' in this.service.values || 'ColorTemperature' in this.service.values) {
       const ref = this.$modal.open(LightBulbManageComponent, {
         size: 'md',

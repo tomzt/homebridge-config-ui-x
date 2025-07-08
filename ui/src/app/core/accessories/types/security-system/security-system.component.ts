@@ -23,8 +23,13 @@ export class SecuritySystemComponent {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
+  @Input() public readyForControl = false
 
   public onClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     const ref = this.$modal.open(SecuritySystemManageComponent, {
       size: 'md',
       backdrop: 'static',

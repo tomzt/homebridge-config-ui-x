@@ -23,12 +23,21 @@ export class LockMechanismComponent {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
+  @Input() public readyForControl = false
 
   public onClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     this.service.getCharacteristic('LockTargetState').setValue(this.service.values.LockTargetState ? 0 : 1)
   }
 
   public onLongClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     const ref = this.$modal.open(LockMechanismManageComponent, {
       size: 'md',
       backdrop: 'static',

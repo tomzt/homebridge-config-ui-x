@@ -6,27 +6,33 @@
   } @if (!$accessories.readyForControl) {
   <i class="fas fa-fw fa-spin fa-sync-alt refreshing-accessory-status-icon grey-text"></i>
   } @switch (service.customType || service.type) { @case ('Switch') {
-  <app-switch [service]="service">Switch</app-switch>
+  <app-switch [service]="service" [readyForControl]="$accessories.readyForControl">Switch</app-switch>
   } @case ('Thermostat') {
-  <app-thermostat [service]="service">Thermostat</app-thermostat>
+  <app-thermostat [service]="service" [readyForControl]="$accessories.readyForControl">Thermostat</app-thermostat>
   } @case ('Outlet') {
-  <app-outlet [service]="service">Outlet</app-outlet>
+  <app-outlet [service]="service" [readyForControl]="$accessories.readyForControl">Outlet</app-outlet>
   } @case ('Fan') {
-  <app-fan [service]="service" class="w-100">Fan</app-fan>
+  <app-fan [service]="service" [readyForControl]="$accessories.readyForControl" class="w-100">Fan</app-fan>
   } @case ('Fanv2') {
-  <app-fan [service]="service" class="w-100">Fan</app-fan>
+  <app-fan [service]="service" [readyForControl]="$accessories.readyForControl" class="w-100">Fan</app-fan>
   } @case ('AirPurifier') {
-  <app-air-purifier [service]="service" class="w-100">Air Purifier</app-air-purifier>
+  <app-air-purifier [service]="service" [readyForControl]="$accessories.readyForControl" class="w-100"
+    >Air Purifier</app-air-purifier
+  >
   } @case ('Lightbulb') {
-  <app-light-bulb [service]="service">Lightbulb</app-light-bulb>
+  <app-light-bulb [service]="service" [readyForControl]="$accessories.readyForControl">Lightbulb</app-light-bulb>
   } @case ('LightSensor') {
   <app-light-sensor [service]="service">Light Sensor</app-light-sensor>
   } @case ('LockMechanism') {
-  <app-lock-mechanism [service]="service">Lock Mechanism</app-lock-mechanism>
+  <app-lock-mechanism [service]="service" [readyForControl]="$accessories.readyForControl"
+    >Lock Mechanism</app-lock-mechanism
+  >
   } @case ('TemperatureSensor') {
   <app-temperature-sensor [service]="service">Temperature Sensor</app-temperature-sensor>
   } @case ('GarageDoorOpener') {
-  <app-garage-door-opener [service]="service">Garage Door Opener</app-garage-door-opener>
+  <app-garage-door-opener [service]="service" [readyForControl]="$accessories.readyForControl"
+    >Garage Door Opener</app-garage-door-opener
+  >
   } @case ('MotionSensor') {
   <app-motion-sensor [service]="service">Motion Sensor</app-motion-sensor>
   } @case ('OccupancySensor') {
@@ -38,23 +44,27 @@
   } @case ('AirQualitySensor') {
   <app-air-quality-sensor [service]="service">Air Quality Sensor</app-air-quality-sensor>
   } @case ('WindowCovering') {
-  <app-window-covering [service]="service">Window Covering</app-window-covering>
+  <app-window-covering [service]="service" [readyForControl]="$accessories.readyForControl"
+    >Window Covering</app-window-covering
+  >
   } @case ('Window') {
-  <app-window [service]="service">Window</app-window>
+  <app-window [service]="service" [readyForControl]="$accessories.readyForControl">Window</app-window>
   } @case ('Door') {
-  <app-door [service]="service">Door</app-door>
+  <app-door [service]="service" [readyForControl]="$accessories.readyForControl">Door</app-door>
   } @case ('Television') {
-  <app-television [service]="service">Television</app-television>
+  <app-television [service]="service" [readyForControl]="$accessories.readyForControl">Television</app-television>
   } @case ('Battery') {
   <app-battery [service]="service">Battery</app-battery>
   } @case ('BatteryService') {
   <app-battery [service]="service">Battery</app-battery>
   } @case ('Speaker') {
-  <app-speaker [service]="service">Speaker</app-speaker>
+  <app-speaker [service]="service" [readyForControl]="$accessories.readyForControl">Speaker</app-speaker>
   } @case ('SmartSpeaker') {
-  <app-speaker [service]="service">Speaker</app-speaker>
+  <app-speaker [service]="service" [readyForControl]="$accessories.readyForControl">Speaker</app-speaker>
   } @case ('SecuritySystem') {
-  <app-security-system [service]="service">Security System</app-security-system>
+  <app-security-system [service]="service" [readyForControl]="$accessories.readyForControl"
+    >Security System</app-security-system
+  >
   } @case ('LeakSensor') {
   <app-leak-sensor [service]="service">Leak Sensor</app-leak-sensor>
   } @case ('SmokeSensor') {
@@ -64,23 +74,37 @@
   } @case ('CarbonDioxideSensor') {
   <app-carbon-dioxide-sensor [service]="service">Carbon Dioxide Sensor</app-carbon-dioxide-sensor>
   } @case ('Valve') {
-  <app-valve [service]="service">Valve</app-valve>
+  <app-valve [service]="service" [readyForControl]="$accessories.readyForControl">Valve</app-valve>
   } @case ('IrrigationSystem') {
   <app-irrigation-system [service]="service">Irrigation System</app-irrigation-system>
   } @case ('HeaterCooler') {
-  <app-heater-cooler [service]="service">Heater Cooler</app-heater-cooler>
+  <app-heater-cooler [service]="service" [readyForControl]="$accessories.readyForControl"
+    >Heater Cooler</app-heater-cooler
+  >
   } @case ('Heater') {
-  <app-heater-cooler [service]="service" [type]="'heater'">Heater</app-heater-cooler>
+  <app-heater-cooler [service]="service" [type]="'heater'" [readyForControl]="$accessories.readyForControl"
+    >Heater</app-heater-cooler
+  >
   } @case ('Cooler') {
-  <app-heater-cooler [service]="service" [type]="'cooler'">Cooler</app-heater-cooler>
+  <app-heater-cooler [service]="service" [type]="'cooler'" [readyForControl]="$accessories.readyForControl"
+    >Cooler</app-heater-cooler
+  >
   } @case ('HumidifierDehumidifier') {
-  <app-humidifier-dehumidifier [service]="service">Humidifier Dehumidifier</app-humidifier-dehumidifier>
+  <app-humidifier-dehumidifier [service]="service" [readyForControl]="$accessories.readyForControl"
+    >Humidifier Dehumidifier</app-humidifier-dehumidifier
+  >
   } @case ('Humidifier') {
-  <app-humidifier-dehumidifier [service]="service" [type]="'humidifier'"
+  <app-humidifier-dehumidifier
+    [service]="service"
+    [type]="'humidifier'"
+    [readyForControl]="$accessories.readyForControl"
     >Humidifier Dehumidifier</app-humidifier-dehumidifier
   >
   } @case ('Dehumidifier') {
-  <app-humidifier-dehumidifier [service]="service" [type]="'dehumidifier'"
+  <app-humidifier-dehumidifier
+    [service]="service"
+    [type]="'dehumidifier'"
+    [readyForControl]="$accessories.readyForControl"
     >Humidifier Dehumidifier</app-humidifier-dehumidifier
   >
   } @case ('StatelessProgrammableSwitch') {
@@ -88,7 +112,9 @@
     >Stateless Programmable Switch</app-stateless-programmable-switch
   >
   } @case ('FilterMaintenance') {
-  <app-filter-maintenance [service]="service">Filter Maintenance</app-filter-maintenance>
+  <app-filter-maintenance [service]="service" [readyForControl]="$accessories.readyForControl"
+    >Filter Maintenance</app-filter-maintenance
+  >
   } @default {
   <app-unknown [service]="service">{{ service.humanType }}</app-unknown>
   } }

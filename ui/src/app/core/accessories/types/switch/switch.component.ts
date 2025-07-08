@@ -19,8 +19,13 @@ import { LongClickDirective } from '@/app/core/directives/long-click.directive'
 })
 export class SwitchComponent {
   @Input() public service: ServiceTypeX
+  @Input() public readyForControl = false
 
   public onClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('On' in this.service.values) {
       this.service.getCharacteristic('On').setValue(!this.service.values.On)
     } else if ('Active' in this.service.values) {

@@ -19,8 +19,13 @@ import { LongClickDirective } from '@/app/core/directives/long-click.directive'
 })
 export class GarageDoorOpenerComponent {
   @Input() public service: ServiceTypeX
+  @Input() public readyForControl = false
 
   public onClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     this.service.getCharacteristic('TargetDoorState').setValue(this.service.values.TargetDoorState ? 0 : 1)
   }
 }

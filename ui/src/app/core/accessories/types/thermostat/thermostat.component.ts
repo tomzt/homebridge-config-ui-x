@@ -28,10 +28,15 @@ export class ThermostatComponent {
   private $settings = inject(SettingsService)
 
   @Input() public service: ServiceTypeX
+  @Input() public readyForControl = false
 
   public temperatureUnits = this.$settings.env.temperatureUnits
 
   public onClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     const ref = this.$modal.open(ThermostatManageComponent, {
       size: 'md',
       backdrop: 'static',

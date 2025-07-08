@@ -25,6 +25,7 @@ export class AirPurifierComponent implements OnInit {
   private hasTargetValidValues = false
 
   @Input() public service: ServiceTypeX
+  @Input() public readyForControl = false
 
   public ngOnInit() {
     if ('TargetAirPurifierState' in this.service.values) {
@@ -33,6 +34,10 @@ export class AirPurifierComponent implements OnInit {
   }
 
   public onClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('Active' in this.service.values) {
       this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
     } else if ('On' in this.service.values) {
@@ -46,6 +51,10 @@ export class AirPurifierComponent implements OnInit {
   }
 
   public onLongClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if (this.hasTargetValidValues || 'RotationSpeed' in this.service.values) {
       const ref = this.$modal.open(AirPurifierManageComponent, {
         size: 'md',

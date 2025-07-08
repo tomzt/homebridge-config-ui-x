@@ -26,6 +26,7 @@ export class ValveComponent implements OnInit, OnDestroy {
   private $modal = inject(NgbModal)
 
   @Input() public service: ServiceTypeX
+  @Input() public readyForControl = false
 
   public secondsActive = 0
   public remainingDuration: string
@@ -40,6 +41,10 @@ export class ValveComponent implements OnInit, OnDestroy {
   }
 
   public onClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('Active' in this.service.values) {
       this.service.getCharacteristic('Active').setValue(this.service.values.Active ? 0 : 1)
     } else if ('On' in this.service.values) {
@@ -48,6 +53,10 @@ export class ValveComponent implements OnInit, OnDestroy {
   }
 
   public onLongClick() {
+    if (!this.readyForControl) {
+      return
+    }
+
     if ('SetDuration' in this.service.values) {
       const ref = this.$modal.open(ValveManageComponent, {
         size: 'md',
