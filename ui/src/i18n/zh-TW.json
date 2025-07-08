@@ -49,6 +49,8 @@
   "accessories.control.on": "開啟",
   "accessories.control.open": "開啟",
   "accessories.control.opening": "開啟中",
+  "accessories.control.paused": "Paused",
+  "accessories.control.playing": "Playing",
   "accessories.control.replace": "Replace",
   "accessories.control.rotation_c_clockwise": "Counter Clockwise",
   "accessories.control.rotation_clockwise": "Clockwise",

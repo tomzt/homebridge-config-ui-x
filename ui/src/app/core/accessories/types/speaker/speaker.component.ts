@@ -11,6 +11,7 @@ import { LongClickDirective } from '@/app/core/directives/long-click.directive'
 @Component({
   selector: 'app-speaker',
   templateUrl: './speaker.component.html',
+  styleUrls: ['./speaker.component.scss'],
   standalone: true,
   imports: [
     LongClickDirective,
@@ -25,16 +26,17 @@ export class SpeakerComponent {
   @Input() public service: ServiceTypeX
 
   public onClick() {
-    const active = this.service.getCharacteristic('Active')
-    if (active !== undefined) {
-      active.setValue(this.service.values.Active === 0 ? 1 : 0)
-    } else {
+    if ('Active' in this.service.values) {
+      this.service.getCharacteristic('Active').setValue(this.service.values.Active === 0 ? 1 : 0)
+    } else if ('TargetMediaState' in this.service.values) {
+      this.service.getCharacteristic('TargetMediaState').setValue(this.service.values.TargetMediaState === 0 ? 1 : 0)
+    } else if ('Mute' in this.service.values) {
       this.service.getCharacteristic('Mute').setValue(!this.service.values.Mute)
     }
   }
 
   public onLongClick() {
-    if ('Volume' in this.service.values || 'Active' in this.service.values) {
+    if ('Active' in this.service.values || 'TargetMediaState' in this.service.values || 'Volume' in this.service.values || 'Mute' in this.service.values) {
       const ref = this.$modal.open(SpeakerManageComponent, {
         size: 'md',
         backdrop: 'static',

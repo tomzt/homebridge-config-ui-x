@@ -49,6 +49,8 @@
   "accessories.control.on": "เปิด",
   "accessories.control.open": "เปิด",
   "accessories.control.opening": "กำลังเปิด",
+  "accessories.control.paused": "Paused",
+  "accessories.control.playing": "Playing",
   "accessories.control.replace": "แทนที่",
   "accessories.control.rotation_c_clockwise": "ทวนเข็มนาฬิกา",
   "accessories.control.rotation_clockwise": "ตามเข็มนาฬิกา",

@@ -49,6 +49,8 @@
   "accessories.control.on": "Включено",
   "accessories.control.open": "Отворено",
   "accessories.control.opening": "Отваряне",
+  "accessories.control.paused": "Paused",
+  "accessories.control.playing": "Playing",
   "accessories.control.replace": "Replace",
   "accessories.control.rotation_c_clockwise": "Counter Clockwise",
   "accessories.control.rotation_clockwise": "Clockwise",

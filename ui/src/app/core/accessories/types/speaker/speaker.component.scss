@@ -1,0 +1,16 @@
+::ng-deep {
+  .switch-on {
+    svg {
+      .wave {
+        stroke: #1976d2 !important;
+      }
+    }
+  }
+  .paused {
+    svg {
+      .wave {
+        stroke: none !important;
+      }
+    }
+  }
+}

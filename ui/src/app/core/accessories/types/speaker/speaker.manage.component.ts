@@ -27,7 +27,6 @@ export class SpeakerManageComponent implements OnInit {
   public targetMode: any
   public targetVolume: any
   public targetVolumeChanged: Subject<string> = new Subject<string>()
-  public hasActive: any
 
   constructor() {
     this.targetVolumeChanged
@@ -40,9 +39,6 @@ export class SpeakerManageComponent implements OnInit {
   public ngOnInit() {
     this.targetMode = this.service.values.Mute
     this.loadTargetVolume()
-    if ('Active' in this.service.values) {
-      this.hasActive = true
-    }
   }
 
   public setTargetMode(value: boolean, event: MouseEvent) {
@@ -55,6 +51,13 @@ export class SpeakerManageComponent implements OnInit {
 
   public setActive(value: number, event: MouseEvent) {
     this.service.getCharacteristic('Active').setValue(value)
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public setTargetState(value: number, event: MouseEvent) {
+    this.service.getCharacteristic('TargetMediaState').setValue(value)
 
     const target = event.target as HTMLButtonElement
     target.blur()
