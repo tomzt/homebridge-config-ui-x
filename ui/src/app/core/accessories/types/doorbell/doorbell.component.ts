@@ -1,3 +1,4 @@
+import { NgClass } from '@angular/common'
 import { Component, inject, Input } from '@angular/core'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe } from '@ngx-translate/core'
@@ -15,6 +16,7 @@ import { LongClickDirective } from '@/app/core/directives/long-click.directive'
     LongClickDirective,
     InlineSVGModule,
     TranslatePipe,
+    NgClass,
   ],
 })
 export class DoorbellComponent {
@@ -28,7 +30,11 @@ export class DoorbellComponent {
       return
     }
 
-    if ('Mute' in this.service.values) {
+    if ('Active' in this.service.values) {
+      this.service.getCharacteristic('Active').setValue(this.service.values.Active === 0 ? 1 : 0)
+    } else if ('TargetMediaState' in this.service.values) {
+      this.service.getCharacteristic('TargetMediaState').setValue(this.service.values.TargetMediaState === 0 ? 1 : 0)
+    } else if ('Mute' in this.service.values) {
       this.service.getCharacteristic('Mute').setValue(!this.service.values.Mute)
     }
   }
@@ -38,7 +44,7 @@ export class DoorbellComponent {
       return
     }
 
-    if ('Volume' in this.service.values || 'Mute' in this.service.values) {
+    if ('Active' in this.service.values || 'TargetMediaState' in this.service.values || 'Volume' in this.service.values || 'Mute' in this.service.values) {
       const ref = this.$modal.open(DoorbellManageComponent, {
         size: 'md',
         backdrop: 'static',

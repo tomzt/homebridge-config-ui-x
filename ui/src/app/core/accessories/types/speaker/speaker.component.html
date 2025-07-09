@@ -3,7 +3,7 @@
   [ngClass]="{
     'switch-on': 'Active' in service.values
       ? service.values.Active
-      : ('CurrentMediaState' in service.values ? [0, 1].includes(service.values.CurrentMediaState) : !service.values.Mute),
+      : ('CurrentMediaState' in service.values ? [0, 1].includes(service.values.CurrentMediaState) : ['Speaker', 'SmartSpeaker'].includes(service.customType || service.type) ? ('Mute' in service.values && !service.values.Mute) : false),
     'paused': 'CurrentMediaState' in service.values && service.values.CurrentMediaState === 1,
   }"
   (longClick)="onLongClick()"
@@ -26,8 +26,10 @@
     <div class="accessory-label grey-text" [innerText]="'accessories.control.mute' | translate"></div>
     } @else if ('Volume' in service.values) {
     <div class="accessory-label grey-text">{{ service.values.Volume }}%</div>
-    } @else {
+    } @else if (['Speaker', 'SmartSpeaker'].includes(service.customType || service.type)) {
     <div class="accessory-label grey-text">{{ 'accessories.control.on' | translate }}</div>
+    } @else {
+    <div class="accessory-label grey-text">{{ 'accessories.control.speaker' | translate }}</div>
     }
   </div>
 </div>

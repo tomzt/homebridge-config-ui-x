@@ -46,6 +46,12 @@ export class AccessoryInfoComponent implements OnInit {
       'Window',
       'WindowCovering',
     ],
+    [
+      'Doorbell',
+      'Speaker',
+      'SmartSpeaker',
+      'Microphone',
+    ],
   ]
 
   @Input() private accessoryCache: any[]

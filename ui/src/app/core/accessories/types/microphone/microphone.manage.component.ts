@@ -24,7 +24,7 @@ export class MicrophoneManageComponent implements OnInit {
 
   @Input() public service: ServiceTypeX
 
-  public targetMode: boolean
+  public targetMode: any
   public targetVolume: any
   public targetVolumeChanged: Subject<string> = new Subject<string>()
 
@@ -37,12 +37,27 @@ export class MicrophoneManageComponent implements OnInit {
   }
 
   public ngOnInit() {
+    this.targetMode = this.service.values.Mute
     this.loadTargetVolume()
   }
 
   public setTargetMode(value: boolean, event: MouseEvent) {
     this.targetMode = value
     this.service.getCharacteristic('Mute').setValue(this.targetMode)
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public setActive(value: number, event: MouseEvent) {
+    this.service.getCharacteristic('Active').setValue(value)
+
+    const target = event.target as HTMLButtonElement
+    target.blur()
+  }
+
+  public setTargetState(value: number, event: MouseEvent) {
+    this.service.getCharacteristic('TargetMediaState').setValue(value)
 
     const target = event.target as HTMLButtonElement
     target.blur()

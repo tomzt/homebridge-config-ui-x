@@ -36,6 +36,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - allow applying a custom service to an accessory's service
   - change between `Switch`, `Outlet`, `Lightbulb`, `Fan`, `Television`, `Valve`, `AirPurifier`, `Heater`, `Cooler`, `Humidifier`, `Dehumidifier` for these accessory types
   - change between `Door`, `Window`, `WindowCovering` for these accessory types
+  - change between `Doorbell`, `Microphone`, `Speaker`, `SmartSpeaker` for these accessory types
   - this can be set in the accessory info modal, more options to come in the future
 - custom service changing - add more to group one
 - add option to show `npm` version with node version
@@ -44,6 +45,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - prevent accessory control modal open when loading
 - add control modal for doorbell accessories
 - add control modal for microphone accessories
+- allow custom type changing - doorbell, microphone, speaker
 
 ### Other Changes
 
