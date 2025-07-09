@@ -21,6 +21,7 @@ import { LeakSensorComponent } from '@/app/core/accessories/types/leak-sensor/le
 import { LightBulbComponent } from '@/app/core/accessories/types/light-bulb/light-bulb.component'
 import { LightSensorComponent } from '@/app/core/accessories/types/light-sensor/light-sensor.component'
 import { LockMechanismComponent } from '@/app/core/accessories/types/lock-mechanism/lock-mechanism.component'
+import { MicrophoneComponent } from '@/app/core/accessories/types/microphone/microphone.component'
 import { MotionSensorComponent } from '@/app/core/accessories/types/motion-sensor/motion-sensor.component'
 import { OccupancySensorComponent } from '@/app/core/accessories/types/occupancy-sensor/occupancy-sensor.component'
 import { OutletComponent } from '@/app/core/accessories/types/outlet/outlet.component'
@@ -76,6 +77,7 @@ import { WindowComponent } from '@/app/core/accessories/types/window/window.comp
     FilterMaintenanceComponent,
     DoorbellComponent,
     UnknownComponent,
+    MicrophoneComponent,
   ],
 })
 export class AccessoryTileComponent {

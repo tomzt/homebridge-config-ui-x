@@ -43,6 +43,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - add control modal for smart speaker accessories
 - prevent accessory control modal open when loading
 - add control modal for doorbell accessories
+- add control modal for microphone accessories
 
 ### Other Changes
 
