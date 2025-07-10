@@ -119,6 +119,8 @@
   <app-filter-maintenance [service]="service" [readyForControl]="$accessories.readyForControl"
     >Filter Maintenance</app-filter-maintenance
   >
+  } @case ('RobotVacuum') {
+  <app-robot-vacuum [service]="service" [readyForControl]="$accessories.readyForControl">Robot Vacuum</app-robot-vacuum>
   } @default {
   <app-unknown [service]="service">{{ service.humanType }}</app-unknown>
   } }

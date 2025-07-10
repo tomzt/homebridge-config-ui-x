@@ -25,6 +25,7 @@ import { MicrophoneComponent } from '@/app/core/accessories/types/microphone/mic
 import { MotionSensorComponent } from '@/app/core/accessories/types/motion-sensor/motion-sensor.component'
 import { OccupancySensorComponent } from '@/app/core/accessories/types/occupancy-sensor/occupancy-sensor.component'
 import { OutletComponent } from '@/app/core/accessories/types/outlet/outlet.component'
+import { RobotVacuumComponent } from '@/app/core/accessories/types/robot-vacuum/robot-vacuum.component'
 import { SecuritySystemComponent } from '@/app/core/accessories/types/security-system/security-system.component'
 import { SmokeSensorComponent } from '@/app/core/accessories/types/smoke-sensor/smoke-sensor.component'
 import { SpeakerComponent } from '@/app/core/accessories/types/speaker/speaker.component'
@@ -78,6 +79,7 @@ import { WindowComponent } from '@/app/core/accessories/types/window/window.comp
     DoorbellComponent,
     UnknownComponent,
     MicrophoneComponent,
+    RobotVacuumComponent,
   ],
 })
 export class AccessoryTileComponent {

@@ -17,6 +17,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 ### Other Changes
 
 - update github url for plugin bundle downloads
+- allow displaying some accessories with a robot vacuum icon in the ui
 
 ### Homebridge Dependencies
 

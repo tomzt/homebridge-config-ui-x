@@ -40,6 +40,7 @@ export class AccessoryInfoComponent implements OnInit {
       'Dehumidifier',
       'Television',
       'Valve',
+      'RobotVacuum',
     ],
     [
       'Door',
