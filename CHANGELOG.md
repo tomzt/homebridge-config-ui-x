@@ -2,9 +2,12 @@
 
 All notable changes to `homebridge-config-ui-x` will be documented in this file. This project tries to adhere to [Semantic Versioning](http://semver.org/).
 
-## v4.80.0 (Unreleased)
+## v4.80.0 (2025-07-12)
 
-### ⚠️ Upcoming Deprecations:
+- This version of Homebridge UI is likely to be the **last minor version** on the `v4.x` branch.
+- The `4.x` branch will continue to receive security updates and bug fixes for the foreseeable future.
+
+### ⚠️ Upcoming Deprecations
 
 - A new version of Homebridge UI (v5) will be released in July 2025. This will be compatible with both Homebridge v1 and v2 (in beta).
 - Initially, there will be no significant differences between Homebridge UI v4 and v5. The major version increment primarily reflects the removal of support for outdated technologies and hardware. UI v5 will:
