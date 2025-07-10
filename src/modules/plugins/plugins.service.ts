@@ -843,7 +843,8 @@ export class PluginsService {
       && pluginAction.version !== 'latest'
     ) {
       try {
-        await firstValueFrom(this.httpService.head(`https://github.com/homebridge/plugins/releases/download/v1.0.0/${pluginAction.name.replace('/', '@')}-${pluginAction.version}.sha256`))
+        const repoVersion = pluginAction.name.startsWith('@') ? 'v1.0.0-1' : 'v1.0.0'
+        await firstValueFrom(this.httpService.head(`https://github.com/homebridge/plugins/releases/download/${repoVersion}/${pluginAction.name.replace('/', '@')}-${pluginAction.version}.sha256`))
         return true
       } catch (e) {
         return false

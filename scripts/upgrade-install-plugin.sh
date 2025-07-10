@@ -8,7 +8,12 @@ TARGET_PATH="$3"
 
 TARGET_PLUGIN_BUNDLE_NAME="${TARGET_PLUGIN/\//@}-${TARGET_VERSION}"
 
-REPO_BASE_URL="https://github.com/homebridge/plugins/releases/download/v1.0.0"
+REPO_VERSION="v1.0.0"
+if [[ "${TARGET_PLUGIN_BUNDLE_NAME:0:1}" == "@" ]]; then
+  REPO_VERSION="v1.0.0-1"
+fi
+
+REPO_BASE_URL="https://github.com/homebridge/plugins/releases/download/${REPO_VERSION}"
 
 echo "Target Version: $TARGET_VERSION"
 echo "Target Path: $TARGET_PATH"
