@@ -19,6 +19,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - update github url for plugin bundle downloads
 - allow displaying some accessories with a robot vacuum icon in the ui
 - do not return deprecated versions of npm packages across the ui
+- add workflow for deprecating old versions of Homebridge UI
 
 ### Homebridge Dependencies
 
