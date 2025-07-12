@@ -237,9 +237,11 @@ export class PluginsService {
       return {
         tags: pkg['dist-tags'],
         versions: Object.keys(pkg.versions).reduce((acc, key) => {
-          acc[key] = {
-            version: pkg.versions[key].version,
-            engines: pkg.versions[key].engines || null,
+          if (!pkg.versions[key].deprecated) {
+            acc[key] = {
+              version: pkg.versions[key].version,
+              engines: pkg.versions[key].engines || null,
+            }
           }
           return acc
         }, {}),

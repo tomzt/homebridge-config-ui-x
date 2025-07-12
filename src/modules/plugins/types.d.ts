@@ -156,6 +156,7 @@ export interface IPackageJson {
   preferGlobal?: boolean
   private?: boolean
   publishConfig?: { registry?: string }
+  deprecated?: string
 }
 
 export type NpmFunding = { type: string, url: string } | string | Array<{ type: string, url: string } | string>
