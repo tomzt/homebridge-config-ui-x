@@ -268,6 +268,7 @@
   "plugins.donate.tile_donate_to": "บริจาคให้ {{ author }}",
   "plugins.enable.error": "ไม่สามารถเปิดใช้งานปลั๊กอินได้",
   "plugins.manage.all_versions": "ทุกเวอร์ชัน",
+  "plugins.manage.backup": "Download a backup before updating?",
   "plugins.manage.changelog": "บันทึกการเปลี่ยนแปลงฉบับเต็ม",
   "plugins.manage.changelog_none": "ไม่สามารถดึงบันทึกการเปลี่ยนแปลงได้ อาจเป็นไปได้ว่าปลั๊กอินนี้ไม่มีไฟล์ <code>CHANGELOG.md</code>",
   "plugins.manage.child_bridge_restart": "บริดจ์ย่อยเริ่มการทำงานใหม่ได้สำเร็จ",

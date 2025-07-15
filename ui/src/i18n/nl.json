@@ -268,6 +268,7 @@
   "plugins.donate.tile_donate_to": "Doneer aan {{ author }}",
   "plugins.enable.error": "Activeren plugin mislukt.",
   "plugins.manage.all_versions": "Alle versies",
+  "plugins.manage.backup": "Download a backup before updating?",
   "plugins.manage.changelog": "Volledige Changelog",
   "plugins.manage.changelog_none": "Kon changelog niet ophalen, misschien biedt deze plugin geen <code>CHANGELOG.md</code> bestand.",
   "plugins.manage.child_bridge_restart": "Child bridge successvol herstart.",
