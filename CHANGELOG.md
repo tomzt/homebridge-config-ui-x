@@ -10,6 +10,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - migrate to use `fetch()` for http requests
 - Fix alignment of Plugin Updates in Horizontal Mode (#2495) (@NorthernMan54)
 - offer to download a backup before updating homebridge/ui
+- updates to the `he.json` language file (@seidnerj)
 
 ## v5.0.0 (2025-07-13)
 
