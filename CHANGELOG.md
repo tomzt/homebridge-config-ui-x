@@ -2,7 +2,10 @@
 
 All notable changes to `homebridge-config-ui-x` will be documented in this file. This project tries to adhere to [Semantic Versioning](http://semver.org/).
 
-## v5.0.1 (Unreleased)
+## v5.1.0 (2025-07-17)
+
+⚠️ If you have not yet updated to the `5.x` branch of Homebridge UI, please read the breaking changes in the changelog before updating.
+There are no breaking changes between `5.0.0` and `5.1.0`.
 
 ### UI Changes
 
@@ -13,6 +16,12 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - updates to the `he.json` language file (@seidnerj)
 - pass through plugin display name to logs after update
 - fix accidental hiding of startup settings section
+
+### Homebridge Dependencies
+
+- `@homebridge/hap-client` @ `v3.0.0`
+- `@homebridge/node-pty-prebuilt-multiarch` @ `v0.13.1`
+- `@homebridge/plugin-ui-utils` @ `v2.1.0`
 
 ## v5.0.0 (2025-07-13)
 

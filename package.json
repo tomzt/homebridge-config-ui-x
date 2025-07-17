@@ -1,7 +1,7 @@
 {
   "name": "homebridge-config-ui-x",
   "displayName": "Homebridge UI",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "A web based management, configuration and control platform for Homebridge.",
   "author": "oznu <dev@oz.nu>",
   "license": "MIT",
@@ -52,7 +52,6 @@
   ],
   "main": "./dist/index.js",
   "bin": {
-    "homebridge-config-ui-x": "dist/bin/standalone.js",
     "hb-service": "dist/bin/hb-service.js"
   },
   "engines": {
@@ -84,15 +83,15 @@
     "@fastify/static": "8.2.0",
     "@homebridge/hap-client": "3.1.0",
     "@homebridge/node-pty-prebuilt-multiarch": "0.13.1",
-    "@nestjs/axios": "4.0.0",
-    "@nestjs/common": "11.1.3",
-    "@nestjs/core": "11.1.3",
+    "@nestjs/axios": "4.0.1",
+    "@nestjs/common": "11.1.4",
+    "@nestjs/core": "11.1.4",
     "@nestjs/jwt": "11.0.0",
     "@nestjs/passport": "11.0.5",
-    "@nestjs/platform-fastify": "11.1.3",
-    "@nestjs/platform-socket.io": "11.1.3",
+    "@nestjs/platform-fastify": "11.1.4",
+    "@nestjs/platform-socket.io": "11.1.4",
     "@nestjs/swagger": "11.2.0",
-    "@nestjs/websockets": "11.1.3",
+    "@nestjs/websockets": "11.1.4",
     "axios": "1.10.0",
     "bash-color": "0.0.4",
     "class-transformer": "0.5.1",
@@ -105,9 +104,9 @@
     "lodash": "4.17.21",
     "node-cache": "5.1.2",
     "node-schedule": "2.1.1",
-    "ora": "5.4.1",
+    "ora": "8.2.0",
     "otplib": "12.0.1",
-    "p-limit": "3.1.0",
+    "p-limit": "6.2.0",
     "passport": "0.7.0",
     "passport-jwt": "4.0.1",
     "reflect-metadata": "0.2.2",
@@ -120,12 +119,12 @@
     "unzipper": "0.12.3"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.16.2",
-    "@nestjs/testing": "^11.1.3",
+    "@antfu/eslint-config": "^4.17.0",
+    "@nestjs/testing": "^11.1.4",
     "@prettier/plugin-xml": "^3.4.2",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash": "^4.17.20",
-    "@types/node": "^24.0.13",
+    "@types/node": "^24.0.14",
     "@types/node-schedule": "^2.1.8",
     "@types/passport-jwt": "^4.0.1",
     "@types/semver": "^7.7.0",
@@ -135,7 +134,7 @@
     "@vitest/coverage-v8": "^3.2.4",
     "concurrently": "^9.2.0",
     "eslint-plugin-format": "^1.0.1",
-    "form-data": "^4.0.3",
+    "form-data": "^4.0.4",
     "nodemon": "^3.1.10",
     "rimraf": "^6.0.1",
     "ts-loader": "^9.5.2",
@@ -144,11 +143,6 @@
     "typescript": "^5.8.3",
     "unplugin-swc": "^1.5.5",
     "vitest": "^3.2.4"
-  },
-  "overrides": {
-    "@nestjs/platform-fastify": {
-      "fastify": "5.4.0"
-    }
   },
   "maintainers": [
     {
