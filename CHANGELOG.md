@@ -2,16 +2,29 @@
 
 All notable changes to `homebridge-config-ui-x` will be documented in this file. This project tries to adhere to [Semantic Versioning](http://semver.org/).
 
-## v5.2.0 (Unreleased)
+## v5.2.0 (2025-07-17)
+
+### Node.js Version
+
+- ️⚠️ The `hb-service` backend now has a stricter Node.js version requirement:
+  - if you are running Node.js `v20`, then you must be running at least `v20.19.0`
+  - if you are running Node.js `v22`, then you must be running at least `v22.12.0`
+  - if you are running Node.js `v24`, then you must be running at least `v24.0.0`
+    - although remember that `v24` is not officially supported yet
+- The UI will not allow you to update to UI `v5.2.0` if you are running an unsupported version of Node.js
+- Check the [Homebridge Wiki](https://github.com/homebridge/homebridge/wiki/How-To-Update-Node.js) for instructions on how to update Node.js on your system
 
 ### Other Changes
 
 - update node engines to `^20.19.0 || ^22.12.0 || ^24.0.0`
 
-## v5.1.0 (2025-07-17)
+### Homebridge Dependencies
 
-⚠️ If you have not yet updated to the `5.x` branch of Homebridge UI, please read the breaking changes in the changelog before updating.
-There are no breaking changes between `5.0.0` and `5.1.0`.
+- `@homebridge/hap-client` @ `v3.0.0`
+- `@homebridge/node-pty-prebuilt-multiarch` @ `v0.13.1`
+- `@homebridge/plugin-ui-utils` @ `v2.1.0`
+
+## v5.1.0 (2025-07-17)
 
 ### UI Changes
 
