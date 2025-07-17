@@ -2,6 +2,12 @@
 
 All notable changes to `homebridge-config-ui-x` will be documented in this file. This project tries to adhere to [Semantic Versioning](http://semver.org/).
 
+## v5.2.0 (Unreleased)
+
+### Other Changes
+
+- update node engines to `^20.19.0 || ^22.12.0 || ^24.0.0`
+
 ## v5.1.0 (2025-07-17)
 
 ⚠️ If you have not yet updated to the `5.x` branch of Homebridge UI, please read the breaking changes in the changelog before updating.
