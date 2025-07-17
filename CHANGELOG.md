@@ -12,6 +12,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - offer to download a backup before updating homebridge/ui
 - updates to the `he.json` language file (@seidnerj)
 - pass through plugin display name to logs after update
+- fix accidental hiding of startup settings section
 
 ## v5.0.0 (2025-07-13)
 
