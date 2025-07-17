@@ -11,6 +11,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - Fix alignment of Plugin Updates in Horizontal Mode (#2495) (@NorthernMan54)
 - offer to download a backup before updating homebridge/ui
 - updates to the `he.json` language file (@seidnerj)
+- pass through plugin display name to logs after update
 
 ## v5.0.0 (2025-07-13)
 
