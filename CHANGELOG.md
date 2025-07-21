@@ -25,6 +25,10 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - added support icon and modal on users page
 - use a new component for support modal footers for suggestions
 
+### Other Changes
+
+- set the minimum wanted version of node to `v20.19.0`
+
 ### Homebridge Dependencies
 
 - `@homebridge/hap-client` @ `v3.0.0`
