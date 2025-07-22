@@ -30,6 +30,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - set the minimum wanted version of node to `v20.19.0`
 - fix undefined `error.error` instances in various places
 - revert to using angular http `withInterceptorsFromDi`
+- fix type of ngbtooltip `openDelay` in angular templates
 
 ### Homebridge Dependencies
 
