@@ -104,7 +104,7 @@ export class LogsComponent implements OnInit, OnDestroy {
           },
           error: (error: HttpErrorResponse) => {
             console.error(error)
-            this.$toastr.error(error.error.message || this.$translate.instant('logs.truncate.error'), this.$translate.instant('toast.title_error'))
+            this.$toastr.error(error.error?.message || this.$translate.instant('logs.truncate.error'), this.$translate.instant('toast.title_error'))
           },
         })
       })

@@ -28,6 +28,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 ### Other Changes
 
 - set the minimum wanted version of node to `v20.19.0`
+- fix undefined `error.error` instances in various places
 
 ### Homebridge Dependencies
 

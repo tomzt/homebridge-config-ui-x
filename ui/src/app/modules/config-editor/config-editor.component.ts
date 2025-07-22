@@ -248,7 +248,7 @@ export class ConfigEditorComponent implements OnInit, OnDestroy {
           },
           error: (error) => {
             console.error(error)
-            this.$toastr.error(error.error.message || this.$translate.instant('backup.load_error'), this.$translate.instant('toast.title_error'))
+            this.$toastr.error(error.error?.message || this.$translate.instant('backup.load_error'), this.$translate.instant('toast.title_error'))
           },
         })
       })
