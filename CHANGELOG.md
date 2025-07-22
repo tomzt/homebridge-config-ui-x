@@ -8,6 +8,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 
 - updates to the `th.json` language file (#2520) (@tomzt)
 - json config editor to offer child bridge restarts where possible
+- improvements to the restore config file modal
 
 ### Homebridge Dependencies
 
