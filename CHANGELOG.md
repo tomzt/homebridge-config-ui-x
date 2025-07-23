@@ -14,6 +14,10 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
   - to read more info about these changes, see the [pull request](https://github.com/homebridge/homebridge-config-ui-x/pull/2493#issue-3226899065)
 - small tweaks to persistent terminal integration
 
+### Other Changes
+
+- added `arm` runners to the ui workflows for testing
+
 ### Homebridge Dependencies
 
 - `@homebridge/hap-client` @ `v3.1.1`
