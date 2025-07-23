@@ -1,8 +1,8 @@
 import { NgClass, NgStyle } from '@angular/common'
 import { Component, ElementRef, inject, Input, OnDestroy, OnInit, viewChild } from '@angular/core'
 import { TranslatePipe } from '@ngx-translate/core'
+import { ITerminalOptions } from '@xterm/xterm'
 import { Subject } from 'rxjs'
-import { ITerminalOptions } from 'xterm'
 
 import { SettingsService } from '@/app/core/settings.service'
 import { TerminalService } from '@/app/core/terminal.service'
@@ -52,9 +52,10 @@ export class TerminalWidgetComponent implements OnInit, OnDestroy {
               background: '#00000000',
               foreground: '#2b2b2b',
               cursor: '#d2d2d2',
-              selection: '#d2d2d2',
+              selectionBackground: '#d2d2d2',
             },
         allowTransparency: this.theme === 'light',
+        allowProposedApi: true,
         fontSize: this.fontSize,
         fontWeight: this.fontWeight,
       }, this.resizeEvent)
@@ -89,7 +90,7 @@ export class TerminalWidgetComponent implements OnInit, OnDestroy {
                 background: '#00000000',
                 foreground: '#2b2b2b',
                 cursor: '#d2d2d2',
-                selection: '#d2d2d2',
+                selectionBackground: '#d2d2d2',
               }
           this.$terminal.term.options.allowTransparency = this.theme === 'light'
           changed = true

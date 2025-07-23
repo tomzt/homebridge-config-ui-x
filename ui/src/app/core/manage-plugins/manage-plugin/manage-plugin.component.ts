@@ -11,12 +11,13 @@ import {
   NgbNavOutlet,
 } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe, TranslateService } from '@ngx-translate/core'
+import { FitAddon } from '@xterm/addon-fit'
+import { WebLinksAddon } from '@xterm/addon-web-links'
+import { Terminal } from '@xterm/xterm'
 import { saveAs } from 'file-saver'
 import { NgxMdModule } from 'ngx-md'
 import { ToastrService } from 'ngx-toastr'
 import { firstValueFrom } from 'rxjs'
-import { Terminal } from 'xterm'
-import { FitAddon } from 'xterm-addon-fit'
 
 import { ApiService } from '@/app/core/api.service'
 import { RestartHomebridgeComponent } from '@/app/core/components/restart-homebridge/restart-homebridge.component'
@@ -59,6 +60,7 @@ export class ManagePluginComponent implements OnInit, OnDestroy {
   private term = new Terminal()
   private termTarget: HTMLElement
   private fitAddon = new FitAddon()
+  private webLinksAddon = new WebLinksAddon()
   private errorLog = ''
 
   @Input() pluginName: string
@@ -90,6 +92,7 @@ export class ManagePluginComponent implements OnInit, OnDestroy {
 
   constructor() {
     this.term.loadAddon(this.fitAddon)
+    this.term.loadAddon(this.webLinksAddon)
   }
 
   public ngOnInit() {

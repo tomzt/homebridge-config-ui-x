@@ -40,7 +40,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     window.document.querySelector('body').classList.add('bg-black')
 
     // Start the terminal
-    this.$log.startTerminal(this.termTarget(), {}, this.resizeEvent)
+    this.$log.startTerminal(this.termTarget(), {
+      allowProposedApi: true,
+    }, this.resizeEvent)
   }
 
   public ngOnDestroy() {
