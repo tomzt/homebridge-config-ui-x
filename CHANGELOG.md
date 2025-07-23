@@ -23,6 +23,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - grammar: replace 'unchargeable' with 'not chargeable' on battery tile
 - show admin/non-admin icon on user cards for easier identification
 - added support icon and modal on users page
+- use a new component for support modal footers for suggestions
 
 ### Homebridge Dependencies
 
