@@ -18,6 +18,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 ### Other Changes
 
 - added `arm` runners to the ui workflows for testing
+- make 'keep orphans' setting available in ui settings service
 
 ### Homebridge Dependencies
 
