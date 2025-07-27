@@ -1,13 +1,7 @@
-<div
-  class="accessory-box"
-  [ngClass]="{
-    'switch-on': service.values.CarbonDioxideDetected,
-    'switch-off': !service.values.CarbonDioxideDetected
-  }"
->
+<div class="accessory-box" [ngClass]="{ 'switch-on': service.values.CarbonDioxideDetected }">
   <div class="d-flex flex-column h-100">
     <div
-      [inlineSVG]="'/assets/hap-icons/carbon-dioxide-sensor.svg'"
+      [inlineSVG]="'/assets/service-icons/carbon-dioxide-sensor.svg'"
       [attr.aria-label]="'Carbon Dioxide Sensor'"
       class="accessory-svg"
     ></div>
