@@ -37,6 +37,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - make 'keep orphans' setting available in ui settings service
 - improve types for widgets
 - upgrade `@ngx-translate/core` from `v16` to `v17`
+- fix get pairings, ignore `.json.bak` files
 
 ### Homebridge Dependencies
 
