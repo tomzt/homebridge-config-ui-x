@@ -154,7 +154,7 @@
   "common.labels.beta": "beta",
   "common.labels.no_confirmation": "There is no confirmation when clicking the button, it will immediately perform the action.",
   "common.phrases.are_you_sure": "¿Estás seguro de que deseas continuar de todos modos?",
-  "common.phrases.support": "Feel like there is something useful we could add to this support page? Let us know on {{ github }} or {{ discord }}!",
+  "common.phrases.support": "Feel like there is something useful we could add here? Let us know on {{ github }} or {{ discord }}!",
   "config.config_accessory_must_be_array": "los accesorios deben estar en una colección []",
   "config.config_bridge_missing": "Falta la configuración del puente",
   "config.config_invalid_json": "La configuración contiene JSON inválido",

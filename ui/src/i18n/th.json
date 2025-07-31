@@ -154,7 +154,7 @@
   "common.labels.beta": "beta",
   "common.labels.no_confirmation": "There is no confirmation when clicking the button, it will immediately perform the action.",
   "common.phrases.are_you_sure": "คุณแน่ใจว่าต้องการดำเนินการต่อหรือไม่?",
-  "common.phrases.support": "Feel like there is something useful we could add to this support page? Let us know on {{ github }} or {{ discord }}!",
+  "common.phrases.support": "Feel like there is something useful we could add here? Let us know on {{ github }} or {{ discord }}!",
   "config.config_accessory_must_be_array": "อุปกรณ์เสริมต้องเป็นอาร์เรย์ []",
   "config.config_bridge_missing": "ไม่มีการตั้งค่าบริดจ์",
   "config.config_invalid_json": "Config มี JSON ที่ไม่ถูกต้อง",
