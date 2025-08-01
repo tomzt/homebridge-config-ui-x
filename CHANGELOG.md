@@ -31,6 +31,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - thermostat accessory: show target slider when available
 - updated icon for door, window and window covering services
 - accessory info: show props on characteristic click
+- credits modal: added new section for translations
 
 ### Other Changes
 
