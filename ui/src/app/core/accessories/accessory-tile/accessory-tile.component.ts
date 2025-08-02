@@ -36,6 +36,7 @@ import { TemperatureSensorComponent } from '@/app/core/accessories/types/tempera
 import { ThermostatComponent } from '@/app/core/accessories/types/thermostat/thermostat.component'
 import { UnknownComponent } from '@/app/core/accessories/types/unknown/unknown.component'
 import { ValveComponent } from '@/app/core/accessories/types/valve/valve.component'
+import { WashingMachineComponent } from '@/app/core/accessories/types/washing-machine/washing-machine.component'
 import { WindowCoveringComponent } from '@/app/core/accessories/types/window-covering/window-covering.component'
 import { WindowComponent } from '@/app/core/accessories/types/window/window.component'
 
@@ -80,6 +81,7 @@ import { WindowComponent } from '@/app/core/accessories/types/window/window.comp
     UnknownComponent,
     MicrophoneComponent,
     RobotVacuumComponent,
+    WashingMachineComponent,
   ],
 })
 export class AccessoryTileComponent {

@@ -42,6 +42,7 @@ export class AccessoryInfoComponent implements OnInit {
       'Television',
       'Valve',
       'RobotVacuum',
+      'WashingMachine',
     ],
     [
       'Switch',

@@ -121,6 +121,10 @@
   >
   } @case ('RobotVacuum') {
   <app-robot-vacuum [service]="service" [readyForControl]="$accessories.readyForControl">Robot Vacuum</app-robot-vacuum>
+  } @case ('WashingMachine') {
+  <app-washing-machine [service]="service" [readyForControl]="$accessories.readyForControl"
+    >Washing Machine</app-washing-machine
+  >
   } @default {
   <app-unknown [service]="service">{{ service.humanType }}</app-unknown>
   } }
