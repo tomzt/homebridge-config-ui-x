@@ -6,7 +6,11 @@
   tabindex="0"
 >
   <div class="d-flex flex-column h-100">
-    <div [inlineSVG]="'/assets/hap-icons/television.svg'" [attr.aria-label]="'Television'" class="accessory-svg"></div>
+    <div
+      [inlineSVG]="'/assets/service-icons/television.svg'"
+      [attr.aria-label]="'Television'"
+      class="accessory-svg"
+    ></div>
     <div class="accessory-label mt-auto">
       {{ service.customName || service.values.ConfiguredName || service.serviceName }}
     </div>

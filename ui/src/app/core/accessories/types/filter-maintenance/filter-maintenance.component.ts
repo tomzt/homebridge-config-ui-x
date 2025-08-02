@@ -11,6 +11,7 @@ import { LongClickDirective } from '@/app/core/directives/long-click.directive'
 @Component({
   selector: 'app-filter-maintenance',
   templateUrl: './filter-maintenance.component.html',
+  styleUrls: ['./filter-maintenance.component.scss'],
   standalone: true,
   imports: [
     InlineSVGDirective,

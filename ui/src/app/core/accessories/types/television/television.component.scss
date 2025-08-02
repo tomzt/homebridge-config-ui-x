@@ -1,0 +1,31 @@
+::ng-deep {
+  body.dark-mode {
+    .screen {
+      fill: #2b2b2b;
+      stroke: #7f7f7f;
+    }
+  }
+  .switch-on {
+    svg {
+      .screen {
+        animation: color-change 3s infinite alternate; // Apply color animation
+      }
+
+      .stand {
+        stroke: #7f7f7f;
+        stroke-opacity: 1;
+      }
+    }
+  }
+}
+
+@keyframes color-change {
+  0% {
+    fill: #4fc3f7; // Light blue
+  }
+  100% {
+    fill: #0288d1; // Dark blue
+  }
+}
+
+// 7f7f7f
