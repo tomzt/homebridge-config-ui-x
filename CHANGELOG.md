@@ -10,6 +10,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - reduce font size in accessory label by 1px
 - updates to the credits modal
 - make red restart child bridge button on plugin log modal
+- refreshed icons: stateless programmable switch
 
 ### Other Changes
 
