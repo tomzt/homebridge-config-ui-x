@@ -29,6 +29,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 - fix for custom ui colouring in dark mode
 - updated icons: co, co2, smoke, contact, garage
 - thermostat accessory: show target slider when available
+- updated icon for door, window and window covering services
 
 ### Other Changes
 
