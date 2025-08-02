@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core'
 import { Router } from '@angular/router'
-import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap'
+import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap'
 import { TranslatePipe, TranslateService } from '@ngx-translate/core'
 import { ToastrService } from 'ngx-toastr'
 
 import { ApiService } from '@/app/core/api.service'
+import { ConfirmComponent } from '@/app/core/components/confirm/confirm.component'
 import { SettingsService } from '@/app/core/settings.service'
 
 @Component({
@@ -17,6 +18,7 @@ import { SettingsService } from '@/app/core/settings.service'
 })
 export class PowerOptionsComponent {
   private $api = inject(ApiService)
+  private $modal = inject(NgbModal)
   private $router = inject(Router)
   private $settings = inject(SettingsService)
   private $toastr = inject(ToastrService)
@@ -46,7 +48,21 @@ export class PowerOptionsComponent {
   }
 
   public shutdownServer() {
-    this.$router.navigate(['/platform-tools/linux/shutdown-server'])
+    // Confirmation dialog
+    const ref = this.$modal.open(ConfirmComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    })
+    ref.componentInstance.title = this.$translate.instant('menu.linux.label_shutdown_server')
+    ref.componentInstance.message = this.$translate.instant('menu.linux.label_shutdown_modal')
+    ref.componentInstance.confirmButtonLabel = this.$translate.instant('form.button_continue')
+    ref.componentInstance.faIconClass = 'fa fa-fw fa-power-off primary-text'
+
+    ref.result
+      .then(() => {
+        this.$router.navigate(['/platform-tools/linux/shutdown-server'])
+      })
+      .catch(() => { /* do nothing */ })
   }
 
   public dockerRestartContainer() {

@@ -225,6 +225,7 @@
   "menu.label_status": "状態",
   "menu.linux.label_logs": "Logs",
   "menu.linux.label_restart_server": "サーバーを再起動",
+  "menu.linux.label_shutdown_modal": "Are you sure you want to shut down the operating system? You will need physical access to turn it back on.",
   "menu.linux.label_shutdown_server": "サーバーを終了",
   "menu.linux.label_terminal": "ターミナル",
   "menu.reload": "Reload",

@@ -225,6 +225,7 @@
   "menu.label_status": "Статус",
   "menu.linux.label_logs": "Logs",
   "menu.linux.label_restart_server": "Рестартирай Сървъра",
+  "menu.linux.label_shutdown_modal": "Are you sure you want to shut down the operating system? You will need physical access to turn it back on.",
   "menu.linux.label_shutdown_server": "Изключи Сървъра",
   "menu.linux.label_terminal": "Терминал",
   "menu.reload": "Reload",

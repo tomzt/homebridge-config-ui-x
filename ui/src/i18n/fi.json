@@ -225,6 +225,7 @@
   "menu.label_status": "Tila",
   "menu.linux.label_logs": "Lokitiedot",
   "menu.linux.label_restart_server": "Uudellenkäynnistä järjestelmä",
+  "menu.linux.label_shutdown_modal": "Are you sure you want to shut down the operating system? You will need physical access to turn it back on.",
   "menu.linux.label_shutdown_server": "Sulje järjestelmä",
   "menu.linux.label_terminal": "Pääte",
   "menu.reload": "Reload",

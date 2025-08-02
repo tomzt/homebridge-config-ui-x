@@ -225,6 +225,7 @@
   "menu.label_status": "Estado",
   "menu.linux.label_logs": "Registros",
   "menu.linux.label_restart_server": "Reiniciar Servidor",
+  "menu.linux.label_shutdown_modal": "Are you sure you want to shut down the operating system? You will need physical access to turn it back on.",
   "menu.linux.label_shutdown_server": "Apagar Servidor",
   "menu.linux.label_terminal": "Terminal",
   "menu.reload": "Recargar",

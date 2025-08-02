@@ -225,6 +225,7 @@
   "menu.label_status": "Durum",
   "menu.linux.label_logs": "Logs",
   "menu.linux.label_restart_server": "Sunucuyu Yeniden Başlat",
+  "menu.linux.label_shutdown_modal": "Are you sure you want to shut down the operating system? You will need physical access to turn it back on.",
   "menu.linux.label_shutdown_server": "Sunucuyu Kapat",
   "menu.linux.label_terminal": "Terminal",
   "menu.reload": "Reload",

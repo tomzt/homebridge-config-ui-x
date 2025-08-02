@@ -225,6 +225,7 @@
   "menu.label_status": "狀態",
   "menu.linux.label_logs": "Logs",
   "menu.linux.label_restart_server": "重新啟動 Homebridge",
+  "menu.linux.label_shutdown_modal": "Are you sure you want to shut down the operating system? You will need physical access to turn it back on.",
   "menu.linux.label_shutdown_server": "關閉 Homebridge",
   "menu.linux.label_terminal": "終端機",
   "menu.reload": "Reload",
