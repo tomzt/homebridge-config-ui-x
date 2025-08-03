@@ -268,7 +268,8 @@ export class CustomPluginsComponent implements OnInit, OnDestroy {
           break
         }
         case 'i18n.translations': {
-          this.requestResponse(e, this.$translate.instant(e.data.key, e.data.params))
+          // eslint-disable-next-line ts/no-require-imports
+          this.requestResponse(e, require(`../../../../i18n/${this.$translate.getCurrentLang()}.json`))
           break
         }
         case 'close': {
