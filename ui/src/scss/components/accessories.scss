@@ -111,7 +111,7 @@
 }
 
 .accessory-label {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 300;
   margin-top: 4px;
   overflow: hidden;
@@ -124,7 +124,7 @@
 
   @media (max-width: 575px) {
     margin-top: 0;
-    font-size: 12px;
+    font-size: 11px;
     -webkit-line-clamp: 2;
     line-height: 1rem;
     max-height: 1rem * 2;
