@@ -8,6 +8,7 @@ All notable changes to `homebridge-config-ui-x` will be documented in this file.
 
 - updates to the `pl.json` language file (#2522, #2523) (@mkz212)
 - reduce font size in accessory label by 1px
+- updates to the credits modal
 
 ### Other Changes
 
