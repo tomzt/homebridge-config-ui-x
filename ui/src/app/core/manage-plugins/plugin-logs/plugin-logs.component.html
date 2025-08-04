@@ -28,9 +28,22 @@
     </div>
     <div class="text-center"></div>
     <div class="text-end">
-      @if (childBridges.length) {
       <button
         class="btn btn-primary"
+        (click)="downloadLogFile()"
+        [attr.aria-label]="'logs.title_download_log_file' | translate"
+        [ngbTooltip]="'logs.title_download_log_file' | translate"
+        container="modal"
+        placement="top"
+        [openDelay]="150"
+        triggers="hover"
+        [disabled]="midAction"
+      >
+        <i class="fas fa-fw fa-download"></i>
+      </button>
+      @if (childBridges.length) {
+      <button
+        class="btn btn-danger ms-3"
         (click)="restartChildBridges()"
         [attr.aria-label]="(childBridges.length > 1 ? 'child_bridge.restart_plural' : 'child_bridge.restart') | translate"
         [ngbTooltip]="(childBridges.length > 1 ? 'child_bridge.restart_plural' : 'child_bridge.restart') | translate"
@@ -43,19 +56,6 @@
         <i class="fas fa-fw fa-power-off"></i>
       </button>
       }
-      <button
-        class="btn btn-primary ms-2"
-        (click)="downloadLogFile()"
-        [attr.aria-label]="'logs.title_download_log_file' | translate"
-        [ngbTooltip]="'logs.title_download_log_file' | translate"
-        container="modal"
-        placement="top"
-        [openDelay]="150"
-        triggers="hover"
-        [disabled]="midAction"
-      >
-        <i class="fas fa-fw fa-download"></i>
-      </button>
     </div>
   </div>
 </div>
